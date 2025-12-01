@@ -1,0 +1,12 @@
+﻿{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  }
+}
