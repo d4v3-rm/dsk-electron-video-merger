@@ -1,4 +1,4 @@
-﻿import { contextBridge, ipcRenderer } from 'electron';
+﻿import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
 import { IPC_CHANNELS } from '@shared/ipc';
 import type { JobCreationPayload, JobProgressPayload } from '@shared/types';
 
@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createBulkJob: (payload: JobCreationPayload) => ipcRenderer.invoke(IPC_CHANNELS.jobsCreateBulk, payload),
   getJobs: () => ipcRenderer.invoke(IPC_CHANNELS.jobsList),
   onJobProgress: (callback: (payload: JobProgressPayload) => void) => {
-    const listener = (_event: Electron.IpcRendererEvent, payload: JobProgressPayload) => {
+    const listener = (_event: IpcRendererEvent, payload: JobProgressPayload) => {
       callback(payload);
     };
     ipcRenderer.on(IPC_CHANNELS.jobsProgress, listener);

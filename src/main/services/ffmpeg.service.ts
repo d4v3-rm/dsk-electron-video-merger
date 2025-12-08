@@ -54,7 +54,9 @@ export class FfmpegService {
 
     if (inputPaths.length > 1) {
       const concatFile = path.join(tempDir, 'concat-input.txt');
-      const content = inputPaths.map((f) => `file '${f.replace(/'/g, "'\\''")}'`).join('\n');
+      const content = inputPaths
+        .map((f) => `file '${f.replace(/'/g, "'\\''")}'`)
+        .join('\n');
       await fs.writeFile(concatFile, content, 'utf8');
       await this.runFfMpeg(
         ['-y', '-f', 'concat', '-safe', '0', '-i', concatFile, '-c', 'copy', intermediateOutput],

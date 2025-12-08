@@ -1,16 +1,17 @@
-﻿import { Card, List, Progress, Tag, Typography } from 'antd';
+﻿import { Card, List, Progress, Tag, type TagProps, Typography } from 'antd';
+import type { Job } from '@shared/types';
 import { useAppStore } from '../store/use-app-store';
 
 const { Title, Text } = Typography;
 
-const statusLabel: Record<string, string> = {
+const statusLabel: Record<Job['status'], string> = {
   queued: 'In coda',
   running: 'In corso',
   completed: 'Completato',
   error: 'Errore'
 };
 
-const statusColor: Record<string, string> = {
+const statusColor: Record<Job['status'], TagProps['color']> = {
   queued: 'default',
   running: 'processing',
   completed: 'success',
@@ -33,7 +34,7 @@ export const JobBoard = () => {
               title={
                 <div className="job-title">
                   <span>{`[#${job.id.slice(0, 8)}] ${job.type === 'single' ? 'Singolo' : 'Massivo'}`}</span>
-                  <Tag color={statusColor[job.status] as any}>{statusLabel[job.status]}</Tag>
+                  <Tag color={statusColor[job.status]}>{statusLabel[job.status]}</Tag>
                 </div>
               }
               description={
