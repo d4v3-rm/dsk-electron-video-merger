@@ -1,6 +1,6 @@
 ﻿import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
-import { IPC_CHANNELS } from '@shared/ipc';
-import type { JobCreationPayload, JobProgressPayload } from '@shared/types';
+import { IPC_CHANNELS } from '../shared/ipc';
+import type { JobCreationPayload, JobProgressPayload } from '../shared/types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   selectVideoFiles: () => ipcRenderer.invoke(IPC_CHANNELS.filesPick),

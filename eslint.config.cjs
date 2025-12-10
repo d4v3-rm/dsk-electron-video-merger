@@ -6,7 +6,7 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 
 module.exports = [
   {
-    ignores: ['node_modules/**', 'dist/**', 'out/**', 'build/**', 'packaged/**']
+    ignores: ['node_modules/**', 'dist/**', 'out/**', 'build/**', 'packaged/**', '.tmp*/**', '**/.tmp*', 'src/shared/*.js']
   },
   js.configs.recommended,
   {
@@ -46,6 +46,7 @@ module.exports = [
     files: [
       'src/main/**/*.{ts,js}',
       'src/shared/**/*.{ts,js}',
+      'scripts/**/*.cjs',
       'src/renderer/vite.config.ts',
       'vite.config.ts',
       'electron-builder.config.cjs'
@@ -57,7 +58,8 @@ module.exports = [
         require: 'readonly',
         module: 'readonly',
         process: 'readonly',
-        Buffer: 'readonly'
+        Buffer: 'readonly',
+        console: 'readonly'
       }
     }
   },

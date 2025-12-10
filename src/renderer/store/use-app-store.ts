@@ -1,5 +1,5 @@
 ﻿import { create } from 'zustand';
-import type { CompressionPreset, ConversionSettings, Job, JobProgressPayload, JobType, OutputFormat } from '@shared/types';
+import type { CompressionPreset, ConversionSettings, Job, JobProgressPayload, JobType, OutputFormat } from '../../shared/types';
 import { api } from '../services/ipc';
 
 export type SelectedVideo = {

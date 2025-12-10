@@ -1,6 +1,6 @@
 ﻿import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@shared/ipc';
-import type { JobCreationPayload } from '@shared/types';
+import { IPC_CHANNELS } from '../../shared/ipc';
+import type { JobCreationPayload } from '../../shared/types';
 import { FilePickerService } from '../services/file-picker.service';
 import { JobService } from '../services/job.service';
 

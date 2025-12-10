@@ -1,5 +1,5 @@
 ﻿import { Card, List, Progress, Tag, type TagProps, Typography } from 'antd';
-import type { Job } from '@shared/types';
+import type { Job } from '../../shared/types';
 import { useAppStore } from '../store/use-app-store';
 
 const { Title, Text } = Typography;

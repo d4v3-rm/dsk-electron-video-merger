@@ -1,7 +1,7 @@
 ﻿import type { BrowserWindow } from 'electron';
 import { randomUUID } from 'node:crypto';
-import { IPC_CHANNELS } from '@shared/ipc';
-import type { Job, JobCreationPayload, JobProgressPayload, JobStatus } from '@shared/types';
+import { IPC_CHANNELS } from '../../shared/ipc';
+import type { Job, JobCreationPayload, JobProgressPayload, JobStatus } from '../../shared/types';
 import { FfmpegService } from './ffmpeg.service';
 import { StorageService } from './storage.service';
 import path from 'node:path';

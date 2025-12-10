@@ -1,4 +1,4 @@
-﻿import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import { initializeIpc } from './ipc/ipc-routes';
 import { JobService } from './services/job.service';
@@ -32,7 +32,7 @@ const createWindow = async (): Promise<void> => {
 
   const isDev = !app.isPackaged;
   if (isDev) {
-    await mainWindow.loadURL('http://localhost:5173');
+    await mainWindow.loadURL('http://127.0.0.1:5173');
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   } else {
     const htmlPath = path.resolve(__dirname, '../renderer/index.html');
@@ -60,3 +60,4 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+

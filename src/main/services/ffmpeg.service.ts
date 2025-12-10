@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import ffmpegPath from 'ffmpeg-static';
-import type { CompressionPreset, OutputFormat } from '@shared/types';
+import type { CompressionPreset, OutputFormat } from '../../shared/types';
 
 export type JobProgressCallback = (value: number, message: string, outputPath?: string) => void;
 
