@@ -14,7 +14,7 @@ export class StorageService {
     return {
       root,
       output: path.join(root, 'outputs'),
-      temp: path.join(root, 'temp')
+      temp: path.join(root, 'temp'),
     };
   }
 

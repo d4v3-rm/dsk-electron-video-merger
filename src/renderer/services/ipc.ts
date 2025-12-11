@@ -1,8 +1,4 @@
-import type {
-  ConversionSettings,
-  Job,
-  JobProgressPayload
-} from '../../shared/types';
+import type { ConversionSettings, Job, JobProgressPayload } from '../../shared/types';
 
 type RendererElectronApi = {
   selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
@@ -21,10 +17,12 @@ const getElectronAPI = (): RendererElectronApi | undefined => {
 };
 
 const createMissingBridgeError = (): Error =>
-  new Error('Bridge Electron non disponibile. Avvia l\'app da Electron e verifica che preload.ts sia caricato.');
+  new Error(
+    "Bridge Electron non disponibile. Avvia l'app da Electron e verifica che preload.ts sia caricato.",
+  );
 
 const noOpUnsubscribe = (): void => {
-  // Intenzionalmente vuoto: fallback sicuro quando il renderer non è ospitato da Electron.
+  // Intenzionalmente vuoto: fallback sicuro quando il renderer non ï¿½ ospitato da Electron.
 };
 
 const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {
@@ -50,5 +48,5 @@ export const api = {
     }
 
     return electronAPI.onJobProgress(cb);
-  }
+  },
 };

@@ -6,7 +6,16 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 
 module.exports = [
   {
-    ignores: ['node_modules/**', 'dist/**', 'out/**', 'build/**', 'packaged/**', '.tmp*/**', '**/.tmp*', 'src/shared/*.js']
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'out/**',
+      'build/**',
+      'packaged/**',
+      '.tmp*/**',
+      '**/.tmp*',
+      'src/shared/*.js',
+    ],
   },
   js.configs.recommended,
   {
@@ -14,7 +23,7 @@ module.exports = [
     plugins: {
       '@typescript-eslint': tsPlugin,
       react: reactPlugin,
-      'react-hooks': reactHooksPlugin
+      'react-hooks': reactHooksPlugin,
     },
     languageOptions: {
       parser: tsParser,
@@ -24,14 +33,14 @@ module.exports = [
         ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: {
-          jsx: true
-        }
-      }
+          jsx: true,
+        },
+      },
     },
     settings: {
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
@@ -39,8 +48,8 @@ module.exports = [
       'react/prop-types': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-      '@typescript-eslint/no-explicit-any': 'off'
-    }
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
   {
     files: [
@@ -49,7 +58,7 @@ module.exports = [
       'scripts/**/*.cjs',
       'src/renderer/vite.config.ts',
       'vite.config.ts',
-      'electron-builder.config.cjs'
+      'electron-builder.config.cjs',
     ],
     languageOptions: {
       globals: {
@@ -59,9 +68,9 @@ module.exports = [
         module: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
-        console: 'readonly'
-      }
-    }
+        console: 'readonly',
+      },
+    },
   },
   {
     files: ['src/renderer/**/*.ts', 'src/renderer/**/*.tsx', 'src/renderer/**/*.js', 'src/renderer/**/*.jsx'],
@@ -71,8 +80,8 @@ module.exports = [
         document: 'readonly',
         HTMLElement: 'readonly',
         process: 'readonly',
-        Buffer: 'readonly'
-      }
-    }
-  }
+        Buffer: 'readonly',
+      },
+    },
+  },
 ];

@@ -3,24 +3,19 @@ module.exports = {
   productName: 'VideoMerger',
   directories: {
     output: 'dist/packaged',
-    buildResources: 'build'
+    buildResources: 'build',
   },
-  files: [
-    'dist/main/**/*',
-    'dist/shared/**/*',
-    'dist/renderer/**/*',
-    'package.json'
-  ],
+  files: ['dist/main/**/*', 'dist/shared/**/*', 'dist/renderer/**/*', 'package.json'],
   asar: true,
   win: {
     target: [
       {
         target: 'portable',
-        arch: ['x64']
-      }
-    ]
+        arch: ['x64'],
+      },
+    ],
   },
   portable: {
-    artifactName: 'VideoMerger-${version}-portable.exe'
-  }
+    artifactName: 'VideoMerger-${version}-portable.exe',
+  },
 };

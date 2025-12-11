@@ -55,13 +55,20 @@
       "output": "dist/packaged",
       "buildResources": "build"
     },
-    "files": ["dist/main/**/*", "dist/shared/**/*", "dist/renderer/**/*", "package.json"],
+    "files": [
+      "dist/main/**/*",
+      "dist/shared/**/*",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
     "asar": true,
     "win": {
       "target": [
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -70,4 +77,3 @@
     }
   }
 }
-

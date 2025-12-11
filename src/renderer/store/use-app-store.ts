@@ -1,5 +1,12 @@
 import { create } from 'zustand';
-import type { CompressionPreset, ConversionSettings, Job, JobProgressPayload, JobType, OutputFormat } from '../../shared/types';
+import type {
+  CompressionPreset,
+  ConversionSettings,
+  Job,
+  JobProgressPayload,
+  JobType,
+  OutputFormat,
+} from '../../shared/types';
 import { api } from '../services/ipc';
 
 export type SelectedVideo = {
@@ -32,7 +39,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   jobType: 'single',
   settings: {
     outputFormat: 'mp4',
-    compression: 'balanced'
+    compression: 'balanced',
   },
   loading: false,
   loaded: false,
@@ -78,7 +85,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ loading: true });
     const payload = {
       filePaths: selectedFiles.map((f) => f.path),
-      settings
+      settings,
     };
 
     try {
@@ -88,7 +95,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({
         jobs: [job, ...get().jobs],
         selectedFiles: [],
-        loading: false
+        loading: false,
       });
     } catch {
       set({ loading: false });
@@ -98,8 +105,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   upsertJobProgress: (payload) => {
     set({
       jobs: get()
-        .jobs
-        .map((job) =>
+        .jobs.map((job) =>
           job.id === payload.jobId
             ? {
                 ...job,
@@ -110,11 +116,11 @@ export const useAppStore = create<AppState>((set, get) => ({
                   payload.outputPath && !job.outputPaths.includes(payload.outputPath)
                     ? [...job.outputPaths, payload.outputPath]
                     : job.outputPaths,
-                error: payload.error
+                error: payload.error,
               }
-            : job
+            : job,
         )
-        .sort((a, b) => b.updatedAt - a.updatedAt)
+        .sort((a, b) => b.updatedAt - a.updatedAt),
     });
-  }
+  },
 }));

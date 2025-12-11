@@ -12,11 +12,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         token: {
           colorPrimary: '#2563eb',
           borderRadius: 10,
-          fontFamily: 'Inter, Arial, sans-serif'
-        }
+          fontFamily: 'Inter, Arial, sans-serif',
+        },
       }}
     >
       <App />
     </ConfigProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

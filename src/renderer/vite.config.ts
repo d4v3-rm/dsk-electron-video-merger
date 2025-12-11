@@ -11,17 +11,17 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, '../shared')
-    }
+      '@shared': path.resolve(__dirname, '../shared'),
+    },
   },
   server: {
     host: '127.0.0.1',
     port: devPort,
-    strictPort: true
+    strictPort: true,
   },
   build: {
     outDir: path.resolve(__dirname, '../../dist/renderer'),
     emptyOutDir: true,
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 });

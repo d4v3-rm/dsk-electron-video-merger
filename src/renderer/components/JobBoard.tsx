@@ -8,14 +8,14 @@ const statusLabel: Record<Job['status'], string> = {
   queued: 'In coda',
   running: 'In corso',
   completed: 'Completato',
-  error: 'Errore'
+  error: 'Errore',
 };
 
 const statusColor: Record<Job['status'], TagProps['color']> = {
   queued: 'default',
   running: 'processing',
   completed: 'success',
-  error: 'error'
+  error: 'error',
 };
 
 export const JobBoard = () => {

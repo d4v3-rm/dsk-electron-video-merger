@@ -17,9 +17,9 @@ export class FilePickerService {
       filters: [
         {
           name: 'Video',
-          extensions: ['mp4', 'mov', 'webm', 'avi', 'mkv', 'm4v']
-        }
-      ]
+          extensions: ['mp4', 'mov', 'webm', 'avi', 'mkv', 'm4v'],
+        },
+      ],
     });
 
     if (result.canceled) {
@@ -33,7 +33,7 @@ export class FilePickerService {
         id: filePath,
         name: path.basename(filePath),
         path: filePath,
-        size: stat.size
+        size: stat.size,
       });
     }
 

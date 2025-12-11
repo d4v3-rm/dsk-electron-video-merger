@@ -15,7 +15,7 @@ export const JobComposer = () => {
     selectVideoFiles,
     removeSelectedFile,
     createJob,
-    loading
+    loading,
   } = useAppStore();
 
   return (
@@ -38,7 +38,7 @@ export const JobComposer = () => {
               onChange={setOutputFormat}
               options={['mp4', 'mov', 'webm'].map((value) => ({
                 value,
-                label: value.toUpperCase()
+                label: value.toUpperCase(),
               }))}
             />
           </Space>
@@ -50,7 +50,7 @@ export const JobComposer = () => {
               options={[
                 { value: 'light', label: 'Leggera' },
                 { value: 'balanced', label: 'Bilanciata' },
-                { value: 'strong', label: 'Alta' }
+                { value: 'strong', label: 'Alta' },
               ]}
             />
           </Space>
@@ -85,7 +85,7 @@ export const JobComposer = () => {
                   danger
                   icon={<DeleteOutlined />}
                   onClick={() => removeSelectedFile(item.id)}
-                />
+                />,
               ]}
             >
               {item.name}

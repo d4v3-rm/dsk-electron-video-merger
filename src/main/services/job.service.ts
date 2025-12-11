@@ -18,7 +18,7 @@ export class JobService {
 
   constructor(
     private readonly storageService: StorageService,
-    private readonly ffmpegService: FfmpegService
+    private readonly ffmpegService: FfmpegService,
   ) {}
 
   setWindow(window: BrowserWindow | null): void {
@@ -35,7 +35,7 @@ export class JobService {
       id: filePath,
       name: path.basename(filePath),
       path: filePath,
-      size: 0
+      size: 0,
     }));
 
     const job: QueueJob = {
@@ -49,7 +49,7 @@ export class JobService {
       message: 'In coda',
       createdAt: now,
       updatedAt: now,
-      sourcePaths: [...payload.filePaths]
+      sourcePaths: [...payload.filePaths],
     };
 
     this.jobs.set(job.id, job);
@@ -89,7 +89,7 @@ export class JobService {
           format: settings.outputFormat,
           compression: settings.compression,
           tempDir,
-          onProgress: (progress, message) => this.emitProgress(job, progress, message, outputPath)
+          onProgress: (progress, message) => this.emitProgress(job, progress, message, outputPath),
         });
         await this.updateStatus(job, 'completed', 100, 'Completato', [output]);
       } else {
@@ -98,7 +98,8 @@ export class JobService {
           format: settings.outputFormat,
           compression: settings.compression,
           outputDir,
-          onProgress: (progress, message, outputPath) => this.emitProgress(job, progress, message, outputPath)
+          onProgress: (progress, message, outputPath) =>
+            this.emitProgress(job, progress, message, outputPath),
         });
         await this.updateStatus(job, 'completed', 100, 'Completato', outputs);
       }
@@ -119,7 +120,7 @@ export class JobService {
     progress: number,
     message: string,
     outputPaths: string[] = job.outputPaths,
-    error?: string
+    error?: string,
   ): Promise<void> {
     job.status = status;
     job.progress = progress;
@@ -136,7 +137,7 @@ export class JobService {
     progress: number,
     message: string,
     outputPath?: string,
-    error?: string
+    error?: string,
   ): void {
     const payload: JobProgressPayload = {
       jobId: job.id,
@@ -144,7 +145,7 @@ export class JobService {
       progress,
       message,
       outputPath,
-      error
+      error,
     };
 
     job.progress = progress;
@@ -171,7 +172,7 @@ export class JobService {
       message: job.message,
       createdAt: job.createdAt,
       updatedAt: job.updatedAt,
-      error: job.error
+      error: job.error,
     };
   }
 }

@@ -23,8 +23,8 @@ const createWindow = async (): Promise<void> => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
-    }
+      nodeIntegration: false,
+    },
   });
 
   const storageService = new StorageService();
