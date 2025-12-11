@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import type { CompressionPreset, ConversionSettings, Job, JobProgressPayload, JobType, OutputFormat } from '../../shared/types';
 import { api } from '../services/ipc';
 
@@ -38,19 +38,27 @@ export const useAppStore = create<AppState>((set, get) => ({
   loaded: false,
 
   refreshJobs: async () => {
-    const jobs = await api.getJobs();
-    set({ jobs, loaded: true });
+    try {
+      const jobs = await api.getJobs();
+      set({ jobs, loaded: true });
+    } catch {
+      set({ loaded: true, jobs: [] });
+    }
   },
 
   selectVideoFiles: async () => {
-    const files = await api.selectVideoFiles();
-    const nextFiles = [...get().selectedFiles];
-    files.forEach((f) => {
-      if (!nextFiles.some((existing) => existing.path === f.path)) {
-        nextFiles.push(f);
-      }
-    });
-    set({ selectedFiles: nextFiles });
+    try {
+      const files = await api.selectVideoFiles();
+      const nextFiles = [...get().selectedFiles];
+      files.forEach((f) => {
+        if (!nextFiles.some((existing) => existing.path === f.path)) {
+          nextFiles.push(f);
+        }
+      });
+      set({ selectedFiles: nextFiles });
+    } catch {
+      // no-op: il bridge Electron potrebbe non essere disponibile in questa fase
+    }
   },
 
   setJobType: (type) => set({ jobType: type }),
@@ -73,14 +81,18 @@ export const useAppStore = create<AppState>((set, get) => ({
       settings
     };
 
-    const job =
-      jobType === 'single' ? await api.createSingleJob(payload) : await api.createBulkJob(payload);
+    try {
+      const job =
+        jobType === 'single' ? await api.createSingleJob(payload) : await api.createBulkJob(payload);
 
-    set({
-      jobs: [job, ...get().jobs],
-      selectedFiles: [],
-      loading: false
-    });
+      set({
+        jobs: [job, ...get().jobs],
+        selectedFiles: [],
+        loading: false
+      });
+    } catch {
+      set({ loading: false });
+    }
   },
 
   upsertJobProgress: (payload) => {
@@ -94,9 +106,10 @@ export const useAppStore = create<AppState>((set, get) => ({
                 status: payload.status,
                 progress: payload.progress,
                 message: payload.message,
-                outputPaths: payload.outputPath && !job.outputPaths.includes(payload.outputPath)
-                  ? [...job.outputPaths, payload.outputPath]
-                  : job.outputPaths,
+                outputPaths:
+                  payload.outputPath && !job.outputPaths.includes(payload.outputPath)
+                    ? [...job.outputPaths, payload.outputPath]
+                    : job.outputPaths,
                 error: payload.error
               }
             : job

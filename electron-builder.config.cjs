@@ -1,4 +1,4 @@
-﻿module.exports = {
+module.exports = {
   appId: 'com.videomerger.desktop',
   productName: 'VideoMerger',
   directories: {
@@ -7,6 +7,7 @@
   },
   files: [
     'dist/main/**/*',
+    'dist/shared/**/*',
     'dist/renderer/**/*',
     'package.json'
   ],

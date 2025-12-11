@@ -1,4 +1,4 @@
-﻿import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { api } from '../services/ipc';
 import { useAppStore } from '../store/use-app-store';
 

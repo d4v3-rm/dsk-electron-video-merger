@@ -7,9 +7,12 @@ import { FilePickerService } from './services/file-picker.service';
 import { FfmpegService } from './services/ffmpeg.service';
 
 const APP_NAME = 'VideoMerger';
+const DEFAULT_DEV_SERVER_URL = 'http://127.0.0.1:5173';
 
 let mainWindow: BrowserWindow | null = null;
 let jobService: JobService | null = null;
+
+const getDevServerUrl = (): string => process.env.VITE_DEV_SERVER_URL ?? DEFAULT_DEV_SERVER_URL;
 
 const createWindow = async (): Promise<void> => {
   mainWindow = new BrowserWindow({
@@ -32,7 +35,7 @@ const createWindow = async (): Promise<void> => {
 
   const isDev = !app.isPackaged;
   if (isDev) {
-    await mainWindow.loadURL('http://127.0.0.1:5173');
+    await mainWindow.loadURL(getDevServerUrl());
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   } else {
     const htmlPath = path.resolve(__dirname, '../renderer/index.html');
@@ -60,4 +63,3 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
