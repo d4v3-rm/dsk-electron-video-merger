@@ -1,6 +1,29 @@
-﻿import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
-import { IPC_CHANNELS } from '../shared/ipc';
+import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
+import path from 'node:path';
+import { createRequire } from 'node:module';
 import type { JobCreationPayload, JobProgressPayload } from '../shared/types';
+
+const fallbackChannels = {
+  filesPick: 'videos:pick',
+  jobsCreateSingle: 'jobs:create:single',
+  jobsCreateBulk: 'jobs:create:bulk',
+  jobsList: 'jobs:list',
+  jobsProgress: 'jobs:progress',
+} as const;
+
+type IpcChannels = typeof fallbackChannels;
+
+const requireFromMainDir = createRequire(path.join(__filename, '../'));
+const loadIpcChannels = (): IpcChannels => {
+  try {
+    const loaded = requireFromMainDir('../shared/ipc');
+    return loaded.IPC_CHANNELS as IpcChannels;
+  } catch {
+    return fallbackChannels;
+  }
+};
+
+const IPC_CHANNELS = loadIpcChannels();
 
 contextBridge.exposeInMainWorld('electronAPI', {
   selectVideoFiles: () => ipcRenderer.invoke(IPC_CHANNELS.filesPick),
