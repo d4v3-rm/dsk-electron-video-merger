@@ -36,7 +36,7 @@ const createWindow = async (): Promise<void> => {
   const isDev = !app.isPackaged;
   if (isDev) {
     await mainWindow.loadURL(getDevServerUrl());
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.webContents.openDevTools({ mode: 'right' });
   } else {
     const htmlPath = path.resolve(__dirname, '../renderer/index.html');
     await mainWindow.loadFile(htmlPath);
