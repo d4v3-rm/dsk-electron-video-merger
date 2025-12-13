@@ -1,48 +1,126 @@
-﻿:root {
-  --bg-start: #0f172a;
-  --bg-end: #111827;
+:root {
+  --panel-bg: rgba(255, 255, 255, 0.88);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html,
 body,
 #root {
-  margin: 0;
   width: 100%;
   min-height: 100%;
+  margin: 0;
 }
 
 body {
+  min-height: 100vh;
+  color: #0f172a;
   font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
-  color: #e2e8f0;
-  background: radial-gradient(circle at top, var(--bg-start), var(--bg-end));
+  background: radial-gradient(circle at top, #0f172a 0%, #111827 45%, #020617 100%);
 }
 
 .app-shell {
   min-height: 100vh;
-  background: transparent;
 }
 
 .app-header {
-  background: rgba(15, 23, 42, 0.9);
-  color: #e2e8f0;
+  background: rgba(9, 21, 39, 0.9) !important;
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 24px;
+  line-height: normal;
+}
+
+.header-content {
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.app-brand .ant-avatar {
+  background: linear-gradient(130deg, #1890ff, #5b8def);
+}
+
+.app-title {
+  color: #f8fafc !important;
+  margin: 0 !important;
+  line-height: 1.2;
 }
 
 .app-content {
   padding: 24px;
-  display: grid;
-  gap: 20px;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.job-stats {
+  margin-bottom: 4px;
+}
+
+.modern-card {
+  height: 100%;
+  border-radius: 16px !important;
+  background: var(--panel-bg) !important;
+}
+
+.stat-card {
+  border-radius: 14px !important;
+  border: none !important;
+  background: var(--panel-bg) !important;
+  height: 100%;
+}
+
+.composer-summary {
+  margin: 8px 0;
+}
+
+.selected-file-path {
+  margin: 0;
+  max-width: 300px;
+}
+
+.selected-file-size {
+  font-size: 12px;
+}
+
+.loading-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  border-radius: 16px;
+  background: var(--panel-bg);
+  min-height: 380px;
 }
 
 .app-footer {
-  color: rgba(226, 232, 240, 0.7);
+  text-align: center;
   background: transparent;
+  color: rgba(248, 250, 252, 0.78);
 }
 
-.job-title {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: center;
+@media (max-width: 768px) {
+  .app-content {
+    padding: 16px;
+  }
+
+  .app-footer {
+    font-size: 12px;
+  }
 }
