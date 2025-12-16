@@ -1,5 +1,37 @@
 :root {
-  --panel-bg: rgba(255, 255, 255, 0.88);
+  --app-bg-start: #0f172a;
+  --app-bg-end: #020617;
+  --app-text: #e2e8f0;
+  --app-text-secondary: rgba(226, 232, 240, 0.78);
+  --header-bg: rgba(9, 21, 39, 0.9);
+  --header-border: rgba(255, 255, 255, 0.08);
+  --panel-bg: rgba(15, 23, 42, 0.84);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --footer-text: rgba(248, 250, 252, 0.78);
+}
+
+:root[data-theme='light'] {
+  --app-bg-start: #f4f7ff;
+  --app-bg-end: #dbe6ff;
+  --app-text: #111827;
+  --app-text-secondary: rgba(15, 23, 42, 0.75);
+  --header-bg: rgba(255, 255, 255, 0.84);
+  --header-border: rgba(15, 23, 42, 0.12);
+  --panel-bg: rgba(255, 255, 255, 0.94);
+  --panel-border: rgba(15, 23, 42, 0.1);
+  --footer-text: rgba(15, 23, 42, 0.7);
+}
+
+:root[data-theme='dark'] {
+  --app-bg-start: #0f172a;
+  --app-bg-end: #020617;
+  --app-text: #e2e8f0;
+  --app-text-secondary: rgba(226, 232, 240, 0.78);
+  --header-bg: rgba(9, 21, 39, 0.9);
+  --header-border: rgba(255, 255, 255, 0.08);
+  --panel-bg: rgba(15, 23, 42, 0.84);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --footer-text: rgba(248, 250, 252, 0.78);
 }
 
 * {
@@ -16,9 +48,9 @@ body,
 
 body {
   min-height: 100vh;
-  color: #0f172a;
+  color: var(--app-text);
   font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
-  background: radial-gradient(circle at top, #0f172a 0%, #111827 45%, #020617 100%);
+  background: radial-gradient(circle at top, var(--app-bg-start) 0%, var(--app-bg-end) 45%, #020617 100%);
 }
 
 .app-shell {
@@ -26,9 +58,9 @@ body {
 }
 
 .app-header {
-  background: rgba(9, 21, 39, 0.9) !important;
+  background: var(--header-bg) !important;
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--header-border);
   padding: 0 24px;
   line-height: normal;
 }
@@ -55,7 +87,7 @@ body {
 }
 
 .app-title {
-  color: #f8fafc !important;
+  color: var(--app-text) !important;
   margin: 0 !important;
   line-height: 1.2;
 }
@@ -77,11 +109,12 @@ body {
   height: 100%;
   border-radius: 16px !important;
   background: var(--panel-bg) !important;
+  border: 1px solid var(--panel-border) !important;
 }
 
 .stat-card {
   border-radius: 14px !important;
-  border: none !important;
+  border: 1px solid var(--panel-border) !important;
   background: var(--panel-bg) !important;
   height: 100%;
 }
@@ -107,12 +140,13 @@ body {
   border-radius: 16px;
   background: var(--panel-bg);
   min-height: 380px;
+  border: 1px solid var(--panel-border);
 }
 
 .app-footer {
   text-align: center;
   background: transparent;
-  color: rgba(248, 250, 252, 0.78);
+  color: var(--footer-text);
 }
 
 @media (max-width: 768px) {

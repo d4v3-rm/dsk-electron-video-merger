@@ -1,10 +1,11 @@
-import { Avatar, Col, Layout, Row, Spin, Tag, Typography } from 'antd';
+import { Avatar, Col, Layout, Row, Spin, Tag, Typography, Space } from 'antd';
 import { DashboardOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useAppStore } from './store/use-app-store';
 import { JobBoard } from './components/JobBoard';
 import { JobComposer } from './components/JobComposer';
 import { JobStats } from './components/JobStats';
+import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useJobProgress } from './hooks/use-job-progress';
 
 const { Header, Content, Footer } = Layout;
@@ -31,7 +32,10 @@ function App() {
               <Text type="secondary">Unione, conversione e compressione video in locale</Text>
             </div>
           </div>
-          <Tag color="blue">Elaborazione locale</Tag>
+          <Space>
+            <ThemeSwitcher />
+            <Tag color="blue">Elaborazione locale</Tag>
+          </Space>
         </div>
       </Header>
 
@@ -58,4 +62,3 @@ function App() {
 }
 
 export default App;
-
