@@ -22,7 +22,7 @@ const createMissingBridgeError = (): Error =>
   );
 
 const noOpUnsubscribe = (): void => {
-  // Intenzionalmente vuoto: fallback sicuro quando il renderer non � ospitato da Electron.
+  // Fallback sicuro quando il renderer non e ospitato da Electron.
 };
 
 const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {

@@ -1,29 +1,15 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
-import path from 'node:path';
-import { createRequire } from 'node:module';
+import type { IpcChannels } from '../shared/ipc';
 import type { JobCreationPayload, JobProgressPayload } from '../shared/types';
 
-const fallbackChannels = {
+// Keep the preload self-contained so it works with Electron's sandboxed preload runtime.
+const IPC_CHANNELS: IpcChannels = {
   filesPick: 'videos:pick',
   jobsCreateSingle: 'jobs:create:single',
   jobsCreateBulk: 'jobs:create:bulk',
   jobsList: 'jobs:list',
   jobsProgress: 'jobs:progress',
-} as const;
-
-type IpcChannels = typeof fallbackChannels;
-
-const requireFromMainDir = createRequire(path.join(__filename, '../'));
-const loadIpcChannels = (): IpcChannels => {
-  try {
-    const loaded = requireFromMainDir('../shared/ipc');
-    return loaded.IPC_CHANNELS as IpcChannels;
-  } catch {
-    return fallbackChannels;
-  }
 };
-
-const IPC_CHANNELS = loadIpcChannels();
 
 contextBridge.exposeInMainWorld('electronAPI', {
   selectVideoFiles: () => ipcRenderer.invoke(IPC_CHANNELS.filesPick),
@@ -35,7 +21,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const listener = (_event: IpcRendererEvent, payload: JobProgressPayload) => {
       callback(payload);
     };
+
     ipcRenderer.on(IPC_CHANNELS.jobsProgress, listener);
+
     return () => {
       ipcRenderer.removeListener(IPC_CHANNELS.jobsProgress, listener);
     };

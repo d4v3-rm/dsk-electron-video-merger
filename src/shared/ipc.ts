@@ -1,4 +1,4 @@
-﻿export const IPC_CHANNELS = {
+export const IPC_CHANNELS = {
   filesPick: 'videos:pick',
   jobsCreateSingle: 'jobs:create:single',
   jobsCreateBulk: 'jobs:create:bulk',
@@ -6,4 +6,5 @@
   jobsProgress: 'jobs:progress',
 } as const;
 
-export type IpcChannel = keyof typeof IPC_CHANNELS;
+export type IpcChannels = typeof IPC_CHANNELS;
+export type IpcChannel = keyof IpcChannels;

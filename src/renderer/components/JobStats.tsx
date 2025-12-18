@@ -27,12 +27,12 @@ export const JobStats = ({ jobs }: Props) => {
     <div className="job-stats">
       <Row gutter={[16, 16]}>
         <Col xs={12} md={6}>
-          <Card className="stat-card" bordered={false}>
+          <Card className="stat-card" variant="borderless">
             <Statistic title="Totale job" value={total} prefix={<BarChartOutlined />} />
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card className="stat-card" bordered={false}>
+          <Card className="stat-card" variant="borderless">
             <Space direction="vertical" size={0}>
               <Text type="secondary">In coda</Text>
               <Statistic value={queued} valueStyle={{ color: '#1890ff' }} prefix={<ClockCircleOutlined />} />
@@ -41,7 +41,7 @@ export const JobStats = ({ jobs }: Props) => {
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card className="stat-card" bordered={false}>
+          <Card className="stat-card" variant="borderless">
             <Space direction="vertical" size={0}>
               <Text type="secondary">In elaborazione</Text>
               <Statistic value={running} valueStyle={{ color: '#13c2c2' }} prefix={<LoadingOutlined />} />
@@ -50,14 +50,20 @@ export const JobStats = ({ jobs }: Props) => {
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card className="stat-card" bordered={false}>
+          <Card className="stat-card" variant="borderless">
             <Space direction="vertical" size={0}>
               <Text type="secondary">Completati / Errori</Text>
               <Space size="small">
-                <Statistic value={completed} valueStyle={{ color: '#52c41a' }} prefix={<CheckCircleOutlined />} />
+                <Statistic
+                  value={completed}
+                  valueStyle={{ color: '#52c41a' }}
+                  prefix={<CheckCircleOutlined />}
+                />
                 <Statistic value={error} valueStyle={{ color: '#ff4d4f' }} prefix={<WarningOutlined />} />
               </Space>
-              <Text type="secondary">{total === 0 ? '0%' : `${toPercent(completed, total)}% completati`}</Text>
+              <Text type="secondary">
+                {total === 0 ? '0%' : `${toPercent(completed, total)}% completati`}
+              </Text>
             </Space>
           </Card>
         </Col>

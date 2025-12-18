@@ -8,6 +8,7 @@ const devPort = Number.isNaN(parsedPort) ? 5173 : parsedPort;
 
 export default defineConfig({
   root: __dirname,
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {
@@ -23,5 +24,6 @@ export default defineConfig({
     outDir: path.resolve(__dirname, '../../dist/renderer'),
     emptyOutDir: true,
     sourcemap: true,
+    chunkSizeWarningLimit: 1200,
   },
 });

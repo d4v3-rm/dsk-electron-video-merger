@@ -1,4 +1,4 @@
-import { Avatar, Col, Layout, Row, Spin, Tag, Typography, Space } from 'antd';
+import { Avatar, Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { DashboardOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useAppStore } from './store/use-app-store';
@@ -34,7 +34,7 @@ function App() {
           </div>
           <Space>
             <ThemeSwitcher />
-            <Tag color="blue">Elaborazione locale</Tag>
+            <Text className="status-badge">Elaborazione locale</Text>
           </Space>
         </div>
       </Header>
@@ -48,14 +48,25 @@ function App() {
               <JobComposer />
             </Col>
             <Col xs={24} lg={16}>
-              {loaded ? <JobBoard /> : <Spin className="loading-card" size="large" tip="Caricamento coda job..." />}
+              {loaded ? (
+                <JobBoard />
+              ) : (
+                <div className="loading-card">
+                  <Space direction="vertical" size="middle" align="center">
+                    <Spin size="large" />
+                    <Text type="secondary">Caricamento coda job...</Text>
+                  </Space>
+                </div>
+              )}
             </Col>
           </Row>
         </div>
       </Content>
 
       <Footer className="app-footer">
-        <Text type="secondary">Pipeline interamente locale: job singolo o batch, conversione e compressione in Electron.</Text>
+        <Text type="secondary">
+          Pipeline interamente locale: job singolo o batch, conversione e compressione in Electron.
+        </Text>
       </Footer>
     </Layout>
   );
