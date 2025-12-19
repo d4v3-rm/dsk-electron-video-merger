@@ -1,12 +1,8 @@
-﻿declare global {
+declare global {
   interface Window {
     electronAPI: {
       selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
-      createSingleJob: (payload: {
-        filePaths: string[];
-        settings: import('../../shared/types').ConversionSettings;
-      }) => Promise<import('../../shared/types').Job>;
-      createBulkJob: (payload: {
+      createJob: (payload: {
         filePaths: string[];
         settings: import('../../shared/types').ConversionSettings;
       }) => Promise<import('../../shared/types').Job>;

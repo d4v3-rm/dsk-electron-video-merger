@@ -1,5 +1,11 @@
-import { Alert, Button, Card, Divider, Flex, Form, List, Select, Segmented, Space, Tag, Typography } from 'antd';
-import { DeleteOutlined, PlayCircleOutlined, UploadOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Divider, Flex, Form, List, Select, Space, Tag, Typography } from 'antd';
+import {
+  DeleteOutlined,
+  LinkOutlined,
+  PlayCircleOutlined,
+  UploadOutlined,
+  VideoCameraAddOutlined,
+} from '@ant-design/icons';
 import { useMemo } from 'react';
 import { useAppStore } from '../store/use-app-store';
 
@@ -22,10 +28,8 @@ const formatBytes = (size: number): string => {
 export const JobComposer = () => {
   const {
     selectedFiles,
-    jobType,
     settings,
     loading,
-    setJobType,
     setCompression,
     setOutputFormat,
     selectVideoFiles,
@@ -43,29 +47,15 @@ export const JobComposer = () => {
   }, [selectedFiles]);
 
   return (
-    <Card
-      title="Nuovo processo"
-      className="modern-card"
-      extra={<Tag color={jobType === 'bulk' ? 'processing' : 'default'}>{jobType === 'bulk' ? 'Batch' : 'Singolo'}</Tag>}
-    >
-      <Title level={5}>1. Carica file e configura il job</Title>
-      <Text type="secondary">Seleziona i video e scegli una modalità di lavoro.</Text>
+    <Card title="Nuovo merge" className="modern-card" extra={<Tag color="processing">Output unico</Tag>}>
+      <Title level={5}>1. Scegli i video da concatenare</Title>
+      <Text type="secondary">
+        Seleziona i file nell'ordine desiderato. Il processo genera un solo file finale.
+      </Text>
 
       <Divider style={{ marginTop: 16, marginBottom: 16 }} />
 
       <Form layout="vertical">
-        <Form.Item label="Modalità di elaborazione">
-          <Segmented
-            block
-            value={jobType}
-            onChange={setJobType}
-            options={[
-              { value: 'single', label: 'Job singolo' },
-              { value: 'bulk', label: 'Batch massivo' },
-            ]}
-          />
-        </Form.Item>
-
         <Form.Item label="Formato in uscita">
           <Select
             value={settings.outputFormat}
@@ -91,12 +81,7 @@ export const JobComposer = () => {
       </Form>
 
       <Space size="middle" wrap>
-        <Button
-          icon={<UploadOutlined />}
-          onClick={selectVideoFiles}
-          size="large"
-          style={{ minWidth: 180 }}
-        >
+        <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large" style={{ minWidth: 180 }}>
           Seleziona file
         </Button>
         <Button
@@ -108,7 +93,7 @@ export const JobComposer = () => {
           style={{ minWidth: 170 }}
           onClick={createJob}
         >
-          Avvia {jobType === 'single' ? 'job singolo' : 'batch'}
+          Avvia merge
         </Button>
       </Space>
 
@@ -118,7 +103,11 @@ export const JobComposer = () => {
           <Text strong>{selectedStats.totalFiles} file</Text>
           <Text type="secondary">{selectedStats.totalSize}</Text>
         </Space>
-        {selectedFiles.length > 0 ? <Tag icon={<VideoCameraAddOutlined />}>Pronti</Tag> : <Tag>Seleziona file per iniziare</Tag>}
+        {selectedFiles.length > 0 ? (
+          <Tag icon={<VideoCameraAddOutlined />}>Merge pronto</Tag>
+        ) : (
+          <Tag>Seleziona file per iniziare</Tag>
+        )}
       </Flex>
 
       {selectedFiles.length === 0 ? (
@@ -126,14 +115,14 @@ export const JobComposer = () => {
           type="info"
           showIcon
           message="Nessun file selezionato"
-          description="Aggiungi almeno un video prima di avviare un processo."
+          description="Aggiungi almeno un video per creare un unico output concatenato."
         />
       ) : (
         <List
           dataSource={selectedFiles}
           header={<Text type="secondary">File selezionati</Text>}
           bordered
-          renderItem={(item) => (
+          renderItem={(item, index) => (
             <List.Item
               actions={[
                 <Button
@@ -146,6 +135,7 @@ export const JobComposer = () => {
               ]}
             >
               <List.Item.Meta
+                avatar={<Tag bordered={false}>{index + 1}</Tag>}
                 title={<Text ellipsis={{ tooltip: item.name }}>{item.name}</Text>}
                 description={
                   <Flex vertical>
@@ -167,7 +157,9 @@ export const JobComposer = () => {
       <Space size="middle" split={<Divider type="vertical" />}>
         <Text type="secondary">Formato: {settings.outputFormat.toUpperCase()}</Text>
         <Text type="secondary">Compressione: {settings.compression}</Text>
-        <Text type="secondary">Stato: {selectedFiles.length > 0 ? 'Pronti' : 'In attesa'}</Text>
+        <Text type="secondary">
+          <LinkOutlined /> Output: file unico
+        </Text>
       </Space>
     </Card>
   );

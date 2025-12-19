@@ -1,4 +1,3 @@
-﻿export type JobType = 'single' | 'bulk';
 export type JobStatus = 'queued' | 'running' | 'completed' | 'error';
 export type OutputFormat = 'mp4' | 'mov' | 'webm';
 export type CompressionPreset = 'light' | 'balanced' | 'strong';
@@ -17,7 +16,6 @@ export interface ConversionSettings {
 
 export interface Job {
   id: string;
-  type: JobType;
   status: JobStatus;
   files: InputFileDTO[];
   settings: ConversionSettings;

@@ -1,4 +1,4 @@
-﻿# 🎬 VideoMerger Desktop
+# ?? VideoMerger Desktop
 
 ![Electron](https://img.shields.io/badge/Electron-Desktop-47848F?logo=electron&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)
@@ -8,17 +8,17 @@
 
 > Tag: #electron #desktop #vite #react #typescript #ffmpeg #zustand #antd
 
-## ✅ Cosa cambia con questa versione
+## ? Cosa offre questa versione
 
-Questa codebase è ora **desktop-only** (niente server API separato, niente web app multiprogetto):
+Questa codebase e ora desktop-only, senza server API separato e senza web app multiprogetto.
 
-- 🎞️ Merge e conversione video in un unico processo Electron.
-- 🔧 Formato output configurabile (`mp4`, `mov`, `webm`).
-- ⚙️ Tre livelli di compressione (`light`, `balanced`, `strong`).
-- 🧭 Distinzione chiara tra job singolo e batch massivo.
-- 🚀 Build portable generata automaticamente.
+- ??? Merge, conversione e compressione video in un unico processo Electron.
+- ?? Formato output configurabile (`mp4`, `mov`, `webm`).
+- ?? Tre livelli di compressione (`light`, `balanced`, `strong`).
+- ?? Un solo flusso operativo: merge locale con output unico.
+- ?? Build portable generata automaticamente.
 
-## 🧩 Architettura proposta
+## ?? Architettura proposta
 
 - `src/main`
   - `main.ts`: avvio Electron.
@@ -35,7 +35,7 @@ Questa codebase è ora **desktop-only** (niente server API separato, niente web 
 - `src/shared`
   - Tipi condivisi IPC e job.
 
-## ⚙️ Setup rapido
+## ?? Setup rapido
 
 ### Requisiti
 
@@ -67,31 +67,27 @@ Output in `dist/packaged` con file:
 
 - `VideoMerger-<version>-portable.exe`
 
-## 🧪 Differenza job singolo vs batch
+## ?? Come funziona il merge
 
-### Job singolo
+- Selezioni uno o piu file video.
+- L'app concatena gli input nell'ordine scelto.
+- Il risultato viene ricodificato con formato e compressione configurati.
+- Ogni job produce un solo file finale nella cartella output dell'app.
 
-Unisce tutti i file selezionati in un unico output.
-
-### Job massivo
-
-Processa più file in parallelo concettuale: in questo progetto i file sono accodati in modo sequenziale per stabilità, ognuno con output dedicato.
-
-## 🧼 Qualità codebase
+## ?? Qualita codebase
 
 - Struttura a layer chiara
 - Niente file monolitici
 - Pipeline job separata da rendering
 - Aggiornamenti realtime via eventi IPC
 
-## 🧪 Test
+## ?? Test
 
 Nessun test automatico, come richiesto.
 
-## 🔧 Lint e format
+## ?? Lint e format
 
 ```bash
 npm run lint
 npm run format
 ```
-

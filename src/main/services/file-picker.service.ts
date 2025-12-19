@@ -1,4 +1,4 @@
-﻿import { dialog } from 'electron';
+import { dialog } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -12,7 +12,7 @@ export interface VideoChoice {
 export class FilePickerService {
   async pickVideos(): Promise<VideoChoice[]> {
     const result = await dialog.showOpenDialog({
-      title: 'Seleziona uno o più video',
+      title: 'Seleziona uno o piu video',
       properties: ['openFile', 'multiSelections'],
       filters: [
         {

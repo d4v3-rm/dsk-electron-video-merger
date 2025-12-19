@@ -4,7 +4,6 @@ import type {
   ConversionSettings,
   Job,
   JobProgressPayload,
-  JobType,
   OutputFormat,
 } from '../../shared/types';
 import { api } from '../services/ipc';
@@ -19,13 +18,11 @@ export type SelectedVideo = {
 interface AppState {
   selectedFiles: SelectedVideo[];
   jobs: Job[];
-  jobType: JobType;
   settings: ConversionSettings;
   loading: boolean;
   loaded: boolean;
   refreshJobs: () => Promise<void>;
   selectVideoFiles: () => Promise<void>;
-  setJobType: (type: JobType) => void;
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
   removeSelectedFile: (id: string) => void;
@@ -36,7 +33,6 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   selectedFiles: [],
   jobs: [],
-  jobType: 'single',
   settings: {
     outputFormat: 'mp4',
     compression: 'balanced',
@@ -57,9 +53,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     try {
       const files = await api.selectVideoFiles();
       const nextFiles = [...get().selectedFiles];
-      files.forEach((f) => {
-        if (!nextFiles.some((existing) => existing.path === f.path)) {
-          nextFiles.push(f);
+      files.forEach((file) => {
+        if (!nextFiles.some((existing) => existing.path === file.path)) {
+          nextFiles.push(file);
         }
       });
       set({ selectedFiles: nextFiles });
@@ -68,29 +64,27 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  setJobType: (type) => set({ jobType: type }),
   setOutputFormat: (outputFormat) => set({ settings: { ...get().settings, outputFormat } }),
   setCompression: (compression) => set({ settings: { ...get().settings, compression } }),
 
   removeSelectedFile: (id) => {
-    set({ selectedFiles: get().selectedFiles.filter((f) => f.id !== id) });
+    set({ selectedFiles: get().selectedFiles.filter((file) => file.id !== id) });
   },
 
   createJob: async () => {
-    const { selectedFiles, jobType, settings, loading } = get();
+    const { selectedFiles, settings, loading } = get();
     if (selectedFiles.length === 0 || loading) {
       return;
     }
 
     set({ loading: true });
     const payload = {
-      filePaths: selectedFiles.map((f) => f.path),
+      filePaths: selectedFiles.map((file) => file.path),
       settings,
     };
 
     try {
-      const job =
-        jobType === 'single' ? await api.createSingleJob(payload) : await api.createBulkJob(payload);
+      const job = await api.createJob(payload);
 
       set({
         jobs: [job, ...get().jobs],

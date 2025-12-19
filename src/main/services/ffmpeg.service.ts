@@ -1,5 +1,5 @@
-﻿import path from 'node:path';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { spawn } from 'node:child_process';
 import ffmpegPath from 'ffmpeg-static';
 import type { CompressionPreset, OutputFormat } from '../../shared/types';
@@ -72,11 +72,15 @@ export class FfmpegService {
     tempDir: string;
     onProgress: JobProgressCallback;
   }): Promise<string> {
+    if (inputPaths.length === 0) {
+      throw new Error('Il merge richiede almeno un file input.');
+    }
+
     const intermediateOutput = path.join(tempDir, `merged-${Date.now()}.mp4`);
 
     if (inputPaths.length > 1) {
       const concatFile = path.join(tempDir, 'concat-input.txt');
-      const content = inputPaths.map((f) => `file '${f.replace(/'/g, "'\\''")}'`).join('\n');
+      const content = inputPaths.map((filePath) => `file '${filePath.replace(/'/g, "'\\''")}'`).join('\n');
       await fs.writeFile(concatFile, content, 'utf8');
       await this.runFfMpeg(
         ['-y', '-f', 'concat', '-safe', '0', '-i', concatFile, '-c', 'copy', intermediateOutput],
@@ -98,46 +102,6 @@ export class FfmpegService {
     ];
     await this.runFfMpeg(args, onProgress);
     return outputPath;
-  }
-
-  async processBulk({
-    inputPaths,
-    format,
-    compression,
-    outputDir,
-    onProgress,
-  }: {
-    inputPaths: string[];
-    format: OutputFormat;
-    compression: CompressionPreset;
-    outputDir: string;
-    onProgress: JobProgressCallback;
-  }): Promise<string[]> {
-    const results: string[] = [];
-
-    for (let i = 0; i < inputPaths.length; i += 1) {
-      const source = inputPaths[i];
-      const baseName = path.basename(source, path.extname(source));
-      const encoder = CODEC_BY_FORMAT[format];
-      const destination = path.join(outputDir, `${baseName}.${encoder.ext}`);
-
-      const args = [
-        '-y',
-        '-i',
-        source,
-        ...encoder.formatArgs,
-        '-crf',
-        CRF_BY_PRESET[compression],
-        destination,
-      ];
-      await this.runFfMpeg(args, (p, m) => {
-        const itemProgress = Math.round((i / inputPaths.length) * 100 + p * (1 / inputPaths.length));
-        onProgress(itemProgress, `${m} (${baseName})`, destination);
-      });
-      results.push(destination);
-    }
-
-    return results;
   }
 
   private async runFfMpeg(args: string[], onProgress: JobProgressCallback): Promise<void> {

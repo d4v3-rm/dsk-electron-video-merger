@@ -1,10 +1,10 @@
-﻿import type { BrowserWindow } from 'electron';
+import type { BrowserWindow } from 'electron';
 import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 import { IPC_CHANNELS } from '../../shared/ipc';
 import type { Job, JobCreationPayload, JobProgressPayload, JobStatus } from '../../shared/types';
 import { FfmpegService } from './ffmpeg.service';
 import { StorageService } from './storage.service';
-import path from 'node:path';
 
 interface QueueJob extends Job {
   sourcePaths: string[];
@@ -29,9 +29,14 @@ export class JobService {
     return Array.from(this.jobs.values()).sort((a, b) => b.createdAt - a.createdAt);
   }
 
-  async createJob(type: 'single' | 'bulk', payload: JobCreationPayload): Promise<Job> {
+  async createJob(payload: JobCreationPayload): Promise<Job> {
+    const sourcePaths = [...new Set(payload.filePaths)];
+    if (sourcePaths.length === 0) {
+      throw new Error('Seleziona almeno un file video prima di avviare il merge.');
+    }
+
     const now = Date.now();
-    const files = payload.filePaths.map((filePath) => ({
+    const files = sourcePaths.map((filePath) => ({
       id: filePath,
       name: path.basename(filePath),
       path: filePath,
@@ -40,7 +45,6 @@ export class JobService {
 
     const job: QueueJob = {
       id: randomUUID(),
-      type,
       status: 'queued',
       files,
       settings: payload.settings,
@@ -49,7 +53,7 @@ export class JobService {
       message: 'In coda',
       createdAt: now,
       updatedAt: now,
-      sourcePaths: [...payload.filePaths],
+      sourcePaths,
     };
 
     this.jobs.set(job.id, job);
@@ -75,43 +79,36 @@ export class JobService {
     }
 
     this.running = true;
-    await this.updateStatus(job, 'running', 5, 'Avvio elaborazione');
+    let tempDir: string | null = null;
 
     try {
-      const { outputDir, tempDir } = await this.storageService.buildJobFolders(job.id);
-      const { settings } = job;
+      await this.updateStatus(job, 'running', 5, 'Avvio merge');
 
-      if (job.type === 'single') {
-        const outputPath = path.join(outputDir, `merged-${Date.now()}.${settings.outputFormat}`);
-        const output = await this.ffmpegService.processSingleMerge({
-          inputPaths: job.sourcePaths,
-          outputPath,
-          format: settings.outputFormat,
-          compression: settings.compression,
-          tempDir,
-          onProgress: (progress, message) => this.emitProgress(job, progress, message, outputPath),
-        });
-        await this.updateStatus(job, 'completed', 100, 'Completato', [output]);
-      } else {
-        const outputs = await this.ffmpegService.processBulk({
-          inputPaths: job.sourcePaths,
-          format: settings.outputFormat,
-          compression: settings.compression,
-          outputDir,
-          onProgress: (progress, message, outputPath) =>
-            this.emitProgress(job, progress, message, outputPath),
-        });
-        await this.updateStatus(job, 'completed', 100, 'Completato', outputs);
-      }
+      const { outputDir, tempDir: nextTempDir } = await this.storageService.buildJobFolders(job.id);
+      tempDir = nextTempDir;
+      const outputPath = path.join(outputDir, `merged-${Date.now()}.${job.settings.outputFormat}`);
+      const output = await this.ffmpegService.processSingleMerge({
+        inputPaths: job.sourcePaths,
+        outputPath,
+        format: job.settings.outputFormat,
+        compression: job.settings.compression,
+        tempDir,
+        onProgress: (progress, message) => this.emitProgress(job, progress, message, outputPath),
+      });
 
-      await this.storageService.cleanTempFolder(tempDir);
+      await this.updateStatus(job, 'completed', 100, 'Completato', [output]);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Errore imprevisto';
       await this.updateStatus(job, 'error', job.progress, message, job.outputPaths, message);
-    }
+    } finally {
+      this.running = false;
 
-    this.running = false;
-    await this.processQueue();
+      if (tempDir) {
+        await this.storageService.cleanTempFolder(tempDir);
+      }
+
+      await this.processQueue();
+    }
   }
 
   private async updateStatus(
@@ -163,7 +160,6 @@ export class JobService {
   private stripInternal(job: QueueJob): Job {
     return {
       id: job.id,
-      type: job.type,
       status: job.status,
       files: job.files,
       settings: job.settings,

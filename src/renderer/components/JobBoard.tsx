@@ -52,25 +52,27 @@ const toProgressStatus = (status: Job['status']): 'active' | 'success' | 'except
 
 const toFormatLabel = (format: Job['settings']['outputFormat']) => format.toUpperCase();
 
-const formatFiles = (files: Job['files']) => <Text>{files.length} file{files.length === 1 ? '' : 's'}</Text>;
+const formatFiles = (files: Job['files']) => (
+  <Text>
+    {files.length} file{files.length === 1 ? '' : 's'}
+  </Text>
+);
+
+const getFileName = (filePath: string): string => {
+  const normalized = filePath.replace(/\\/g, '/');
+  return normalized.split('/').at(-1) ?? filePath;
+};
 
 export const JobBoard = () => {
   const jobs = useAppStore((state) => state.jobs);
 
   const columns: ColumnsType<Job> = [
     {
-      title: 'Job',
+      title: 'Merge',
       dataIndex: 'id',
       key: 'id',
       width: 120,
       render: (id: string) => <Text code>{id.slice(0, 8)}</Text>,
-    },
-    {
-      title: 'Tipo',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type: Job['type']) => (type === 'single' ? 'Singolo' : 'Batch'),
-      width: 100,
     },
     {
       title: 'Input',
@@ -80,16 +82,29 @@ export const JobBoard = () => {
       width: 110,
     },
     {
-      title: 'Output',
+      title: 'Profilo output',
       key: 'settings',
       render: (_, job) => (
         <Space direction="vertical" size={0}>
           <Text>
-            {toFormatLabel(job.settings.outputFormat)} · {job.settings.compression}
+            {toFormatLabel(job.settings.outputFormat)} - {job.settings.compression}
           </Text>
-          <Text type="secondary">{job.outputPaths.length} file prodotti</Text>
+          <Text type="secondary">Un solo file finale</Text>
         </Space>
       ),
+      width: 180,
+    },
+    {
+      title: 'File generato',
+      dataIndex: 'outputPaths',
+      key: 'outputPaths',
+      render: (outputPaths: string[]) => {
+        if (outputPaths.length === 0) {
+          return <Text type="secondary">In generazione</Text>;
+        }
+
+        return <Text>{getFileName(outputPaths[0])}</Text>;
+      },
     },
     {
       title: 'Stato',
@@ -105,7 +120,7 @@ export const JobBoard = () => {
     {
       title: 'Avanzamento',
       key: 'progress',
-      width: 170,
+      width: 220,
       render: (_, job) => (
         <Space direction="vertical" size={1} style={{ width: '100%' }}>
           <Progress
@@ -118,22 +133,16 @@ export const JobBoard = () => {
         </Space>
       ),
     },
-    {
-      title: 'Ultimo evento',
-      dataIndex: 'message',
-      key: 'message',
-      render: (message: string) => <Text type="secondary">{message || '-'}</Text>,
-    },
   ];
 
   return (
-    <Card className="modern-card" title="Coda e cronologia" extra={<PlayCircleOutlined />}>
+    <Card className="modern-card" title="Cronologia merge" extra={<PlayCircleOutlined />}>
       <Table<Job>
         rowKey="id"
         columns={columns}
         dataSource={jobs}
         pagination={{ pageSize: 8, showSizeChanger: false }}
-        locale={{ emptyText: 'Nessun job in coda' }}
+        locale={{ emptyText: 'Nessun merge in coda' }}
         scroll={{ x: 1080 }}
       />
     </Card>

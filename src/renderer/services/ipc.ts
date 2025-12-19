@@ -2,8 +2,7 @@ import type { ConversionSettings, Job, JobProgressPayload } from '../../shared/t
 
 type RendererElectronApi = {
   selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
-  createSingleJob: (payload: { filePaths: string[]; settings: ConversionSettings }) => Promise<Job>;
-  createBulkJob: (payload: { filePaths: string[]; settings: ConversionSettings }) => Promise<Job>;
+  createJob: (payload: { filePaths: string[]; settings: ConversionSettings }) => Promise<Job>;
   getJobs: () => Promise<Job[]>;
   onJobProgress: (cb: (payload: JobProgressPayload) => void) => () => void;
 };
@@ -36,10 +35,8 @@ const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {
 
 export const api = {
   selectVideoFiles: async () => withApi((electronAPI) => electronAPI.selectVideoFiles()),
-  createSingleJob: async (payload: { filePaths: string[]; settings: ConversionSettings }) =>
-    withApi((electronAPI) => electronAPI.createSingleJob(payload)),
-  createBulkJob: async (payload: { filePaths: string[]; settings: ConversionSettings }) =>
-    withApi((electronAPI) => electronAPI.createBulkJob(payload)),
+  createJob: async (payload: { filePaths: string[]; settings: ConversionSettings }) =>
+    withApi((electronAPI) => electronAPI.createJob(payload)),
   getJobs: async () => withApi((electronAPI) => electronAPI.getJobs()),
   subscribeJobProgress: (cb: (payload: JobProgressPayload) => void) => {
     const electronAPI = getElectronAPI();
