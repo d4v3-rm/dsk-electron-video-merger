@@ -1,56 +1,19 @@
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  ExclamationCircleOutlined,
-  LoadingOutlined,
-  PlayCircleOutlined,
-} from '@ant-design/icons';
+import { PlayCircleOutlined } from '@ant-design/icons';
 import { Card, Progress, Space, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import type { Job } from '@shared/types';
 import { useAppStore } from '../store/use-app-store';
+import { getFileName } from '../utils/file-utils';
+import { statusColor, statusIcon, statusLabel, toProgressStatus } from '../utils/job-presentation';
+import { JobDetailsDrawer } from './JobDetailsDrawer';
 
 const { Text } = Typography;
 
-const statusLabel: Record<Job['status'], string> = {
-  queued: 'In coda',
-  running: 'In corso',
-  completed: 'Completato',
-  error: 'Errore',
-};
-
-const statusColor: Record<Job['status'], string> = {
-  queued: 'default',
-  running: 'processing',
-  completed: 'success',
-  error: 'error',
-};
-
-const statusIcon: Record<Job['status'], ReactNode> = {
-  queued: <ClockCircleOutlined />,
-  running: <LoadingOutlined />,
-  completed: <CheckCircleOutlined />,
-  error: <ExclamationCircleOutlined />,
-};
-
-const toProgressStatus = (status: Job['status']): 'active' | 'success' | 'exception' | 'normal' => {
-  if (status === 'completed') {
-    return 'success';
-  }
-
-  if (status === 'error') {
-    return 'exception';
-  }
-
-  if (status === 'running') {
-    return 'active';
-  }
-
-  return 'normal';
-};
-
-const toFormatLabel = (format: Job['settings']['outputFormat']) => format.toUpperCase();
+const dateFormatter = new Intl.DateTimeFormat('it-IT', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+});
 
 const formatFiles = (files: Job['files']) => (
   <Text>
@@ -58,13 +21,14 @@ const formatFiles = (files: Job['files']) => (
   </Text>
 );
 
-const getFileName = (filePath: string): string => {
-  const normalized = filePath.replace(/\\/g, '/');
-  return normalized.split('/').at(-1) ?? filePath;
-};
-
 export const JobBoard = () => {
   const jobs = useAppStore((state) => state.jobs);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  const selectedJob = useMemo(
+    () => jobs.find((job) => job.id === selectedJobId) ?? null,
+    [jobs, selectedJobId],
+  );
 
   const columns: ColumnsType<Job> = [
     {
@@ -82,29 +46,17 @@ export const JobBoard = () => {
       width: 110,
     },
     {
-      title: 'Profilo output',
+      title: 'Profilo',
       key: 'settings',
       render: (_, job) => (
         <Space direction="vertical" size={0}>
           <Text>
-            {toFormatLabel(job.settings.outputFormat)} - {job.settings.compression}
+            {job.settings.outputFormat.toUpperCase()} - {job.settings.compression}
           </Text>
           <Text type="secondary">Un solo file finale</Text>
         </Space>
       ),
       width: 180,
-    },
-    {
-      title: 'File generato',
-      dataIndex: 'outputPaths',
-      key: 'outputPaths',
-      render: (outputPaths: string[]) => {
-        if (outputPaths.length === 0) {
-          return <Text type="secondary">In generazione</Text>;
-        }
-
-        return <Text>{getFileName(outputPaths[0])}</Text>;
-      },
     },
     {
       title: 'Stato',
@@ -118,9 +70,16 @@ export const JobBoard = () => {
       ),
     },
     {
+      title: 'Output',
+      dataIndex: 'outputPaths',
+      key: 'outputPaths',
+      render: (outputPaths: string[]) =>
+        outputPaths[0] ? <Text>{getFileName(outputPaths[0])}</Text> : <Text type="secondary">In attesa</Text>,
+    },
+    {
       title: 'Avanzamento',
       key: 'progress',
-      width: 220,
+      width: 230,
       render: (_, job) => (
         <Space direction="vertical" size={1} style={{ width: '100%' }}>
           <Progress
@@ -133,18 +92,46 @@ export const JobBoard = () => {
         </Space>
       ),
     },
+    {
+      title: 'Aggiornato',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      width: 140,
+      render: (updatedAt: number) => <Text type="secondary">{dateFormatter.format(updatedAt)}</Text>,
+    },
   ];
 
   return (
-    <Card className="modern-card" title="Cronologia merge" extra={<PlayCircleOutlined />}>
-      <Table<Job>
-        rowKey="id"
-        columns={columns}
-        dataSource={jobs}
-        pagination={{ pageSize: 8, showSizeChanger: false }}
-        locale={{ emptyText: 'Nessun merge in coda' }}
-        scroll={{ x: 1080 }}
+    <>
+      <Card
+        className="modern-card history-card"
+        title="Cronologia merge"
+        extra={
+          <Space>
+            <Tag color="blue">Apri il dettaglio con un click</Tag>
+            <PlayCircleOutlined />
+          </Space>
+        }
+      >
+        <Table<Job>
+          rowKey="id"
+          columns={columns}
+          dataSource={jobs}
+          pagination={{ pageSize: 8, showSizeChanger: false }}
+          locale={{ emptyText: 'Nessun merge in coda' }}
+          scroll={{ x: 1120 }}
+          rowClassName="history-row"
+          onRow={(job) => ({
+            onClick: () => setSelectedJobId(job.id),
+          })}
+        />
+      </Card>
+
+      <JobDetailsDrawer
+        job={selectedJob}
+        open={Boolean(selectedJob)}
+        onClose={() => setSelectedJobId(null)}
       />
-    </Card>
+    </>
   );
 };

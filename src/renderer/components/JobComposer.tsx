@@ -1,29 +1,32 @@
-import { Alert, Button, Card, Divider, Flex, Form, List, Select, Space, Tag, Typography } from 'antd';
 import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  ClearOutlined,
   DeleteOutlined,
-  LinkOutlined,
   PlayCircleOutlined,
   UploadOutlined,
   VideoCameraAddOutlined,
 } from '@ant-design/icons';
+import {
+  Alert,
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Form,
+  List,
+  Select,
+  Space,
+  Statistic,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import { useMemo } from 'react';
 import { useAppStore } from '../store/use-app-store';
+import { formatBytes } from '../utils/file-utils';
 
 const { Text, Paragraph, Title } = Typography;
-
-const formatBytes = (size: number): string => {
-  const kilo = 1024;
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let index = 0;
-  let current = size;
-
-  while (current >= kilo && index < units.length - 1) {
-    current /= kilo;
-    index += 1;
-  }
-
-  return `${current.toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
-};
 
 export const JobComposer = () => {
   const {
@@ -33,7 +36,9 @@ export const JobComposer = () => {
     setCompression,
     setOutputFormat,
     selectVideoFiles,
+    clearSelectedFiles,
     removeSelectedFile,
+    moveSelectedFile,
     createJob,
   } = useAppStore();
 
@@ -47,119 +52,159 @@ export const JobComposer = () => {
   }, [selectedFiles]);
 
   return (
-    <Card title="Nuovo merge" className="modern-card" extra={<Tag color="processing">Output unico</Tag>}>
-      <Title level={5}>1. Scegli i video da concatenare</Title>
-      <Text type="secondary">
-        Seleziona i file nell'ordine desiderato. Il processo genera un solo file finale.
-      </Text>
+    <Card
+      title="Merge setup"
+      className="modern-card queue-card"
+      extra={<Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>Queue ordinata</Tag>}
+    >
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <div>
+          <Title level={4} className="section-title">
+            Costruisci il merge finale
+          </Title>
+          <Text type="secondary">
+            Definisci l&apos;ordine dei clip, scegli il profilo di esportazione e lancia il master.
+          </Text>
+        </div>
 
-      <Divider style={{ marginTop: 16, marginBottom: 16 }} />
+        <Alert type="info" showIcon message="L'ordine della lista e` l'ordine reale del video finale." />
 
-      <Form layout="vertical">
-        <Form.Item label="Formato in uscita">
-          <Select
-            value={settings.outputFormat}
-            onChange={setOutputFormat}
-            options={['mp4', 'mov', 'webm'].map((value) => ({
-              value,
-              label: value.toUpperCase(),
-            }))}
-          />
-        </Form.Item>
+        <div className="queue-stats">
+          <div className="queue-stat-tile">
+            <Statistic title="Clip" value={selectedStats.totalFiles} prefix={<VideoCameraAddOutlined />} />
+          </div>
+          <div className="queue-stat-tile">
+            <Statistic title="Peso staging" value={selectedStats.totalSize} />
+          </div>
+        </div>
 
-        <Form.Item label="Compressione">
-          <Select
-            value={settings.compression}
-            onChange={setCompression}
-            options={[
-              { value: 'light', label: 'Leggera' },
-              { value: 'balanced', label: 'Bilanciata' },
-              { value: 'strong', label: 'Alta compressione' },
-            ]}
-          />
-        </Form.Item>
-      </Form>
+        <Form layout="vertical">
+          <Form.Item label="Formato in uscita">
+            <Select
+              value={settings.outputFormat}
+              onChange={setOutputFormat}
+              options={['mp4', 'mov', 'webm'].map((value) => ({
+                value,
+                label: value.toUpperCase(),
+              }))}
+            />
+          </Form.Item>
 
-      <Space size="middle" wrap>
-        <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large" style={{ minWidth: 180 }}>
-          Seleziona file
-        </Button>
-        <Button
-          type="primary"
-          icon={<PlayCircleOutlined />}
-          loading={loading}
-          disabled={selectedFiles.length === 0}
-          size="large"
-          style={{ minWidth: 170 }}
-          onClick={createJob}
-        >
-          Avvia merge
-        </Button>
-      </Space>
-
-      <Divider style={{ marginTop: 16, marginBottom: 16 }} />
-      <Flex align="center" justify="space-between" gap="small" className="composer-summary">
-        <Space size="middle">
-          <Text strong>{selectedStats.totalFiles} file</Text>
-          <Text type="secondary">{selectedStats.totalSize}</Text>
-        </Space>
-        {selectedFiles.length > 0 ? (
-          <Tag icon={<VideoCameraAddOutlined />}>Merge pronto</Tag>
-        ) : (
-          <Tag>Seleziona file per iniziare</Tag>
-        )}
-      </Flex>
-
-      {selectedFiles.length === 0 ? (
-        <Alert
-          type="info"
-          showIcon
-          message="Nessun file selezionato"
-          description="Aggiungi almeno un video per creare un unico output concatenato."
-        />
-      ) : (
-        <List
-          dataSource={selectedFiles}
-          header={<Text type="secondary">File selezionati</Text>}
-          bordered
-          renderItem={(item, index) => (
-            <List.Item
-              actions={[
-                <Button
-                  key="delete"
-                  size="small"
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => removeSelectedFile(item.id)}
-                />,
+          <Form.Item label="Compressione">
+            <Select
+              value={settings.compression}
+              onChange={setCompression}
+              options={[
+                { value: 'light', label: 'Leggera' },
+                { value: 'balanced', label: 'Bilanciata' },
+                { value: 'strong', label: 'Alta compressione' },
               ]}
-            >
-              <List.Item.Meta
-                avatar={<Tag bordered={false}>{index + 1}</Tag>}
-                title={<Text ellipsis={{ tooltip: item.name }}>{item.name}</Text>}
-                description={
-                  <Flex vertical>
-                    <Paragraph className="selected-file-path" ellipsis={{ tooltip: item.path }}>
-                      {item.path}
-                    </Paragraph>
-                    <Text type="secondary" className="selected-file-size">
-                      {formatBytes(item.size)}
-                    </Text>
-                  </Flex>
-                }
-              />
-            </List.Item>
-          )}
-        />
-      )}
+            />
+          </Form.Item>
+        </Form>
 
-      <Divider style={{ marginTop: 16, marginBottom: 16 }} />
-      <Space size="middle" split={<Divider type="vertical" />}>
-        <Text type="secondary">Formato: {settings.outputFormat.toUpperCase()}</Text>
-        <Text type="secondary">Compressione: {settings.compression}</Text>
-        <Text type="secondary">
-          <LinkOutlined /> Output: file unico
-        </Text>
+        <Space size="middle" wrap>
+          <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large">
+            Aggiungi clip
+          </Button>
+          <Button
+            icon={<ClearOutlined />}
+            danger
+            onClick={clearSelectedFiles}
+            disabled={selectedFiles.length === 0}
+            size="large"
+          >
+            Svuota queue
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlayCircleOutlined />}
+            loading={loading}
+            disabled={selectedFiles.length === 0}
+            size="large"
+            onClick={createJob}
+          >
+            Avvia merge
+          </Button>
+        </Space>
+
+        <Divider style={{ margin: 0 }} />
+
+        {selectedFiles.length === 0 ? (
+          <Alert
+            type="warning"
+            showIcon
+            message="Nessun clip in queue"
+            description="Aggiungi i video da concatenare. Potrai riordinarli prima di esportare."
+          />
+        ) : (
+          <List
+            className="queue-list"
+            dataSource={selectedFiles}
+            renderItem={(item, index) => {
+              const isFirst = index === 0;
+              const isLast = index === selectedFiles.length - 1;
+
+              return (
+                <List.Item
+                  className="queue-item"
+                  actions={[
+                    <Space key="controls" size="small">
+                      <Tooltip title="Sposta in alto">
+                        <Button
+                          size="small"
+                          icon={<ArrowUpOutlined />}
+                          disabled={isFirst}
+                          onClick={() => moveSelectedFile(item.id, 'up')}
+                        />
+                      </Tooltip>
+                      <Tooltip title="Sposta in basso">
+                        <Button
+                          size="small"
+                          icon={<ArrowDownOutlined />}
+                          disabled={isLast}
+                          onClick={() => moveSelectedFile(item.id, 'down')}
+                        />
+                      </Tooltip>
+                      <Tooltip title="Rimuovi clip">
+                        <Button
+                          size="small"
+                          danger
+                          icon={<DeleteOutlined />}
+                          onClick={() => removeSelectedFile(item.id)}
+                        />
+                      </Tooltip>
+                    </Space>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={<div className="queue-index">{index + 1}</div>}
+                    title={
+                      <Space wrap>
+                        <Text strong>{item.name}</Text>
+                        {isFirst ? <Tag color="cyan">Inizio</Tag> : null}
+                        {isLast ? <Tag color="geekblue">Finale</Tag> : null}
+                      </Space>
+                    }
+                    description={
+                      <Flex vertical gap={4}>
+                        <Paragraph className="selected-file-path" ellipsis={{ tooltip: item.path }}>
+                          {item.path}
+                        </Paragraph>
+                        <Space size="middle">
+                          <Text type="secondary">{formatBytes(item.size)}</Text>
+                          <Text type="secondary">
+                            {isFirst ? 'Apre il merge' : isLast ? 'Chiude il merge' : 'Clip intermedia'}
+                          </Text>
+                        </Space>
+                      </Flex>
+                    }
+                  />
+                </List.Item>
+              );
+            }}
+          />
+        )}
       </Space>
     </Card>
   );

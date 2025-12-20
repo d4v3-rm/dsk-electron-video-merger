@@ -25,7 +25,9 @@ interface AppState {
   selectVideoFiles: () => Promise<void>;
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
+  clearSelectedFiles: () => void;
   removeSelectedFile: (id: string) => void;
+  moveSelectedFile: (id: string, direction: 'up' | 'down') => void;
   createJob: () => Promise<void>;
   upsertJobProgress: (payload: JobProgressPayload) => void;
 }
@@ -67,8 +69,29 @@ export const useAppStore = create<AppState>((set, get) => ({
   setOutputFormat: (outputFormat) => set({ settings: { ...get().settings, outputFormat } }),
   setCompression: (compression) => set({ settings: { ...get().settings, compression } }),
 
+  clearSelectedFiles: () => {
+    set({ selectedFiles: [] });
+  },
+
   removeSelectedFile: (id) => {
     set({ selectedFiles: get().selectedFiles.filter((file) => file.id !== id) });
+  },
+
+  moveSelectedFile: (id, direction) => {
+    const files = [...get().selectedFiles];
+    const currentIndex = files.findIndex((file) => file.id === id);
+    if (currentIndex === -1) {
+      return;
+    }
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= files.length) {
+      return;
+    }
+
+    const [movedFile] = files.splice(currentIndex, 1);
+    files.splice(targetIndex, 0, movedFile);
+    set({ selectedFiles: files });
   },
 
   createJob: async () => {
