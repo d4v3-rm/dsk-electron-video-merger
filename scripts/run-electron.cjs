@@ -14,7 +14,7 @@ delete env.ELECTRON_RUN_AS_NODE;
 const child = spawn(process.execPath, [electronCliPath, '.'], {
   cwd: projectRoot,
   env,
-  stdio: 'inherit'
+  stdio: 'inherit',
 });
 
 child.on('error', (error) => {

@@ -2,6 +2,7 @@
   "name": "video-merger-desktop",
   "private": true,
   "version": "1.0.0",
+  "author": "VideoMerger",
   "description": "Desktop app for bulk video merging and conversion using Electron + Vite + React",
   "type": "commonjs",
   "main": "dist/main/main.js",
@@ -14,20 +15,24 @@
     "build:main": "tsc -p src/main/tsconfig.json",
     "build:renderer": "vite build --config src/renderer/vite.config.ts",
     "build:portable": "npm run build",
+    "generate:icon": "node ./scripts/generate-app-icon.mjs",
     "start": "node ./scripts/run-electron.cjs",
     "typecheck": "tsc -p src/main/tsconfig.json && tsc -p src/renderer/tsconfig.app.json --noEmit",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "format": "prettier --write ."
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.cjs,.mjs",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,cjs,mjs,css,html,json}\" \"scripts/**/*.{js,cjs,mjs}\" \"*.{json,cjs,md}\""
   },
   "dependencies": {
+    "@babel/runtime": "^7.28.6",
     "antd": "^5.25.0",
     "ffmpeg-static": "^5.2.0",
+    "gsap": "^3.14.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@ant-design/icons": "^5.5.3",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.7",
@@ -42,6 +47,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "png-to-ico": "^3.0.1",
     "prettier": "^3.6.2",
     "tsx": "^4.20.0",
     "typescript": "^5.8.4",
@@ -51,6 +57,7 @@
   "build": {
     "appId": "com.videomerger.desktop",
     "productName": "VideoMerger",
+    "icon": "icon.png",
     "directories": {
       "output": "dist/packaged",
       "buildResources": "build"
@@ -63,6 +70,7 @@
     ],
     "asar": true,
     "win": {
+      "icon": "icon.ico",
       "target": [
         {
           "target": "portable",

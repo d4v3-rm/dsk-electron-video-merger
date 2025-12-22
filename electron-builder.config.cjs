@@ -1,6 +1,7 @@
 module.exports = {
   appId: 'com.videomerger.desktop',
   productName: 'VideoMerger',
+  icon: 'icon.png',
   directories: {
     output: 'dist/packaged',
     buildResources: 'build',
@@ -8,6 +9,7 @@ module.exports = {
   files: ['dist/main/**/*', 'dist/shared/**/*', 'dist/renderer/**/*', 'package.json'],
   asar: true,
   win: {
+    icon: 'icon.ico',
     target: [
       {
         target: 'portable',

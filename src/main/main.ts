@@ -16,6 +16,10 @@ let jobService: JobService | null = null;
 const getDevServerUrl = (): string => process.env.VITE_DEV_SERVER_URL ?? DEFAULT_DEV_SERVER_URL;
 const isDevelopment = (): boolean => process.env.NODE_ENV === 'development';
 const shouldOpenDevTools = (): boolean => process.env.ELECTRON_OPEN_DEVTOOLS === 'true';
+const getWindowIconPath = (): string =>
+  isDevelopment()
+    ? path.resolve(app.getAppPath(), 'src/renderer/public/icon.png')
+    : path.resolve(__dirname, '../renderer/icon.png');
 
 const isDevToolsShortcut = (input: Input): boolean => {
   const key = input.key.toLowerCase();
@@ -50,6 +54,7 @@ const createWindow = async (): Promise<void> => {
     minWidth: 1200,
     minHeight: 760,
     title: APP_NAME,
+    icon: getWindowIconPath(),
     show: false,
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     webPreferences: {

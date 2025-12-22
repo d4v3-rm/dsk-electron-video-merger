@@ -55,9 +55,11 @@ module.exports = [
     files: [
       'src/main/**/*.{ts,js}',
       'src/shared/**/*.{ts,js}',
-      'scripts/**/*.cjs',
+      'scripts/**/*.{cjs,mjs,js}',
       'src/renderer/vite.config.ts',
       'vite.config.ts',
+      'eslint.config.cjs',
+      '.prettierrc.cjs',
       'electron-builder.config.cjs',
     ],
     languageOptions: {
@@ -69,6 +71,7 @@ module.exports = [
         process: 'readonly',
         Buffer: 'readonly',
         console: 'readonly',
+        exports: 'readonly',
       },
     },
   },

@@ -10,4 +10,9 @@ yarn-debug.log*
 .env
 .env.local
 *.log
-build
+build/*
+!build/icon-attribution.md
+!build/icon-source-material-movie.svg
+!build/icon.svg
+!build/icon.png
+!build/icon.ico
