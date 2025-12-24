@@ -1,45 +1,26 @@
-import { Avatar, Col, Layout, Row, Space, Spin, Typography } from 'antd';
-import { DashboardOutlined } from '@ant-design/icons';
+import { Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
 import { JobBoard } from './components/JobBoard';
 import { JobComposer } from './components/JobComposer';
 import { MergeOverview } from './components/MergeOverview';
 import { MergePreviewCard } from './components/MergePreviewCard';
-import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useJobProgress } from './hooks/use-job-progress';
 import { useAppStore } from './store/use-app-store';
 
-const { Header, Content, Footer } = Layout;
-const { Title, Text } = Typography;
+const { Content, Footer } = Layout;
+const { Text } = Typography;
 
 function App() {
-  const { refreshJobs, loaded } = useAppStore();
+  const { refreshJobs, refreshHardwareAccelerationProfile, loaded } = useAppStore();
   useJobProgress();
 
   useEffect(() => {
     void refreshJobs();
-  }, [refreshJobs]);
+    void refreshHardwareAccelerationProfile();
+  }, [refreshHardwareAccelerationProfile, refreshJobs]);
 
   return (
     <Layout className="app-shell">
-      <Header className="app-header">
-        <div className="header-content">
-          <div className="app-brand">
-            <Avatar size={40} shape="square" icon={<DashboardOutlined />} />
-            <div>
-              <Title level={4} className="app-title">
-                VideoMerger Desktop
-              </Title>
-              <Text type="secondary">Merge workstation per unione, conversione e compressione video</Text>
-            </div>
-          </div>
-          <Space>
-            <ThemeSwitcher />
-            <Text className="status-badge">Studio locale</Text>
-          </Space>
-        </div>
-      </Header>
-
       <Content className="app-content">
         <div className="dashboard-container">
           <Space direction="vertical" size="large" style={{ width: '100%' }}>

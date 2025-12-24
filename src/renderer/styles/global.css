@@ -4,8 +4,6 @@
   --app-bg-tail: #020617;
   --app-text: #e2e8f0;
   --app-text-secondary: rgba(226, 232, 240, 0.78);
-  --header-bg: rgba(5, 12, 24, 0.84);
-  --header-border: rgba(148, 163, 184, 0.14);
   --panel-bg: rgba(10, 21, 38, 0.82);
   --panel-bg-strong: rgba(7, 16, 30, 0.92);
   --panel-border: rgba(148, 163, 184, 0.14);
@@ -31,8 +29,6 @@
   --app-bg-tail: #f8fbff;
   --app-text: #0f172a;
   --app-text-secondary: rgba(15, 23, 42, 0.72);
-  --header-bg: rgba(255, 255, 255, 0.84);
-  --header-border: rgba(15, 23, 42, 0.1);
   --panel-bg: rgba(255, 255, 255, 0.9);
   --panel-bg-strong: rgba(255, 255, 255, 0.96);
   --panel-border: rgba(148, 163, 184, 0.22);
@@ -57,8 +53,6 @@
   --app-bg-tail: #020617;
   --app-text: #e2e8f0;
   --app-text-secondary: rgba(226, 232, 240, 0.78);
-  --header-bg: rgba(5, 12, 24, 0.84);
-  --header-border: rgba(148, 163, 184, 0.14);
   --panel-bg: rgba(10, 21, 38, 0.82);
   --panel-bg-strong: rgba(7, 16, 30, 0.92);
   --panel-border: rgba(148, 163, 184, 0.14);
@@ -120,63 +114,44 @@ body,
 
 body {
   min-height: 100vh;
+  position: relative;
+  isolation: isolate;
   color: var(--app-text);
   font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+  background-color: var(--app-bg-tail);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
     radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 22%),
     radial-gradient(circle at 85% 18%, rgba(37, 99, 235, 0.14), transparent 24%),
     radial-gradient(circle at top, var(--app-bg-start) 0%, var(--app-bg-end) 45%, var(--app-bg-tail) 100%);
+  background-repeat: no-repeat;
+  background-size: auto, auto, cover;
 }
 
 .app-shell {
   min-height: 100vh;
-}
-
-.app-header {
-  background: var(--header-bg) !important;
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--header-border);
-  padding: 0 24px;
-  line-height: normal;
-}
-
-.header-content {
-  height: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.app-brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-
-.app-brand .ant-avatar {
-  background: linear-gradient(135deg, #0ea5e9, #2563eb 62%, #1d4ed8);
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.26);
-}
-
-.app-title {
-  color: var(--app-text) !important;
-  margin: 0 !important;
-  line-height: 1.2;
+  background: transparent !important;
 }
 
 .status-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid var(--status-badge-border);
   background: var(--status-badge-bg);
+  color: var(--app-text) !important;
 }
 
 .app-content {
-  padding: 24px;
+  padding: 24px 24px 8px;
 }
 
 .dashboard-container {
@@ -205,8 +180,24 @@ body {
 .overview-card {
   position: relative;
   overflow: hidden;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
   background:
     linear-gradient(135deg, var(--overview-surface-start), var(--overview-surface-end)), var(--panel-bg) !important;
+}
+
+.overview-card .ant-card-body {
+  padding: 24px 28px !important;
+}
+
+.overview-card-collapsed {
+  box-shadow: 0 16px 44px rgba(2, 8, 23, 0.28);
+}
+
+.overview-card-expanded {
+  box-shadow: 0 24px 72px rgba(2, 8, 23, 0.38);
 }
 
 .overview-card::before,
@@ -233,8 +224,8 @@ body {
   background: radial-gradient(circle, rgba(37, 99, 235, 0.2), transparent 68%);
 }
 
+.overview-shell,
 .overview-copy,
-.overview-stat,
 .queue-card,
 .preview-card,
 .history-card {
@@ -242,16 +233,89 @@ body {
   z-index: 1;
 }
 
+.overview-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.overview-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.overview-brand {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.overview-brand .ant-avatar {
+  flex: none;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb 62%, #1d4ed8);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.26);
+}
+
+.overview-tags {
+  margin-bottom: 10px;
+}
+
+.overview-actions {
+  justify-content: flex-end;
+}
+
 .overview-title {
-  margin-bottom: 12px !important;
-  max-width: 12ch;
+  margin: 0 !important;
+  max-width: 20ch;
+  color: var(--app-text) !important;
+  line-height: 1.15 !important;
 }
 
 .overview-text {
   display: block;
-  max-width: 62ch;
+  margin: 0 !important;
+  max-width: 60ch;
   font-size: 15px;
   line-height: 1.7;
+  color: var(--app-text-secondary) !important;
+}
+
+.overview-kpi-grid {
+  margin-top: 0 !important;
+}
+
+.overview-kpi {
+  height: 100%;
+  min-height: 108px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--subtle-surface);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.overview-kpi .ant-statistic {
+  height: 100%;
+}
+
+.overview-kpi .ant-statistic-content {
+  color: var(--app-text);
+  font-size: 30px;
+}
+
+.overview-kpi .ant-statistic-content-prefix {
+  margin-right: 10px;
+  color: var(--accent-strong);
+}
+
+.overview-kpi .ant-statistic-title {
+  color: var(--app-text-secondary);
+}
+
+.overview-details {
+  overflow: hidden;
 }
 
 .overview-steps {
@@ -263,15 +327,6 @@ body {
 
 .overview-steps .ant-steps-item-description {
   max-width: 100%;
-}
-
-.overview-stat {
-  height: 100%;
-  padding: 18px;
-  border-radius: 18px;
-  background: var(--subtle-surface);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  backdrop-filter: blur(10px);
 }
 
 .section-title {
@@ -388,13 +443,26 @@ body {
 }
 
 @media (max-width: 768px) {
-  .header-content {
-    align-items: flex-start;
+  .app-content {
+    padding: 16px;
+  }
+
+  .overview-card .ant-card-body {
+    padding: 20px !important;
+  }
+
+  .overview-topbar,
+  .overview-brand {
     flex-direction: column;
   }
 
-  .app-content {
-    padding: 16px;
+  .overview-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .overview-kpi {
+    min-height: 96px;
   }
 
   .queue-stats {

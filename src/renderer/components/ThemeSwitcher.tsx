@@ -3,7 +3,12 @@ import { Segmented, Tooltip } from 'antd';
 import type { SegmentedValue } from 'antd/es/segmented';
 import { useUiStore } from '../store/use-ui-store';
 
-export const ThemeSwitcher = () => {
+type ThemeSwitcherProps = {
+  size?: 'small' | 'middle' | 'large';
+  block?: boolean;
+};
+
+export const ThemeSwitcher = ({ size = 'middle', block = false }: ThemeSwitcherProps) => {
   const { themeMode, setThemeMode } = useUiStore();
 
   const options = [
@@ -31,5 +36,5 @@ export const ThemeSwitcher = () => {
     setThemeMode(value as 'light' | 'dark');
   };
 
-  return <Segmented block={false} value={themeMode} options={options} onChange={handleChange} />;
+  return <Segmented block={block} size={size} value={themeMode} options={options} onChange={handleChange} />;
 };

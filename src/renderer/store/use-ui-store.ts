@@ -12,7 +12,8 @@ type UiState = {
 const THEME_STORAGE_KEY = 'video-merger-theme-mode';
 const DEFAULT_THEME_MODE: AppThemeMode = 'dark';
 
-const isValidThemeMode = (value: string | null): value is AppThemeMode => value === 'light' || value === 'dark';
+const isValidThemeMode = (value: string | null): value is AppThemeMode =>
+  value === 'light' || value === 'dark';
 
 const readStoredThemeMode = (): AppThemeMode => {
   if (typeof window === 'undefined') {
