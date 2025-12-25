@@ -1,6 +1,7 @@
 import { FileDoneOutlined, OrderedListOutlined } from '@ant-design/icons';
 import { Alert, Descriptions, Divider, Drawer, Empty, List, Progress, Space, Tag, Typography } from 'antd';
 import type { Job } from '@shared/types';
+import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
 import { getFileName } from '../utils/file-utils';
 import { statusColor, statusLabel, toProgressStatus } from '../utils/job-presentation';
 
@@ -30,6 +31,11 @@ export const JobDetailsDrawer = ({ job, open, onClose }: Props) => {
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Space align="center">
             <Tag color={statusColor[job.status]}>{statusLabel[job.status]}</Tag>
+            {job.resolvedEncoderBackend ? (
+              <Tag bordered={false} color="blue">
+                {resolvedEncoderBackendLabel[job.resolvedEncoderBackend]}
+              </Tag>
+            ) : null}
             <Text type="secondary">Aggiornato {dateFormatter.format(job.updatedAt)}</Text>
           </Space>
 
@@ -55,6 +61,18 @@ export const JobDetailsDrawer = ({ job, open, onClose }: Props) => {
                 key: 'compression',
                 label: 'Compressione',
                 children: job.settings.compression,
+              },
+              {
+                key: 'backendRequested',
+                label: 'Backend richiesto',
+                children: requestedEncoderBackendLabel[job.settings.encoderBackend],
+              },
+              {
+                key: 'backendResolved',
+                label: 'Backend effettivo',
+                children: job.resolvedEncoderBackend
+                  ? resolvedEncoderBackendLabel[job.resolvedEncoderBackend]
+                  : 'In attesa di risoluzione',
               },
               {
                 key: 'clips',
@@ -129,7 +147,7 @@ export const JobDetailsDrawer = ({ job, open, onClose }: Props) => {
           ) : (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description="L'output sarà disponibile qui appena il merge termina."
+              description="L'output sara` disponibile qui appena il merge termina."
             />
           )}
         </Space>

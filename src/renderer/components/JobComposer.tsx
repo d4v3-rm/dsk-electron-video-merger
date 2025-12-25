@@ -24,6 +24,11 @@ import {
 } from 'antd';
 import { useMemo } from 'react';
 import { useAppStore } from '../store/use-app-store';
+import {
+  getEncoderModeDescription,
+  isNvidiaSupportedOutputFormat,
+  requestedEncoderBackendLabel,
+} from '../utils/encoder-presentation';
 import { formatBytes } from '../utils/file-utils';
 
 const { Text, Paragraph, Title } = Typography;
@@ -31,9 +36,12 @@ const { Text, Paragraph, Title } = Typography;
 export const JobComposer = () => {
   const {
     selectedFiles,
+    hardwareAccelerationProfile,
+    hardwareAccelerationLoaded,
     settings,
     loading,
     setCompression,
+    setEncoderBackend,
     setOutputFormat,
     selectVideoFiles,
     clearSelectedFiles,
@@ -51,11 +59,33 @@ export const JobComposer = () => {
     };
   }, [selectedFiles]);
 
+  const nvidiaAvailable = hardwareAccelerationProfile.nvidia.available;
+  const nvidiaSupportedForFormat = isNvidiaSupportedOutputFormat(settings.outputFormat);
+  const encoderModeDescription = getEncoderModeDescription(
+    settings.outputFormat,
+    settings.encoderBackend,
+    hardwareAccelerationProfile,
+  );
+  const hardwareAlertType = !hardwareAccelerationLoaded
+    ? 'info'
+    : nvidiaAvailable && nvidiaSupportedForFormat
+      ? 'success'
+      : settings.outputFormat === 'webm'
+        ? 'warning'
+        : 'info';
+
   return (
     <Card
       title="Merge setup"
       className="modern-card queue-card"
-      extra={<Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>Queue ordinata</Tag>}
+      extra={
+        <Space size="small" wrap>
+          <Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>Queue ordinata</Tag>
+          <Tag color={nvidiaAvailable ? 'success' : 'default'}>
+            {nvidiaAvailable ? 'NVENC disponibile' : 'Solo CPU'}
+          </Tag>
+        </Space>
+      }
     >
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <div>
@@ -68,6 +98,17 @@ export const JobComposer = () => {
         </div>
 
         <Alert type="info" showIcon message="L'ordine della lista e` l'ordine reale del video finale." />
+
+        <Alert
+          type={hardwareAlertType}
+          showIcon
+          message={
+            hardwareAccelerationLoaded
+              ? hardwareAccelerationProfile.nvidia.reason
+              : 'Rilevamento hardware in corso'
+          }
+          description={encoderModeDescription}
+        />
 
         <div className="queue-stats">
           <div className="queue-stat-tile">
@@ -101,7 +142,38 @@ export const JobComposer = () => {
               ]}
             />
           </Form.Item>
+
+          <Form.Item label="Backend encoding">
+            <Select
+              value={settings.encoderBackend}
+              onChange={setEncoderBackend}
+              options={[
+                {
+                  value: 'auto',
+                  label: `${requestedEncoderBackendLabel.auto} (${nvidiaAvailable ? 'preferisce NVIDIA' : 'resta CPU'})`,
+                },
+                {
+                  value: 'cpu',
+                  label: requestedEncoderBackendLabel.cpu,
+                },
+                {
+                  value: 'nvidia',
+                  label: requestedEncoderBackendLabel.nvidia,
+                  disabled: !nvidiaAvailable || !nvidiaSupportedForFormat,
+                },
+              ]}
+            />
+          </Form.Item>
         </Form>
+
+        <Text type="secondary">
+          Backend selezionato: {requestedEncoderBackendLabel[settings.encoderBackend]}.{' '}
+          {settings.outputFormat === 'webm'
+            ? 'WebM resta su CPU.'
+            : nvidiaAvailable
+              ? 'Su MP4 e MOV puoi usare NVENC.'
+              : 'NVIDIA non rilevata: verra` usata la CPU.'}
+        </Text>
 
         <Space size="middle" wrap>
           <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large">

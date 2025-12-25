@@ -1,9 +1,15 @@
-import type { ConversionSettings, Job, JobProgressPayload } from '../../shared/types';
+import type {
+  ConversionSettings,
+  HardwareAccelerationProfile,
+  Job,
+  JobProgressPayload,
+} from '../../shared/types';
 
 type RendererElectronApi = {
   selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
   createJob: (payload: { filePaths: string[]; settings: ConversionSettings }) => Promise<Job>;
   getJobs: () => Promise<Job[]>;
+  getHardwareAccelerationProfile: () => Promise<HardwareAccelerationProfile>;
   onJobProgress: (cb: (payload: JobProgressPayload) => void) => () => void;
 };
 
@@ -38,6 +44,8 @@ export const api = {
   createJob: async (payload: { filePaths: string[]; settings: ConversionSettings }) =>
     withApi((electronAPI) => electronAPI.createJob(payload)),
   getJobs: async () => withApi((electronAPI) => electronAPI.getJobs()),
+  getHardwareAccelerationProfile: async () =>
+    withApi((electronAPI) => electronAPI.getHardwareAccelerationProfile()),
   subscribeJobProgress: (cb: (payload: JobProgressPayload) => void) => {
     const electronAPI = getElectronAPI();
     if (!electronAPI) {

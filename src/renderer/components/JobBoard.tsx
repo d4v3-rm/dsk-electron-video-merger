@@ -4,6 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useMemo, useState } from 'react';
 import type { Job } from '@shared/types';
 import { useAppStore } from '../store/use-app-store';
+import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
 import { getFileName } from '../utils/file-utils';
 import { statusColor, statusIcon, statusLabel, toProgressStatus } from '../utils/job-presentation';
 import { JobDetailsDrawer } from './JobDetailsDrawer';
@@ -53,10 +54,15 @@ export const JobBoard = () => {
           <Text>
             {job.settings.outputFormat.toUpperCase()} - {job.settings.compression}
           </Text>
-          <Text type="secondary">Un solo file finale</Text>
+          <Text type="secondary">
+            {requestedEncoderBackendLabel[job.settings.encoderBackend]}
+            {job.resolvedEncoderBackend
+              ? ` -> ${resolvedEncoderBackendLabel[job.resolvedEncoderBackend]}`
+              : ''}
+          </Text>
         </Space>
       ),
-      width: 180,
+      width: 210,
     },
     {
       title: 'Stato',

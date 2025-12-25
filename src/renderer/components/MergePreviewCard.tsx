@@ -1,6 +1,7 @@
 import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined } from '@ant-design/icons';
 import { Card, Descriptions, Divider, Empty, List, Progress, Space, Tag, Typography } from 'antd';
 import { useAppStore } from '../store/use-app-store';
+import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
 import { buildMergedOutputName, formatBytes } from '../utils/file-utils';
 import { statusColor, statusLabel, toProgressStatus } from '../utils/job-presentation';
 
@@ -16,8 +17,12 @@ export const MergePreviewCard = () => {
     jobs.find((job) => job.status === 'running') ?? jobs.find((job) => job.status === 'queued') ?? null;
   const latestCompletedJob =
     jobs.find((job) => job.status === 'completed' && job.outputPaths.length > 0) ?? null;
+  const previewSettings =
+    selectedFiles.length > 0 ? settings : (activeJob?.settings ?? latestCompletedJob?.settings ?? settings);
+  const previewSeedFile =
+    selectedFiles[0]?.name ?? activeJob?.files[0]?.name ?? latestCompletedJob?.files[0]?.name ?? undefined;
 
-  const previewName = buildMergedOutputName(selectedFiles[0]?.name, settings.outputFormat);
+  const previewName = buildMergedOutputName(previewSeedFile, previewSettings.outputFormat);
   const previewStatus =
     activeJob?.status === 'running'
       ? 'Merge attivo'
@@ -61,12 +66,26 @@ export const MergePreviewCard = () => {
               {
                 key: 'format',
                 label: 'Formato',
-                children: settings.outputFormat.toUpperCase(),
+                children: previewSettings.outputFormat.toUpperCase(),
               },
               {
                 key: 'compression',
                 label: 'Compressione',
-                children: settings.compression,
+                children: previewSettings.compression,
+              },
+              {
+                key: 'backendRequested',
+                label: 'Backend richiesto',
+                children: requestedEncoderBackendLabel[previewSettings.encoderBackend],
+              },
+              {
+                key: 'backendResolved',
+                label: 'Backend effettivo',
+                children: activeJob?.resolvedEncoderBackend
+                  ? resolvedEncoderBackendLabel[activeJob.resolvedEncoderBackend]
+                  : latestCompletedJob?.resolvedEncoderBackend
+                    ? resolvedEncoderBackendLabel[latestCompletedJob.resolvedEncoderBackend]
+                    : 'In attesa',
               },
               {
                 key: 'size',
@@ -85,6 +104,11 @@ export const MergePreviewCard = () => {
             <div className="preview-runtime">
               <Space align="center">
                 <Tag color={statusColor[activeJob.status]}>{statusLabel[activeJob.status]}</Tag>
+                {activeJob.resolvedEncoderBackend ? (
+                  <Tag bordered={false} color="blue">
+                    {resolvedEncoderBackendLabel[activeJob.resolvedEncoderBackend]}
+                  </Tag>
+                ) : null}
                 <Text type="secondary">{activeJob.message}</Text>
               </Space>
               <Progress

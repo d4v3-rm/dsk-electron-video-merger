@@ -8,6 +8,7 @@ const resetHandlers = (): void => {
   ipcMain.removeHandler(IPC_CHANNELS.filesPick);
   ipcMain.removeHandler(IPC_CHANNELS.jobsCreate);
   ipcMain.removeHandler(IPC_CHANNELS.jobsList);
+  ipcMain.removeHandler(IPC_CHANNELS.systemCapabilities);
 };
 
 export const initializeIpc = (jobService: JobService, fileService: FilePickerService): void => {
@@ -23,5 +24,9 @@ export const initializeIpc = (jobService: JobService, fileService: FilePickerSer
 
   ipcMain.handle(IPC_CHANNELS.jobsList, async () => {
     return jobService.getJobs();
+  });
+
+  ipcMain.handle(IPC_CHANNELS.systemCapabilities, async () => {
+    return jobService.getHardwareAccelerationProfile();
   });
 };

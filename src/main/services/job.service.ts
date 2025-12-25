@@ -2,7 +2,14 @@ import type { BrowserWindow } from 'electron';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { IPC_CHANNELS } from '../../shared/ipc';
-import type { Job, JobCreationPayload, JobProgressPayload, JobStatus } from '../../shared/types';
+import type {
+  HardwareAccelerationProfile,
+  Job,
+  JobCreationPayload,
+  JobProgressPayload,
+  JobStatus,
+  ResolvedEncoderBackend,
+} from '../../shared/types';
 import { FfmpegService } from './ffmpeg.service';
 import { StorageService } from './storage.service';
 
@@ -27,6 +34,10 @@ export class JobService {
 
   getJobs(): Job[] {
     return Array.from(this.jobs.values()).sort((a, b) => b.createdAt - a.createdAt);
+  }
+
+  async getHardwareAccelerationProfile(): Promise<HardwareAccelerationProfile> {
+    return this.ffmpegService.getHardwareAccelerationProfile();
   }
 
   async createJob(payload: JobCreationPayload): Promise<Job> {
@@ -80,9 +91,25 @@ export class JobService {
 
     this.running = true;
     let tempDir: string | null = null;
+    let resolvedEncoderBackend: ResolvedEncoderBackend | undefined;
 
     try {
-      await this.updateStatus(job, 'running', 5, 'Avvio merge');
+      const hardwareProfile = await this.ffmpegService.getHardwareAccelerationProfile();
+      resolvedEncoderBackend = this.ffmpegService.resolveEncoderBackend(
+        job.settings.encoderBackend,
+        job.settings.outputFormat,
+        hardwareProfile,
+      );
+
+      await this.updateStatus(
+        job,
+        'running',
+        5,
+        this.buildStartMessage(job.settings.encoderBackend, resolvedEncoderBackend),
+        job.outputPaths,
+        undefined,
+        resolvedEncoderBackend,
+      );
 
       const { outputDir, tempDir: nextTempDir } = await this.storageService.buildJobFolders(job.id);
       tempDir = nextTempDir;
@@ -92,14 +119,32 @@ export class JobService {
         outputPath,
         format: job.settings.outputFormat,
         compression: job.settings.compression,
+        resolvedEncoderBackend,
         tempDir,
-        onProgress: (progress, message) => this.emitProgress(job, progress, message, outputPath),
+        onProgress: (progress, message) =>
+          this.emitProgress(job, progress, message, outputPath, undefined, resolvedEncoderBackend),
       });
 
-      await this.updateStatus(job, 'completed', 100, 'Completato', [output]);
+      await this.updateStatus(
+        job,
+        'completed',
+        100,
+        'Completato',
+        [output],
+        undefined,
+        resolvedEncoderBackend,
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Errore imprevisto';
-      await this.updateStatus(job, 'error', job.progress, message, job.outputPaths, message);
+      await this.updateStatus(
+        job,
+        'error',
+        job.progress,
+        message,
+        job.outputPaths,
+        message,
+        resolvedEncoderBackend,
+      );
     } finally {
       this.running = false;
 
@@ -118,14 +163,16 @@ export class JobService {
     message: string,
     outputPaths: string[] = job.outputPaths,
     error?: string,
+    resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
   ): Promise<void> {
     job.status = status;
     job.progress = progress;
     job.message = message;
     job.outputPaths = outputPaths;
     job.error = error;
+    job.resolvedEncoderBackend = resolvedEncoderBackend;
     job.updatedAt = Date.now();
-    this.emitProgress(job, progress, message, outputPaths.at(-1), error);
+    this.emitProgress(job, progress, message, outputPaths.at(-1), error, resolvedEncoderBackend);
     this.jobs.set(job.id, job);
   }
 
@@ -135,6 +182,7 @@ export class JobService {
     message: string,
     outputPath?: string,
     error?: string,
+    resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
   ): void {
     const payload: JobProgressPayload = {
       jobId: job.id,
@@ -142,12 +190,14 @@ export class JobService {
       progress,
       message,
       outputPath,
+      resolvedEncoderBackend,
       error,
     };
 
     job.progress = progress;
     job.message = message;
     job.updatedAt = Date.now();
+    job.resolvedEncoderBackend = resolvedEncoderBackend;
     if (error) {
       job.error = error;
     }
@@ -168,7 +218,23 @@ export class JobService {
       message: job.message,
       createdAt: job.createdAt,
       updatedAt: job.updatedAt,
+      resolvedEncoderBackend: job.resolvedEncoderBackend,
       error: job.error,
     };
+  }
+
+  private buildStartMessage(
+    requestedBackend: JobCreationPayload['settings']['encoderBackend'],
+    resolvedBackend: ResolvedEncoderBackend,
+  ): string {
+    if (requestedBackend === 'nvidia' && resolvedBackend === 'cpu') {
+      return 'NVENC non disponibile, fallback CPU';
+    }
+
+    if (resolvedBackend === 'nvidia') {
+      return requestedBackend === 'auto' ? 'Avvio transcodifica NVIDIA (Auto)' : 'Avvio transcodifica NVIDIA';
+    }
+
+    return 'Avvio transcodifica CPU';
   }
 }

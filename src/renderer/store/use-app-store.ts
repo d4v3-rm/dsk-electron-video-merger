@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import type {
   CompressionPreset,
   ConversionSettings,
+  EncoderBackend,
+  HardwareAccelerationProfile,
   Job,
   JobProgressPayload,
   OutputFormat,
@@ -18,13 +20,17 @@ export type SelectedVideo = {
 interface AppState {
   selectedFiles: SelectedVideo[];
   jobs: Job[];
+  hardwareAccelerationProfile: HardwareAccelerationProfile;
+  hardwareAccelerationLoaded: boolean;
   settings: ConversionSettings;
   loading: boolean;
   loaded: boolean;
   refreshJobs: () => Promise<void>;
+  refreshHardwareAccelerationProfile: () => Promise<void>;
   selectVideoFiles: () => Promise<void>;
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
+  setEncoderBackend: (encoderBackend: EncoderBackend) => void;
   clearSelectedFiles: () => void;
   removeSelectedFile: (id: string) => void;
   moveSelectedFile: (id: string, direction: 'up' | 'down') => void;
@@ -32,12 +38,25 @@ interface AppState {
   upsertJobProgress: (payload: JobProgressPayload) => void;
 }
 
+const DEFAULT_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProfile = {
+  nvidia: {
+    available: false,
+    encoder: null,
+    hardwareAccel: null,
+    supportedOutputFormats: [],
+    reason: 'Rilevamento hardware in attesa.',
+  },
+};
+
 export const useAppStore = create<AppState>((set, get) => ({
   selectedFiles: [],
   jobs: [],
+  hardwareAccelerationProfile: DEFAULT_HARDWARE_ACCELERATION_PROFILE,
+  hardwareAccelerationLoaded: false,
   settings: {
     outputFormat: 'mp4',
     compression: 'balanced',
+    encoderBackend: 'auto',
   },
   loading: false,
   loaded: false,
@@ -48,6 +67,26 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ jobs, loaded: true });
     } catch {
       set({ loaded: true, jobs: [] });
+    }
+  },
+
+  refreshHardwareAccelerationProfile: async () => {
+    try {
+      const hardwareAccelerationProfile = await api.getHardwareAccelerationProfile();
+      set({ hardwareAccelerationProfile, hardwareAccelerationLoaded: true });
+    } catch {
+      set({
+        hardwareAccelerationLoaded: true,
+        hardwareAccelerationProfile: {
+          nvidia: {
+            available: false,
+            encoder: null,
+            hardwareAccel: null,
+            supportedOutputFormats: [],
+            reason: 'Rilevamento hardware non disponibile in questa sessione.',
+          },
+        },
+      });
     }
   },
 
@@ -66,8 +105,19 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  setOutputFormat: (outputFormat) => set({ settings: { ...get().settings, outputFormat } }),
+  setOutputFormat: (outputFormat) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        outputFormat,
+        encoderBackend:
+          outputFormat === 'webm' && state.settings.encoderBackend === 'nvidia'
+            ? 'auto'
+            : state.settings.encoderBackend,
+      },
+    })),
   setCompression: (compression) => set({ settings: { ...get().settings, compression } }),
+  setEncoderBackend: (encoderBackend) => set({ settings: { ...get().settings, encoderBackend } }),
 
   clearSelectedFiles: () => {
     set({ selectedFiles: [] });
@@ -133,6 +183,8 @@ export const useAppStore = create<AppState>((set, get) => ({
                   payload.outputPath && !job.outputPaths.includes(payload.outputPath)
                     ? [...job.outputPaths, payload.outputPath]
                     : job.outputPaths,
+                updatedAt: Date.now(),
+                resolvedEncoderBackend: payload.resolvedEncoderBackend ?? job.resolvedEncoderBackend,
                 error: payload.error,
               }
             : job,

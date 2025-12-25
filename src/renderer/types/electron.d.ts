@@ -7,6 +7,7 @@ declare global {
         settings: import('../../shared/types').ConversionSettings;
       }) => Promise<import('../../shared/types').Job>;
       getJobs: () => Promise<import('../../shared/types').Job[]>;
+      getHardwareAccelerationProfile: () => Promise<import('../../shared/types').HardwareAccelerationProfile>;
       onJobProgress: (cb: (payload: import('../../shared/types').JobProgressPayload) => void) => () => void;
     };
   }
