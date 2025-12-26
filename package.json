@@ -17,7 +17,7 @@
     "build:portable": "npm run build",
     "generate:icon": "node ./scripts/generate-app-icon.mjs",
     "start": "node ./scripts/run-electron.cjs",
-    "typecheck": "tsc -p src/main/tsconfig.json && tsc -p src/renderer/tsconfig.app.json --noEmit",
+    "typecheck": "tsc -p src/main/tsconfig.json && tsc -p src/renderer/tsconfig.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.cjs,.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,cjs,mjs,css,html,json}\" \"scripts/**/*.{js,cjs,mjs}\" \"*.{json,cjs,md}\""
   },
