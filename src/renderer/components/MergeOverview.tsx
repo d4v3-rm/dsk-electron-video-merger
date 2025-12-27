@@ -33,8 +33,8 @@ export const MergeOverview = () => {
   const jobs = useAppStore((state) => state.jobs);
   const selectedFiles = useAppStore((state) => state.selectedFiles);
   const canHover = useCanHover();
-  const shellRef = useRef(null);
-  const detailsRef = useRef(null);
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const detailsRef = useRef<HTMLDivElement | null>(null);
   const [isPinnedOpen, setIsPinnedOpen] = useState(() => !canHover);
   const [isHoverActive, setIsHoverActive] = useState(false);
 
@@ -85,7 +85,7 @@ export const MergeOverview = () => {
     const shell = shellRef.current;
     const details = detailsRef.current;
 
-    if (!(shell instanceof HTMLElement) || !(details instanceof HTMLElement)) {
+    if (!shell || !details) {
       return undefined;
     }
 

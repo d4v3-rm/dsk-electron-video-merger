@@ -82,6 +82,7 @@ module.exports = [
         window: 'readonly',
         document: 'readonly',
         HTMLElement: 'readonly',
+        HTMLDivElement: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
       },
