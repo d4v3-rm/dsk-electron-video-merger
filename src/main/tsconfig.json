@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "module": "commonjs",
-    "moduleResolution": "node10",
+    "moduleResolution": "node",
     "outDir": "../../dist",
     "rootDir": "../",
     "types": ["node"],
