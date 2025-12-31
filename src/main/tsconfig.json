@@ -1,13 +1,6 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "skipLibCheck": true,
-    "moduleDetection": "force",
-    "target": "ES2022",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "../../dist",
