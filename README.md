@@ -1,4 +1,4 @@
-# ?? VideoMerger Desktop
+# ?? Video Merger Desktop
 
 ![Electron](https://img.shields.io/badge/Electron-Desktop-47848F?logo=electron&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)
@@ -65,7 +65,7 @@ npm run build
 
 Output in `dist/packaged` con file:
 
-- `VideoMerger-<version>-portable.exe`
+- `Video Merger Desktop-<version>-portable.exe`
 
 ## ?? Come funziona il merge
 

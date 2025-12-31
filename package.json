@@ -1,9 +1,9 @@
 {
-  "name": "video-merger-desktop",
+  "name": "dsk-electron-video-merger",
   "private": true,
   "version": "1.0.0",
-  "author": "VideoMerger",
-  "description": "Desktop app for bulk video merging and conversion using Electron + Vite + React",
+  "author": "Video Merger Desktop",
+  "description": "Desktop video merging and conversion app built with Electron, Vite, React, and TypeScript",
   "type": "commonjs",
   "main": "dist/main/main.js",
   "scripts": {

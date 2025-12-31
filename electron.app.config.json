@@ -1,6 +1,6 @@
 {
-  "appId": "com.videomerger.desktop",
-  "productName": "VideoMerger",
+  "appId": "com.dsk-electron-video-merger",
+  "productName": "Video Merger Desktop",
   "runtime": {
     "defaultDevServerUrl": "http://127.0.0.1:5173",
     "backgroundColor": "#0f172a",
@@ -39,7 +39,7 @@
       "electron.app.config.json"
     ],
     "asar": true,
-    "portableArtifactName": "VideoMerger-${version}-portable.exe",
+    "portableArtifactName": "Video Merger Desktop-${version}-portable.exe",
     "winArch": ["x64"]
   }
 }
