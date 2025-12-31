@@ -1,29 +1,67 @@
 import { app, BrowserWindow, type Input } from 'electron';
 import path from 'node:path';
+import electronAppConfigJson from '../../electron.app.config.json';
 import { initializeIpc } from './ipc/ipc-routes';
 import { JobService } from './services/job.service';
 import { StorageService } from './services/storage.service';
 import { FilePickerService } from './services/file-picker.service';
 import { FfmpegService } from './services/ffmpeg.service';
 
-const APP_NAME = 'VideoMerger';
-const DEFAULT_BACKGROUND_COLOR = '#0f172a';
-const DEFAULT_DEV_SERVER_URL = 'http://127.0.0.1:5173';
+type DevToolsMode = 'right' | 'left' | 'bottom' | 'undocked' | 'detach';
+
+type ElectronAppConfig = {
+  appId: string;
+  productName: string;
+  runtime: {
+    defaultDevServerUrl: string;
+    backgroundColor: string;
+    rendererIconFile: string;
+    window: {
+      width: number;
+      height: number;
+      minWidth: number;
+      minHeight: number;
+    };
+    devTools: {
+      mode: DevToolsMode;
+      toggleEnvVar: string;
+      shortcut: {
+        primaryKey: string;
+        secondaryKey: string;
+        secondaryModifiers: {
+          control: boolean;
+          shift: boolean;
+        };
+      };
+    };
+  };
+};
+
+const electronAppConfig = electronAppConfigJson as ElectronAppConfig;
 
 let mainWindow: BrowserWindow | null = null;
 let jobService: JobService | null = null;
 
-const getDevServerUrl = (): string => process.env.VITE_DEV_SERVER_URL ?? DEFAULT_DEV_SERVER_URL;
+const getDevServerUrl = (): string =>
+  process.env.VITE_DEV_SERVER_URL ?? electronAppConfig.runtime.defaultDevServerUrl;
 const isDevelopment = (): boolean => process.env.NODE_ENV === 'development';
-const shouldOpenDevTools = (): boolean => process.env.ELECTRON_OPEN_DEVTOOLS === 'true';
+const shouldOpenDevTools = (): boolean =>
+  process.env[electronAppConfig.runtime.devTools.toggleEnvVar] === 'true';
 const getWindowIconPath = (): string =>
   isDevelopment()
-    ? path.resolve(app.getAppPath(), 'src/renderer/public/icon.png')
-    : path.resolve(__dirname, '../renderer/icon.png');
+    ? path.resolve(app.getAppPath(), 'src/renderer/public', electronAppConfig.runtime.rendererIconFile)
+    : path.resolve(__dirname, '../renderer', electronAppConfig.runtime.rendererIconFile);
 
 const isDevToolsShortcut = (input: Input): boolean => {
   const key = input.key.toLowerCase();
-  return key === 'f12' || (input.control && input.shift && key === 'i');
+  const { primaryKey, secondaryKey, secondaryModifiers } = electronAppConfig.runtime.devTools.shortcut;
+
+  return (
+    key === primaryKey ||
+    (Boolean(secondaryModifiers.control) === input.control &&
+      Boolean(secondaryModifiers.shift) === input.shift &&
+      key === secondaryKey)
+  );
 };
 
 const wireDevelopmentShortcuts = (window: BrowserWindow): void => {
@@ -43,20 +81,20 @@ const wireDevelopmentShortcuts = (window: BrowserWindow): void => {
       return;
     }
 
-    window.webContents.openDevTools({ mode: 'right' });
+    window.webContents.openDevTools({ mode: electronAppConfig.runtime.devTools.mode });
   });
 };
 
 const createWindow = async (): Promise<void> => {
   mainWindow = new BrowserWindow({
-    width: 1360,
-    height: 900,
-    minWidth: 1200,
-    minHeight: 760,
-    title: APP_NAME,
+    width: electronAppConfig.runtime.window.width,
+    height: electronAppConfig.runtime.window.height,
+    minWidth: electronAppConfig.runtime.window.minWidth,
+    minHeight: electronAppConfig.runtime.window.minHeight,
+    title: electronAppConfig.productName,
     icon: getWindowIconPath(),
     show: false,
-    backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    backgroundColor: electronAppConfig.runtime.backgroundColor,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -81,7 +119,7 @@ const createWindow = async (): Promise<void> => {
     await mainWindow.loadURL(getDevServerUrl());
 
     if (shouldOpenDevTools()) {
-      mainWindow.webContents.openDevTools({ mode: 'right' });
+      mainWindow.webContents.openDevTools({ mode: electronAppConfig.runtime.devTools.mode });
     }
   } else {
     const htmlPath = path.resolve(__dirname, '../renderer/index.html');

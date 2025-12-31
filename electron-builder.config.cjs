@@ -1,23 +1,22 @@
+const electronAppConfig = require('./electron.app.config.json');
+
 module.exports = {
-  appId: 'com.videomerger.desktop',
-  productName: 'VideoMerger',
-  icon: 'icon.png',
-  directories: {
-    output: 'dist/packaged',
-    buildResources: 'build',
-  },
-  files: ['dist/main/**/*', 'dist/shared/**/*', 'dist/renderer/**/*', 'package.json'],
-  asar: true,
+  appId: electronAppConfig.appId,
+  productName: electronAppConfig.productName,
+  icon: electronAppConfig.builder.iconPng,
+  directories: electronAppConfig.builder.directories,
+  files: electronAppConfig.builder.files,
+  asar: electronAppConfig.builder.asar,
   win: {
-    icon: 'icon.ico',
+    icon: electronAppConfig.builder.iconIco,
     target: [
       {
         target: 'portable',
-        arch: ['x64'],
+        arch: electronAppConfig.builder.winArch,
       },
     ],
   },
   portable: {
-    artifactName: 'VideoMerger-${version}-portable.exe',
+    artifactName: electronAppConfig.builder.portableArtifactName,
   },
 };

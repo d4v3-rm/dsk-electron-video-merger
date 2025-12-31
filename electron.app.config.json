@@ -1,0 +1,45 @@
+{
+  "appId": "com.videomerger.desktop",
+  "productName": "VideoMerger",
+  "runtime": {
+    "defaultDevServerUrl": "http://127.0.0.1:5173",
+    "backgroundColor": "#0f172a",
+    "rendererIconFile": "icon.png",
+    "window": {
+      "width": 1360,
+      "height": 900,
+      "minWidth": 1200,
+      "minHeight": 760
+    },
+    "devTools": {
+      "mode": "right",
+      "toggleEnvVar": "ELECTRON_OPEN_DEVTOOLS",
+      "shortcut": {
+        "primaryKey": "f12",
+        "secondaryKey": "i",
+        "secondaryModifiers": {
+          "control": true,
+          "shift": true
+        }
+      }
+    }
+  },
+  "builder": {
+    "iconPng": "icon.png",
+    "iconIco": "icon.ico",
+    "directories": {
+      "output": "dist/packaged",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/main/**/*",
+      "dist/shared/**/*",
+      "dist/renderer/**/*",
+      "package.json",
+      "electron.app.config.json"
+    ],
+    "asar": true,
+    "portableArtifactName": "VideoMerger-${version}-portable.exe",
+    "winArch": ["x64"]
+  }
+}
