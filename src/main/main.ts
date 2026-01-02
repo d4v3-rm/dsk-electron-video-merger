@@ -1,43 +1,11 @@
 import { app, BrowserWindow, type Input } from 'electron';
 import path from 'node:path';
-import electronAppConfigJson from '../../electron.app.config.json';
-import { initializeIpc } from './ipc/ipc-routes';
-import { JobService } from './services/job.service';
-import { StorageService } from './services/storage.service';
-import { FilePickerService } from './services/file-picker.service';
-import { FfmpegService } from './services/ffmpeg.service';
-
-type DevToolsMode = 'right' | 'left' | 'bottom' | 'undocked' | 'detach';
-
-type ElectronAppConfig = {
-  appId: string;
-  productName: string;
-  runtime: {
-    defaultDevServerUrl: string;
-    backgroundColor: string;
-    rendererIconFile: string;
-    window: {
-      width: number;
-      height: number;
-      minWidth: number;
-      minHeight: number;
-    };
-    devTools: {
-      mode: DevToolsMode;
-      toggleEnvVar: string;
-      shortcut: {
-        primaryKey: string;
-        secondaryKey: string;
-        secondaryModifiers: {
-          control: boolean;
-          shift: boolean;
-        };
-      };
-    };
-  };
-};
-
-const electronAppConfig = electronAppConfigJson as ElectronAppConfig;
+import { electronAppConfig } from '@main/config/electron-app-config';
+import { initializeIpc } from '@main/ipc/ipc-routes';
+import { JobService } from '@main/services/job.service';
+import { StorageService } from '@main/services/storage.service';
+import { FilePickerService } from '@main/services/file-picker.service';
+import { FfmpegService } from '@main/services/ffmpeg.service';
 
 let mainWindow: BrowserWindow | null = null;
 let jobService: JobService | null = null;

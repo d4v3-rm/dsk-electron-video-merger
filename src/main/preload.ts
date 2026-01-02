@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
-import type { IpcChannels } from '../shared/ipc';
-import type { HardwareAccelerationProfile, JobCreationPayload, JobProgressPayload } from '../shared/types';
+import type { IpcChannels } from '@shared/ipc';
+import type { HardwareAccelerationProfile, JobCreationPayload, JobProgressPayload } from '@shared/types';
 
 const IPC_CHANNELS: IpcChannels = {
   filesPick: 'videos:pick',

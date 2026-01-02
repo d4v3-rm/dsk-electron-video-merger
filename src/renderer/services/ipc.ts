@@ -1,9 +1,4 @@
-import type {
-  ConversionSettings,
-  HardwareAccelerationProfile,
-  Job,
-  JobProgressPayload,
-} from '../../shared/types';
+import type { ConversionSettings, HardwareAccelerationProfile, Job, JobProgressPayload } from '@shared/types';
 
 type RendererElectronApi = {
   selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;

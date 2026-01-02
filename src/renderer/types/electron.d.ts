@@ -1,14 +1,21 @@
+import type {
+  ConversionSettings,
+  HardwareAccelerationProfile,
+  Job,
+  JobProgressPayload,
+} from '@shared/types';
+
 declare global {
   interface Window {
     electronAPI: {
       selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
       createJob: (payload: {
         filePaths: string[];
-        settings: import('../../shared/types').ConversionSettings;
-      }) => Promise<import('../../shared/types').Job>;
-      getJobs: () => Promise<import('../../shared/types').Job[]>;
-      getHardwareAccelerationProfile: () => Promise<import('../../shared/types').HardwareAccelerationProfile>;
-      onJobProgress: (cb: (payload: import('../../shared/types').JobProgressPayload) => void) => () => void;
+        settings: ConversionSettings;
+      }) => Promise<Job>;
+      getJobs: () => Promise<Job[]>;
+      getHardwareAccelerationProfile: () => Promise<HardwareAccelerationProfile>;
+      onJobProgress: (cb: (payload: JobProgressPayload) => void) => () => void;
     };
   }
 }

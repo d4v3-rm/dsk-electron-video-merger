@@ -1,11 +1,11 @@
 import { Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
-import { JobBoard } from './components/JobBoard';
-import { JobComposer } from './components/JobComposer';
-import { MergeOverview } from './components/MergeOverview';
-import { MergePreviewCard } from './components/MergePreviewCard';
-import { useJobProgress } from './hooks/use-job-progress';
-import { useAppStore } from './store/use-app-store';
+import { JobBoard } from '@renderer/components/JobBoard';
+import { JobComposer } from '@renderer/components/JobComposer';
+import { MergeOverview } from '@renderer/components/MergeOverview';
+import { MergePreviewCard } from '@renderer/components/MergePreviewCard';
+import { useJobProgress } from '@renderer/hooks/use-job-progress';
+import { useAppStore } from '@renderer/store/use-app-store';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;

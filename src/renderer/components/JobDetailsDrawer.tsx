@@ -1,9 +1,12 @@
 import { FileDoneOutlined, OrderedListOutlined } from '@ant-design/icons';
 import { Alert, Descriptions, Divider, Drawer, Empty, List, Progress, Space, Tag, Typography } from 'antd';
 import type { Job } from '@shared/types';
-import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
-import { getFileName } from '../utils/file-utils';
-import { statusColor, statusLabel, toProgressStatus } from '../utils/job-presentation';
+import {
+  requestedEncoderBackendLabel,
+  resolvedEncoderBackendLabel,
+} from '@renderer/utils/encoder-presentation';
+import { getFileName } from '@renderer/utils/file-utils';
+import { statusColor, statusLabel, toProgressStatus } from '@renderer/utils/job-presentation';
 
 const { Text, Paragraph } = Typography;
 

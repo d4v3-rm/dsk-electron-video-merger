@@ -1,9 +1,12 @@
 import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined } from '@ant-design/icons';
 import { Card, Descriptions, Divider, Empty, List, Progress, Space, Tag, Typography } from 'antd';
-import { useAppStore } from '../store/use-app-store';
-import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
-import { buildMergedOutputName, formatBytes } from '../utils/file-utils';
-import { statusColor, statusLabel, toProgressStatus } from '../utils/job-presentation';
+import { useAppStore } from '@renderer/store/use-app-store';
+import {
+  requestedEncoderBackendLabel,
+  resolvedEncoderBackendLabel,
+} from '@renderer/utils/encoder-presentation';
+import { buildMergedOutputName, formatBytes } from '@renderer/utils/file-utils';
+import { statusColor, statusLabel, toProgressStatus } from '@renderer/utils/job-presentation';
 
 const { Text, Paragraph } = Typography;
 

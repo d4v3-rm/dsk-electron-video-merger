@@ -23,13 +23,13 @@ import {
   Typography,
 } from 'antd';
 import { useMemo } from 'react';
-import { useAppStore } from '../store/use-app-store';
+import { useAppStore } from '@renderer/store/use-app-store';
 import {
   getEncoderModeDescription,
   isNvidiaSupportedOutputFormat,
   requestedEncoderBackendLabel,
-} from '../utils/encoder-presentation';
-import { formatBytes } from '../utils/file-utils';
+} from '@renderer/utils/encoder-presentation';
+import { formatBytes } from '@renderer/utils/file-utils';
 
 const { Text, Paragraph, Title } = Typography;
 

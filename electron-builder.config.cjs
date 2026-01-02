@@ -1,4 +1,6 @@
-const electronAppConfig = require('./electron.app.config.json');
+const path = require('node:path');
+
+const electronAppConfig = require(path.resolve(__dirname, 'electron.app.config.json'));
 
 module.exports = {
   appId: electronAppConfig.appId,

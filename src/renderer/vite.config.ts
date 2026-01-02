@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 const rawPort = process.env.VITE_DEV_SERVER_PORT;
 const parsedPort = Number.parseInt(rawPort ?? '', 10);
@@ -9,9 +10,10 @@ const devPort = Number.isNaN(parsedPort) ? 5173 : parsedPort;
 export default defineConfig({
   root: __dirname,
   base: './',
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths({ projects: [path.resolve(__dirname, 'tsconfig.json')] })],
   resolve: {
     alias: {
+      '@renderer': path.resolve(__dirname),
       '@shared': path.resolve(__dirname, '../shared'),
     },
   },

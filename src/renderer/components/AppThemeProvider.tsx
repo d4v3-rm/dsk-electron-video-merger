@@ -1,7 +1,7 @@
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import type { ThemeConfig } from 'antd';
-import { useUiStore } from '../store/use-ui-store';
+import { useUiStore } from '@renderer/store/use-ui-store';
 
 const THEME_TOKENS: Record<ReturnType<typeof useUiStore.getState>['themeMode'], ThemeConfig> = {
   dark: {

@@ -8,7 +8,7 @@ import type {
   HardwareAccelerationProfile,
   OutputFormat,
   ResolvedEncoderBackend,
-} from '../../shared/types';
+} from '@shared/types';
 
 export type JobProgressCallback = (value: number, message: string, outputPath?: string) => void;
 

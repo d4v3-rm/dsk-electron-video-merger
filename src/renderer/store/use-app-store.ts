@@ -7,8 +7,8 @@ import type {
   Job,
   JobProgressPayload,
   OutputFormat,
-} from '../../shared/types';
-import { api } from '../services/ipc';
+} from '@shared/types';
+import { api } from '@renderer/services/ipc';
 
 export type SelectedVideo = {
   id: string;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { api } from '../services/ipc';
-import { useAppStore } from '../store/use-app-store';
+import { api } from '@renderer/services/ipc';
+import { useAppStore } from '@renderer/store/use-app-store';
 
 export const useJobProgress = () => {
   useEffect(() => {

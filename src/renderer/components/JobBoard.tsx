@@ -3,11 +3,14 @@ import { Card, Progress, Space, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMemo, useState } from 'react';
 import type { Job } from '@shared/types';
-import { useAppStore } from '../store/use-app-store';
-import { requestedEncoderBackendLabel, resolvedEncoderBackendLabel } from '../utils/encoder-presentation';
-import { getFileName } from '../utils/file-utils';
-import { statusColor, statusIcon, statusLabel, toProgressStatus } from '../utils/job-presentation';
-import { JobDetailsDrawer } from './JobDetailsDrawer';
+import { useAppStore } from '@renderer/store/use-app-store';
+import {
+  requestedEncoderBackendLabel,
+  resolvedEncoderBackendLabel,
+} from '@renderer/utils/encoder-presentation';
+import { getFileName } from '@renderer/utils/file-utils';
+import { statusColor, statusIcon, statusLabel, toProgressStatus } from '@renderer/utils/job-presentation';
+import { JobDetailsDrawer } from '@renderer/components/JobDetailsDrawer';
 
 const { Text } = Typography;
 

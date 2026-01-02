@@ -12,7 +12,7 @@
     "dev:renderer": "vite --config src/renderer/vite.config.ts",
     "dev:main": "node ./scripts/dev-main.cjs",
     "build": "npm run build:main && npm run build:renderer && electron-builder --config electron-builder.config.cjs",
-    "build:main": "tsc -p src/main/tsconfig.json",
+    "build:main": "tsc -p src/main/tsconfig.json && tsc-alias -p src/main/tsconfig.json",
     "build:renderer": "vite build --config src/renderer/vite.config.ts",
     "build:portable": "npm run build",
     "generate:icon": "node ./scripts/generate-app-icon.mjs",
@@ -48,8 +48,10 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "png-to-ico": "^3.0.1",
     "prettier": "^3.6.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.8.4",
     "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.1.1",
     "wait-on": "^8.0.5"
   }
 }

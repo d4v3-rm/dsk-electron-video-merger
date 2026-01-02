@@ -1,7 +1,7 @@
 import { BulbOutlined, MoonOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
 import type { SegmentedValue } from 'antd/es/segmented';
-import { useUiStore } from '../store/use-ui-store';
+import { useUiStore } from '@renderer/store/use-ui-store';
 
 type ThemeSwitcherProps = {
   size?: 'small' | 'middle' | 'large';

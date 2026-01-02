@@ -11,9 +11,9 @@ import {
 import { Avatar, Button, Card, Col, Row, Space, Statistic, Steps, Tag, Typography } from 'antd';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useCanHover } from '../hooks/use-can-hover';
-import { useAppStore } from '../store/use-app-store';
-import { ThemeSwitcher } from './ThemeSwitcher';
+import { useCanHover } from '@renderer/hooks/use-can-hover';
+import { useAppStore } from '@renderer/store/use-app-store';
+import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
 
 const { Title, Text, Paragraph } = Typography;
 

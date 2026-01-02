@@ -6,9 +6,9 @@ const path = require('node:path');
 const { spawn } = require('node:child_process');
 const { URL } = require('node:url');
 const waitOn = require('wait-on');
-const electronAppConfig = require('../electron.app.config.json');
 
 const projectRoot = path.resolve(__dirname, '..');
+const electronAppConfig = require(path.join(projectRoot, 'electron.app.config.json'));
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const devServerUrl = process.env.VITE_DEV_SERVER_URL ?? electronAppConfig.runtime.defaultDevServerUrl;
 const devServerHost = new URL(devServerUrl).host;

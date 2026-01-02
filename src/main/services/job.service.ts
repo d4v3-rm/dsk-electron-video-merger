@@ -1,7 +1,7 @@
 import type { BrowserWindow } from 'electron';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { IPC_CHANNELS } from '../../shared/ipc';
+import { IPC_CHANNELS } from '@shared/ipc';
 import type {
   HardwareAccelerationProfile,
   Job,
@@ -9,9 +9,9 @@ import type {
   JobProgressPayload,
   JobStatus,
   ResolvedEncoderBackend,
-} from '../../shared/types';
-import { FfmpegService } from './ffmpeg.service';
-import { StorageService } from './storage.service';
+} from '@shared/types';
+import { FfmpegService } from '@main/services/ffmpeg.service';
+import { StorageService } from '@main/services/storage.service';
 
 interface QueueJob extends Job {
   sourcePaths: string[];
