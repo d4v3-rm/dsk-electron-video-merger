@@ -1,4 +1,4 @@
-﻿const js = require('@eslint/js');
+const js = require('@eslint/js');
 const tsParser = require('@typescript-eslint/parser');
 const tsPlugin = require('@typescript-eslint/eslint-plugin');
 const reactPlugin = require('eslint-plugin-react');
@@ -57,7 +57,6 @@ module.exports = [
       'src/main/**/*.{ts,js}',
       'src/shared/**/*.{ts,js}',
       'scripts/**/*.{cjs,mjs,js}',
-      'src/renderer/vite.config.ts',
       'vite.config.ts',
       'eslint.config.cjs',
       '.prettierrc.cjs',

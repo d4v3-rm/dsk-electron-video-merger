@@ -8,13 +8,13 @@ const parsedPort = Number.parseInt(rawPort ?? '', 10);
 const devPort = Number.isNaN(parsedPort) ? 5173 : parsedPort;
 
 export default defineConfig({
-  root: __dirname,
+  root: path.resolve(__dirname, 'src/renderer'),
   base: './',
-  plugins: [react(), tsconfigPaths({ projects: [path.resolve(__dirname, 'tsconfig.json')] })],
+  plugins: [react(), tsconfigPaths({ projects: [path.resolve(__dirname, 'tsconfig.renderer.app.json')] })],
   resolve: {
     alias: {
-      '@renderer': path.resolve(__dirname),
-      '@shared': path.resolve(__dirname, '../shared'),
+      '@renderer': path.resolve(__dirname, 'src/renderer'),
+      '@shared': path.resolve(__dirname, 'src/shared'),
     },
   },
   server: {
@@ -23,7 +23,7 @@ export default defineConfig({
     strictPort: true,
   },
   build: {
-    outDir: path.resolve(__dirname, '../../dist/renderer'),
+    outDir: path.resolve(__dirname, 'dist/renderer'),
     emptyOutDir: true,
     sourcemap: true,
     chunkSizeWarningLimit: 1200,
