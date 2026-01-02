@@ -9,23 +9,32 @@ const waitOn = require('wait-on');
 
 const projectRoot = path.resolve(__dirname, '..');
 const electronAppConfig = require(path.join(projectRoot, 'electron.app.config.json'));
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const isWindows = process.platform === 'win32';
+const npmCommand = 'npm';
+const windowsShell = process.env.ComSpec ?? process.env.COMSPEC ?? 'cmd.exe';
 const devServerUrl = process.env.VITE_DEV_SERVER_URL ?? electronAppConfig.runtime.defaultDevServerUrl;
 const devServerHost = new URL(devServerUrl).host;
+
+const createChildEnv = (extraEnv = {}) => ({
+  ...process.env,
+  ...extraEnv,
+});
 
 const runCommand = (command, args, extraEnv = {}) =>
   new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: projectRoot,
-      env: {
-        ...process.env,
-        ...extraEnv,
-      },
+      env: createChildEnv(extraEnv),
       stdio: 'inherit',
     });
 
     child.on('error', reject);
-    child.on('exit', (code) => {
+    child.on('exit', (code, signal) => {
+      if (signal) {
+        reject(new Error(`${command} ${args.join(' ')} exited with signal ${signal}`));
+        return;
+      }
+
       if (code === 0) {
         resolve();
         return;
@@ -35,13 +44,21 @@ const runCommand = (command, args, extraEnv = {}) =>
     });
   });
 
+const runNpmScript = (scriptName, extraEnv = {}) => {
+  if (isWindows) {
+    return runCommand(windowsShell, ['/d', '/s', '/c', `npm run ${scriptName}`], extraEnv);
+  }
+
+  return runCommand(npmCommand, ['run', scriptName], extraEnv);
+};
+
 const run = async () => {
   await waitOn({
     resources: [`tcp:${devServerHost}`],
     timeout: 60000,
   });
 
-  await runCommand(npmCommand, ['run', 'build:main']);
+  await runNpmScript('build:main');
 
   await runCommand(process.execPath, ['./scripts/run-electron.cjs'], {
     NODE_ENV: 'development',
