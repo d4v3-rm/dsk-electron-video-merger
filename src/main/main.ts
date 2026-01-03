@@ -62,6 +62,7 @@ const createWindow = async (): Promise<void> => {
     title: electronAppConfig.productName,
     icon: getWindowIconPath(),
     show: false,
+    autoHideMenuBar: !isDevelopment(),
     backgroundColor: electronAppConfig.runtime.backgroundColor,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -70,6 +71,11 @@ const createWindow = async (): Promise<void> => {
       sandbox: true,
     },
   });
+
+  if (!isDevelopment()) {
+    mainWindow.removeMenu();
+    mainWindow.setMenuBarVisibility(false);
+  }
 
   wireDevelopmentShortcuts(mainWindow);
 

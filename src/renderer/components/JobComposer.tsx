@@ -124,7 +124,7 @@ export const JobComposer = () => {
             <Select
               value={settings.outputFormat}
               onChange={setOutputFormat}
-              options={['mp4', 'mov', 'webm'].map((value) => ({
+              options={['mp4', 'mov', 'mkv', 'webm'].map((value) => ({
                 value,
                 label: value.toUpperCase(),
               }))}

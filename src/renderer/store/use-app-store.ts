@@ -44,7 +44,7 @@ const DEFAULT_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProfile = {
     encoder: null,
     hardwareAccel: null,
     supportedOutputFormats: [],
-    reason: 'Rilevamento hardware in attesa.',
+    reason: 'Hardware detection pending.',
   },
 };
 
@@ -83,7 +83,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             encoder: null,
             hardwareAccel: null,
             supportedOutputFormats: [],
-            reason: 'Rilevamento hardware non disponibile in questa sessione.',
+            reason: 'Hardware detection is unavailable in this session.',
           },
         },
       });
@@ -101,7 +101,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       });
       set({ selectedFiles: nextFiles });
     } catch {
-      // no-op: il bridge Electron potrebbe non essere disponibile in questa fase
+      // no-op: the Electron bridge may be unavailable while rendering outside Electron.
     }
   },
 
@@ -172,23 +172,30 @@ export const useAppStore = create<AppState>((set, get) => ({
   upsertJobProgress: (payload) => {
     set({
       jobs: get()
-        .jobs.map((job) =>
-          job.id === payload.jobId
-            ? {
-                ...job,
-                status: payload.status,
-                progress: payload.progress,
-                message: payload.message,
-                outputPaths:
-                  payload.outputPath && !job.outputPaths.includes(payload.outputPath)
-                    ? [...job.outputPaths, payload.outputPath]
-                    : job.outputPaths,
-                updatedAt: Date.now(),
-                resolvedEncoderBackend: payload.resolvedEncoderBackend ?? job.resolvedEncoderBackend,
-                error: payload.error,
-              }
-            : job,
-        )
+        .jobs.map((job) => {
+          if (job.id !== payload.jobId) {
+            return job;
+          }
+
+          const nextLogs = payload.logEntry ? [...job.logs, payload.logEntry] : job.logs;
+          const nextOutputPaths =
+            payload.outputPath && !job.outputPaths.includes(payload.outputPath)
+              ? [...job.outputPaths, payload.outputPath]
+              : job.outputPaths;
+
+          return {
+            ...job,
+            status: payload.status,
+            progress: payload.progress,
+            message: payload.message,
+            outputPaths: nextOutputPaths,
+            updatedAt: Date.now(),
+            logs: nextLogs,
+            telemetry: payload.telemetry ?? job.telemetry,
+            resolvedEncoderBackend: payload.resolvedEncoderBackend ?? job.resolvedEncoderBackend,
+            error: payload.error,
+          };
+        })
         .sort((a, b) => b.updatedAt - a.updatedAt),
     });
   },

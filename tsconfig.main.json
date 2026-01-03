@@ -10,12 +10,5 @@
     "sourceMap": false,
     "declaration": false
   },
-  "include": [
-    "src/main/main.ts",
-    "src/main/preload.ts",
-    "src/main/ipc/**/*.ts",
-    "src/main/services/**/*.ts",
-    "src/main/config/**/*.ts",
-    "src/shared/**/*.ts"
-  ]
+  "include": ["src/main/**/*.ts", "src/main/**/*.d.ts", "src/shared/**/*.ts", "src/shared/**/*.d.ts"]
 }

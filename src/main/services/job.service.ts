@@ -6,16 +6,33 @@ import type {
   HardwareAccelerationProfile,
   Job,
   JobCreationPayload,
+  JobLogEntry,
+  JobLogLevel,
+  JobLogStage,
   JobProgressPayload,
   JobStatus,
+  JobTelemetry,
   ResolvedEncoderBackend,
 } from '@shared/types';
+import type { JobProgressUpdate } from '@main/services/ffmpeg.service';
 import { FfmpegService } from '@main/services/ffmpeg.service';
 import { StorageService } from '@main/services/storage.service';
 
 interface QueueJob extends Job {
   sourcePaths: string[];
 }
+
+interface PublishJobEventOptions {
+  progress: number;
+  message: string;
+  outputPath?: string;
+  telemetry?: JobTelemetry;
+  logEntry?: JobLogEntry;
+  error?: string;
+  resolvedEncoderBackend?: ResolvedEncoderBackend;
+}
+
+const MAX_JOB_LOG_ENTRIES = 160;
 
 export class JobService {
   private jobs = new Map<string, QueueJob>();
@@ -33,7 +50,9 @@ export class JobService {
   }
 
   getJobs(): Job[] {
-    return Array.from(this.jobs.values()).sort((a, b) => b.createdAt - a.createdAt);
+    return Array.from(this.jobs.values())
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map((job) => this.stripInternal(job));
   }
 
   async getHardwareAccelerationProfile(): Promise<HardwareAccelerationProfile> {
@@ -43,7 +62,7 @@ export class JobService {
   async createJob(payload: JobCreationPayload): Promise<Job> {
     const sourcePaths = [...new Set(payload.filePaths)];
     if (sourcePaths.length === 0) {
-      throw new Error('Seleziona almeno un file video prima di avviare il merge.');
+      throw new Error('Select at least one video before starting a merge.');
     }
 
     const now = Date.now();
@@ -61,15 +80,22 @@ export class JobService {
       settings: payload.settings,
       outputPaths: [],
       progress: 0,
-      message: 'In coda',
+      message: 'Queued',
       createdAt: now,
       updatedAt: now,
+      logs: [
+        this.createLogEntry(
+          'queue',
+          'info',
+          `Queued ${files.length} clip${files.length === 1 ? '' : 's'} for merge.`,
+          0,
+        ),
+      ],
       sourcePaths,
     };
 
     this.jobs.set(job.id, job);
     this.queue.push(job.id);
-    this.emitProgress(job, job.progress, job.message);
     void this.processQueue();
     return this.stripInternal(job);
   }
@@ -109,11 +135,28 @@ export class JobService {
         job.outputPaths,
         undefined,
         resolvedEncoderBackend,
+        undefined,
+        this.createLogEntry(
+          'prepare',
+          'info',
+          this.buildStartMessage(job.settings.encoderBackend, resolvedEncoderBackend),
+          5,
+        ),
       );
 
       const { outputDir, tempDir: nextTempDir } = await this.storageService.buildJobFolders(job.id);
       tempDir = nextTempDir;
       const outputPath = path.join(outputDir, `merged-${Date.now()}.${job.settings.outputFormat}`);
+
+      this.publishJobEvent(job, {
+        progress: job.progress,
+        message: job.message,
+        outputPath,
+        resolvedEncoderBackend,
+        telemetry: job.telemetry,
+        logEntry: this.createLogEntry('prepare', 'info', `Output target resolved: ${outputPath}`),
+      });
+
       const output = await this.ffmpegService.processSingleMerge({
         inputPaths: job.sourcePaths,
         outputPath,
@@ -121,21 +164,35 @@ export class JobService {
         compression: job.settings.compression,
         resolvedEncoderBackend,
         tempDir,
-        onProgress: (progress, message) =>
-          this.emitProgress(job, progress, message, outputPath, undefined, resolvedEncoderBackend),
+        onProgress: (update: JobProgressUpdate) =>
+          this.publishJobEvent(job, {
+            progress: update.progress,
+            message: update.message,
+            outputPath,
+            telemetry: update.telemetry,
+            resolvedEncoderBackend,
+            logEntry: update.logMessage
+              ? this.createLogEntry(update.stage, 'info', update.logMessage, update.progress)
+              : undefined,
+          }),
       });
 
       await this.updateStatus(
         job,
         'completed',
         100,
-        'Completato',
+        'Completed',
         [output],
         undefined,
         resolvedEncoderBackend,
+        {
+          ...job.telemetry,
+          processedDurationMs: job.telemetry?.totalDurationMs ?? job.telemetry?.processedDurationMs,
+        },
+        this.createLogEntry('finalize', 'info', 'Merge completed successfully.', 100),
       );
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Errore imprevisto';
+      const message = error instanceof Error ? error.message : 'Unexpected error';
       await this.updateStatus(
         job,
         'error',
@@ -144,6 +201,8 @@ export class JobService {
         job.outputPaths,
         message,
         resolvedEncoderBackend,
+        job.telemetry,
+        this.createLogEntry('system', 'error', message, job.progress),
       );
     } finally {
       this.running = false;
@@ -164,42 +223,60 @@ export class JobService {
     outputPaths: string[] = job.outputPaths,
     error?: string,
     resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
+    telemetry: JobTelemetry | undefined = job.telemetry,
+    logEntry?: JobLogEntry,
   ): Promise<void> {
     job.status = status;
     job.progress = progress;
     job.message = message;
     job.outputPaths = outputPaths;
     job.error = error;
+    job.telemetry = telemetry;
     job.resolvedEncoderBackend = resolvedEncoderBackend;
     job.updatedAt = Date.now();
-    this.emitProgress(job, progress, message, outputPaths.at(-1), error, resolvedEncoderBackend);
+
+    this.publishJobEvent(job, {
+      progress,
+      message,
+      outputPath: outputPaths.at(-1),
+      telemetry,
+      error,
+      resolvedEncoderBackend,
+      logEntry,
+    });
+
     this.jobs.set(job.id, job);
   }
 
-  private emitProgress(
-    job: QueueJob,
-    progress: number,
-    message: string,
-    outputPath?: string,
-    error?: string,
-    resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
-  ): void {
+  private publishJobEvent(job: QueueJob, options: PublishJobEventOptions): void {
     const payload: JobProgressPayload = {
       jobId: job.id,
       status: job.status,
-      progress,
-      message,
-      outputPath,
-      resolvedEncoderBackend,
-      error,
+      progress: options.progress,
+      message: options.message,
+      outputPath: options.outputPath,
+      telemetry: options.telemetry,
+      logEntry: options.logEntry,
+      resolvedEncoderBackend: options.resolvedEncoderBackend,
+      error: options.error,
     };
 
-    job.progress = progress;
-    job.message = message;
+    job.progress = options.progress;
+    job.message = options.message;
     job.updatedAt = Date.now();
-    job.resolvedEncoderBackend = resolvedEncoderBackend;
-    if (error) {
-      job.error = error;
+    job.telemetry = options.telemetry;
+    job.resolvedEncoderBackend = options.resolvedEncoderBackend;
+
+    if (options.outputPath && !job.outputPaths.includes(options.outputPath)) {
+      job.outputPaths = [...job.outputPaths, options.outputPath];
+    }
+
+    if (options.error) {
+      job.error = options.error;
+    }
+
+    if (options.logEntry) {
+      job.logs = this.appendLog(job.logs, options.logEntry);
     }
 
     if (this.mainWindow) {
@@ -218,6 +295,8 @@ export class JobService {
       message: job.message,
       createdAt: job.createdAt,
       updatedAt: job.updatedAt,
+      logs: job.logs,
+      telemetry: job.telemetry,
       resolvedEncoderBackend: job.resolvedEncoderBackend,
       error: job.error,
     };
@@ -228,13 +307,39 @@ export class JobService {
     resolvedBackend: ResolvedEncoderBackend,
   ): string {
     if (requestedBackend === 'nvidia' && resolvedBackend === 'cpu') {
-      return 'NVENC non disponibile, fallback CPU';
+      return 'NVIDIA NVENC is unavailable. Falling back to CPU encoding.';
     }
 
     if (resolvedBackend === 'nvidia') {
-      return requestedBackend === 'auto' ? 'Avvio transcodifica NVIDIA (Auto)' : 'Avvio transcodifica NVIDIA';
+      return requestedBackend === 'auto'
+        ? 'Starting merge with automatic NVIDIA NVENC selection.'
+        : 'Starting merge with NVIDIA NVENC.';
     }
 
-    return 'Avvio transcodifica CPU';
+    return 'Starting merge with CPU encoding.';
+  }
+
+  private createLogEntry(
+    stage: JobLogStage,
+    level: JobLogLevel,
+    message: string,
+    progress?: number,
+  ): JobLogEntry {
+    return {
+      id: randomUUID(),
+      timestamp: Date.now(),
+      stage,
+      level,
+      message,
+      progress,
+    };
+  }
+
+  private appendLog(logs: JobLogEntry[], nextLog: JobLogEntry): JobLogEntry[] {
+    if (logs.some((entry) => entry.id === nextLog.id)) {
+      return logs;
+    }
+
+    return [...logs, nextLog].slice(-MAX_JOB_LOG_ENTRIES);
   }
 }
