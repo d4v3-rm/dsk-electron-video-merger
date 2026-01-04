@@ -1,5 +1,6 @@
 import { Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { JobBoard } from '@renderer/components/JobBoard';
 import { JobComposer } from '@renderer/components/JobComposer';
 import { MergeOverview } from '@renderer/components/MergeOverview';
@@ -11,6 +12,7 @@ const { Content, Footer } = Layout;
 const { Text } = Typography;
 
 function App() {
+  const { t } = useTranslation();
   const { refreshJobs, refreshHardwareAccelerationProfile, loaded } = useAppStore();
   useJobProgress();
 
@@ -40,7 +42,7 @@ function App() {
                   <div className="loading-card">
                     <Space direction="vertical" size="middle" align="center">
                       <Spin size="large" />
-                      <Text type="secondary">Caricamento workspace merge...</Text>
+                      <Text type="secondary">{t('app.loadingWorkspace')}</Text>
                     </Space>
                   </div>
                 )}
@@ -51,10 +53,7 @@ function App() {
       </Content>
 
       <Footer className="app-footer">
-        <Text type="secondary">
-          Workspace pensato per costruire merge ordinati, monitorare l&apos;output e riaprire facilmente i
-          risultati.
-        </Text>
+        <Text type="secondary">{t('app.footer')}</Text>
       </Footer>
     </Layout>
   );

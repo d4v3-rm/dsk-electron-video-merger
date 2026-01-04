@@ -1,4 +1,5 @@
 import { ConfigProvider, theme as antdTheme } from 'antd';
+import enUS from 'antd/locale/en_US';
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import type { ThemeConfig } from 'antd';
 import { useUiStore } from '@renderer/store/use-ui-store';
@@ -60,5 +61,9 @@ export const AppThemeProvider = ({ children }: PropsWithChildren) => {
     syncThemeFromStorage();
   }, [syncThemeFromStorage]);
 
-  return <ConfigProvider theme={themeConfig}>{children}</ConfigProvider>;
+  return (
+    <ConfigProvider locale={enUS} theme={themeConfig}>
+      {children}
+    </ConfigProvider>
+  );
 };

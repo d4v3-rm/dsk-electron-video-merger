@@ -6,13 +6,12 @@ import {
 } from '@ant-design/icons';
 import type { ReactNode } from 'react';
 import type { Job } from '@shared/types';
+import i18n from '@renderer/i18n';
 
-export const statusLabel: Record<Job['status'], string> = {
-  queued: 'In coda',
-  running: 'In corso',
-  completed: 'Completato',
-  error: 'Errore',
-};
+export const getStatusLabel = (status: Job['status']): string => i18n.t(`status.${status}`);
+
+export const getLogStageLabel = (stage: 'queue' | 'prepare' | 'encode' | 'finalize' | 'system'): string =>
+  i18n.t(`logs.${stage}`);
 
 export const statusColor: Record<Job['status'], string> = {
   queued: 'default',

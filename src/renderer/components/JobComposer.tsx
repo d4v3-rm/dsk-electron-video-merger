@@ -23,17 +23,21 @@ import {
   Typography,
 } from 'antd';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CodecGuideModal } from '@renderer/components/CodecGuideModal';
 import { useAppStore } from '@renderer/store/use-app-store';
 import {
+  getCompressionPresetTechnicalLabel,
   getEncoderModeDescription,
+  getRequestedEncoderBackendLabel,
   isNvidiaSupportedOutputFormat,
-  requestedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
 import { formatBytes } from '@renderer/utils/file-utils';
 
 const { Text, Paragraph, Title } = Typography;
 
 export const JobComposer = () => {
+  const { t } = useTranslation();
   const {
     selectedFiles,
     hardwareAccelerationProfile,
@@ -76,28 +80,29 @@ export const JobComposer = () => {
 
   return (
     <Card
-      title="Merge setup"
+      title={t('composer.cardTitle')}
       className="modern-card queue-card"
       extra={
         <Space size="small" wrap>
-          <Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>Queue ordinata</Tag>
-          <Tag color={nvidiaAvailable ? 'success' : 'default'}>
-            {nvidiaAvailable ? 'NVENC disponibile' : 'Solo CPU'}
+          <Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>
+            {t('composer.tags.orderedQueue')}
           </Tag>
+          <Tag color={nvidiaAvailable ? 'success' : 'default'}>
+            {nvidiaAvailable ? t('composer.tags.nvidiaAvailable') : t('composer.tags.cpuOnly')}
+          </Tag>
+          <CodecGuideModal />
         </Space>
       }
     >
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Title level={4} className="section-title">
-            Costruisci il merge finale
+            {t('composer.title')}
           </Title>
-          <Text type="secondary">
-            Definisci l&apos;ordine dei clip, scegli il profilo di esportazione e lancia il master.
-          </Text>
+          <Text type="secondary">{t('composer.subtitle')}</Text>
         </div>
 
-        <Alert type="info" showIcon message="L'ordine della lista e` l'ordine reale del video finale." />
+        <Alert type="info" showIcon message={t('composer.orderInfo')} />
 
         <Alert
           type={hardwareAlertType}
@@ -105,22 +110,26 @@ export const JobComposer = () => {
           message={
             hardwareAccelerationLoaded
               ? hardwareAccelerationProfile.nvidia.reason
-              : 'Rilevamento hardware in corso'
+              : t('composer.hardwareDetecting')
           }
           description={encoderModeDescription}
         />
 
         <div className="queue-stats">
           <div className="queue-stat-tile">
-            <Statistic title="Clip" value={selectedStats.totalFiles} prefix={<VideoCameraAddOutlined />} />
+            <Statistic
+              title={t('composer.stats.clips')}
+              value={selectedStats.totalFiles}
+              prefix={<VideoCameraAddOutlined />}
+            />
           </div>
           <div className="queue-stat-tile">
-            <Statistic title="Peso staging" value={selectedStats.totalSize} />
+            <Statistic title={t('composer.stats.stagingSize')} value={selectedStats.totalSize} />
           </div>
         </div>
 
         <Form layout="vertical">
-          <Form.Item label="Formato in uscita">
+          <Form.Item label={t('composer.fields.outputFormat')}>
             <Select
               value={settings.outputFormat}
               onChange={setOutputFormat}
@@ -131,34 +140,33 @@ export const JobComposer = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Compressione">
+          <Form.Item label={t('composer.fields.compression')}>
             <Select
               value={settings.compression}
               onChange={setCompression}
-              options={[
-                { value: 'light', label: 'Leggera' },
-                { value: 'balanced', label: 'Bilanciata' },
-                { value: 'strong', label: 'Alta compressione' },
-              ]}
+              options={(['light', 'balanced', 'strong'] as const).map((preset) => ({
+                value: preset,
+                label: getCompressionPresetTechnicalLabel(preset),
+              }))}
             />
           </Form.Item>
 
-          <Form.Item label="Backend encoding">
+          <Form.Item label={t('composer.fields.backend')}>
             <Select
               value={settings.encoderBackend}
               onChange={setEncoderBackend}
               options={[
                 {
                   value: 'auto',
-                  label: `${requestedEncoderBackendLabel.auto} (${nvidiaAvailable ? 'preferisce NVIDIA' : 'resta CPU'})`,
+                  label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? 'prefers NVIDIA' : 'stays on CPU'})`,
                 },
                 {
                   value: 'cpu',
-                  label: requestedEncoderBackendLabel.cpu,
+                  label: getRequestedEncoderBackendLabel('cpu'),
                 },
                 {
                   value: 'nvidia',
-                  label: requestedEncoderBackendLabel.nvidia,
+                  label: getRequestedEncoderBackendLabel('nvidia'),
                   disabled: !nvidiaAvailable || !nvidiaSupportedForFormat,
                 },
               ]}
@@ -167,17 +175,19 @@ export const JobComposer = () => {
         </Form>
 
         <Text type="secondary">
-          Backend selezionato: {requestedEncoderBackendLabel[settings.encoderBackend]}.{' '}
+          {t('composer.backendSelected', {
+            backend: getRequestedEncoderBackendLabel(settings.encoderBackend),
+          })}{' '}
           {settings.outputFormat === 'webm'
-            ? 'WebM resta su CPU.'
+            ? t('composer.backendWebm')
             : nvidiaAvailable
-              ? 'Su MP4 e MOV puoi usare NVENC.'
-              : 'NVIDIA non rilevata: verra` usata la CPU.'}
+              ? t('composer.backendNvenc')
+              : t('composer.backendCpu')}
         </Text>
 
         <Space size="middle" wrap>
           <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large">
-            Aggiungi clip
+            {t('composer.buttons.addClips')}
           </Button>
           <Button
             icon={<ClearOutlined />}
@@ -186,7 +196,7 @@ export const JobComposer = () => {
             disabled={selectedFiles.length === 0}
             size="large"
           >
-            Svuota queue
+            {t('composer.buttons.clearQueue')}
           </Button>
           <Button
             type="primary"
@@ -196,7 +206,7 @@ export const JobComposer = () => {
             size="large"
             onClick={createJob}
           >
-            Avvia merge
+            {t('composer.buttons.startMerge')}
           </Button>
         </Space>
 
@@ -206,8 +216,8 @@ export const JobComposer = () => {
           <Alert
             type="warning"
             showIcon
-            message="Nessun clip in queue"
-            description="Aggiungi i video da concatenare. Potrai riordinarli prima di esportare."
+            message={t('composer.empty.title')}
+            description={t('composer.empty.description')}
           />
         ) : (
           <List
@@ -222,7 +232,7 @@ export const JobComposer = () => {
                   className="queue-item"
                   actions={[
                     <Space key="controls" size="small">
-                      <Tooltip title="Sposta in alto">
+                      <Tooltip title={t('composer.tooltips.moveUp')}>
                         <Button
                           size="small"
                           icon={<ArrowUpOutlined />}
@@ -230,7 +240,7 @@ export const JobComposer = () => {
                           onClick={() => moveSelectedFile(item.id, 'up')}
                         />
                       </Tooltip>
-                      <Tooltip title="Sposta in basso">
+                      <Tooltip title={t('composer.tooltips.moveDown')}>
                         <Button
                           size="small"
                           icon={<ArrowDownOutlined />}
@@ -238,7 +248,7 @@ export const JobComposer = () => {
                           onClick={() => moveSelectedFile(item.id, 'down')}
                         />
                       </Tooltip>
-                      <Tooltip title="Rimuovi clip">
+                      <Tooltip title={t('composer.tooltips.removeClip')}>
                         <Button
                           size="small"
                           danger
@@ -254,8 +264,8 @@ export const JobComposer = () => {
                     title={
                       <Space wrap>
                         <Text strong>{item.name}</Text>
-                        {isFirst ? <Tag color="cyan">Inizio</Tag> : null}
-                        {isLast ? <Tag color="geekblue">Finale</Tag> : null}
+                        {isFirst ? <Tag color="cyan">{t('composer.clipTag.start')}</Tag> : null}
+                        {isLast ? <Tag color="geekblue">{t('composer.clipTag.end')}</Tag> : null}
                       </Space>
                     }
                     description={
@@ -266,7 +276,11 @@ export const JobComposer = () => {
                         <Space size="middle">
                           <Text type="secondary">{formatBytes(item.size)}</Text>
                           <Text type="secondary">
-                            {isFirst ? 'Apre il merge' : isLast ? 'Chiude il merge' : 'Clip intermedia'}
+                            {isFirst
+                              ? t('composer.clipRole.start')
+                              : isLast
+                                ? t('composer.clipRole.end')
+                                : t('composer.clipRole.middle')}
                           </Text>
                         </Space>
                       </Flex>

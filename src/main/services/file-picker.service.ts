@@ -12,7 +12,7 @@ export interface VideoChoice {
 export class FilePickerService {
   async pickVideos(): Promise<VideoChoice[]> {
     const result = await dialog.showOpenDialog({
-      title: 'Seleziona uno o piu video',
+      title: 'Select one or more videos',
       properties: ['openFile', 'multiSelections'],
       filters: [
         {

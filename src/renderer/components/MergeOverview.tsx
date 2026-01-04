@@ -11,6 +11,7 @@ import {
 import { Avatar, Button, Card, Col, Row, Space, Statistic, Steps, Tag, Typography } from 'antd';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCanHover } from '@renderer/hooks/use-can-hover';
 import { useAppStore } from '@renderer/store/use-app-store';
 import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
@@ -30,6 +31,7 @@ const getCurrentStep = (selectedFilesCount: number, runningJobsCount: number, co
 };
 
 export const MergeOverview = () => {
+  const { t } = useTranslation();
   const jobs = useAppStore((state) => state.jobs);
   const selectedFiles = useAppStore((state) => state.selectedFiles);
   const canHover = useCanHover();
@@ -44,36 +46,40 @@ export const MergeOverview = () => {
   const currentStep = getCurrentStep(selectedFiles.length, runningJobs, completedJobs);
   const isExpanded = canHover ? isPinnedOpen || isHoverActive : isPinnedOpen;
   const workspaceStatus =
-    runningJobs > 0 ? 'Merge in corso' : selectedFiles.length > 0 ? 'Pronto al merge' : 'Studio locale';
+    runningJobs > 0
+      ? t('overview.status.running')
+      : selectedFiles.length > 0
+        ? t('overview.status.ready')
+        : t('overview.status.idle');
 
   const metrics = useMemo(
     () => [
       {
         key: 'clips',
-        title: 'Clip in staging',
+        title: t('overview.metrics.clips'),
         value: selectedFiles.length,
         prefix: <VideoCameraOutlined />,
       },
       {
         key: 'queued',
-        title: 'Merge in coda',
+        title: t('overview.metrics.queued'),
         value: queuedJobs,
         prefix: <ProfileOutlined />,
       },
       {
         key: 'running',
-        title: 'In lavorazione',
+        title: t('overview.metrics.running'),
         value: runningJobs,
         prefix: <CompressOutlined />,
       },
       {
         key: 'completed',
-        title: 'Completati',
+        title: t('overview.metrics.completed'),
         value: completedJobs,
         prefix: <PlayCircleOutlined />,
       },
     ],
-    [completedJobs, queuedJobs, runningJobs, selectedFiles.length],
+    [completedJobs, queuedJobs, runningJobs, selectedFiles.length, t],
   );
 
   useEffect(() => {
@@ -151,12 +157,12 @@ export const MergeOverview = () => {
             <Avatar size={48} shape="square" icon={<DashboardOutlined />} />
             <div>
               <Space wrap size={[8, 8]} className="overview-tags">
-                <Tag color="processing">Merge Studio</Tag>
-                <Tag>Desktop</Tag>
-                <Tag>Output unico</Tag>
+                <Tag color="processing">{t('overview.tags.studio')}</Tag>
+                <Tag>{t('overview.tags.desktop')}</Tag>
+                <Tag>{t('overview.tags.singleOutput')}</Tag>
               </Space>
               <Title level={3} className="overview-title">
-                Ordina i clip e genera un master finale coerente senza perdere il controllo del flusso.
+                {t('overview.title')}
               </Title>
             </div>
           </Space>
@@ -169,7 +175,13 @@ export const MergeOverview = () => {
               icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
               onClick={toggleOverview}
             >
-              {canHover ? (isPinnedOpen ? 'Sblocca' : 'Blocca aperto') : isExpanded ? 'Compatta' : 'Espandi'}
+              {canHover
+                ? isPinnedOpen
+                  ? t('overview.actions.unpin')
+                  : t('overview.actions.pinOpen')
+                : isExpanded
+                  ? t('overview.actions.collapse')
+                  : t('overview.actions.expand')}
             </Button>
           </Space>
         </div>
@@ -188,24 +200,16 @@ export const MergeOverview = () => {
           <Row gutter={[24, 24]} align="middle">
             <Col xs={24} xl={12}>
               <Space direction="vertical" size="middle" className="overview-copy">
-                <Paragraph className="overview-text">
-                  La hero resta compatta quando stai lavorando sul merge e si apre solo quando serve contesto:
-                  branding, stato workspace, tema e guida operativa sono raccolti qui, senza rubare spazio
-                  alla queue.
-                </Paragraph>
+                <Paragraph className="overview-text">{t('overview.body')}</Paragraph>
 
                 <Space wrap size={[8, 8]}>
-                  <Tag bordered={false}>Ordine esplicito</Tag>
-                  <Tag bordered={false}>Compressione guidata</Tag>
-                  <Tag bordered={false}>Storico locale</Tag>
-                  <Tag bordered={false}>Output unico</Tag>
+                  <Tag bordered={false}>{t('overview.chips.explicitOrder')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.guidedCompression')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.localHistory')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.singleOutput')}</Tag>
                 </Space>
 
-                <Text type="secondary">
-                  {canHover
-                    ? 'Passa il mouse sulla hero per leggere il contesto completo o bloccarla aperta se stai configurando il workspace.'
-                    : 'Usa il toggle per comprimere o riaprire il pannello introduttivo.'}
-                </Text>
+                <Text type="secondary">{canHover ? t('overview.hoverHint') : t('overview.toggleHint')}</Text>
               </Space>
             </Col>
 
@@ -216,18 +220,18 @@ export const MergeOverview = () => {
                   responsive
                   items={[
                     {
-                      title: 'Queue clip',
-                      description: 'Seleziona e ordina la timeline',
+                      title: t('overview.steps.queueTitle'),
+                      description: t('overview.steps.queueDescription'),
                       icon: <VideoCameraOutlined />,
                     },
                     {
-                      title: 'Merge',
-                      description: 'Transcodifica e compressione',
+                      title: t('overview.steps.mergeTitle'),
+                      description: t('overview.steps.mergeDescription'),
                       icon: <CompressOutlined />,
                     },
                     {
-                      title: 'Output',
-                      description: 'Verifica e riusa il risultato',
+                      title: t('overview.steps.outputTitle'),
+                      description: t('overview.steps.outputDescription'),
                       icon: <PlayCircleOutlined />,
                     },
                   ]}

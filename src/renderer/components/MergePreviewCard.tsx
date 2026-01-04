@@ -1,16 +1,20 @@
 import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined } from '@ant-design/icons';
 import { Card, Descriptions, Divider, Empty, List, Progress, Space, Tag, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@renderer/store/use-app-store';
 import {
-  requestedEncoderBackendLabel,
-  resolvedEncoderBackendLabel,
+  getCompressionPresetTechnicalLabel,
+  getRequestedEncoderBackendLabel,
+  getResolvedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
 import { buildMergedOutputName, formatBytes } from '@renderer/utils/file-utils';
-import { statusColor, statusLabel, toProgressStatus } from '@renderer/utils/job-presentation';
+import { getStatusLabel, statusColor, toProgressStatus } from '@renderer/utils/job-presentation';
+import { formatDurationMs, formatSpeed } from '@renderer/utils/runtime-presentation';
 
 const { Text, Paragraph } = Typography;
 
 export const MergePreviewCard = () => {
+  const { t } = useTranslation();
   const selectedFiles = useAppStore((state) => state.selectedFiles);
   const settings = useAppStore((state) => state.settings);
   const jobs = useAppStore((state) => state.jobs);
@@ -28,24 +32,21 @@ export const MergePreviewCard = () => {
   const previewName = buildMergedOutputName(previewSeedFile, previewSettings.outputFormat);
   const previewStatus =
     activeJob?.status === 'running'
-      ? 'Merge attivo'
+      ? t('preview.status.active')
       : activeJob?.status === 'queued'
-        ? 'In coda'
+        ? t('preview.status.queued')
         : selectedFiles.length > 0
-          ? 'Pronto al lancio'
-          : 'In attesa';
+          ? t('preview.status.ready')
+          : t('preview.status.idle');
 
   return (
     <Card
       className="modern-card preview-card"
-      title="Output plan"
+      title={t('preview.cardTitle')}
       extra={<Tag color={activeJob ? 'processing' : 'default'}>{previewStatus}</Tag>}
     >
       {selectedFiles.length === 0 && !activeJob && !latestCompletedJob ? (
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="Seleziona dei clip per vedere il piano di merge."
-        />
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('preview.emptyDescription')} />
       ) : (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Descriptions
@@ -54,7 +55,7 @@ export const MergePreviewCard = () => {
             items={[
               {
                 key: 'name',
-                label: 'Nome output',
+                label: t('preview.labels.outputName'),
                 children: (
                   <Text strong className="preview-output-name">
                     {previewName}
@@ -63,62 +64,65 @@ export const MergePreviewCard = () => {
               },
               {
                 key: 'clips',
-                label: 'Clip in ingresso',
+                label: t('preview.labels.inputClips'),
                 children: selectedFiles.length || activeJob?.files.length || 0,
               },
               {
                 key: 'format',
-                label: 'Formato',
+                label: t('preview.labels.format'),
                 children: previewSettings.outputFormat.toUpperCase(),
               },
               {
                 key: 'compression',
-                label: 'Compressione',
-                children: previewSettings.compression,
+                label: t('preview.labels.compression'),
+                children: getCompressionPresetTechnicalLabel(previewSettings.compression),
               },
               {
                 key: 'backendRequested',
-                label: 'Backend richiesto',
-                children: requestedEncoderBackendLabel[previewSettings.encoderBackend],
+                label: t('preview.labels.requestedBackend'),
+                children: getRequestedEncoderBackendLabel(previewSettings.encoderBackend),
               },
               {
                 key: 'backendResolved',
-                label: 'Backend effettivo',
+                label: t('preview.labels.activeBackend'),
                 children: activeJob?.resolvedEncoderBackend
-                  ? resolvedEncoderBackendLabel[activeJob.resolvedEncoderBackend]
+                  ? getResolvedEncoderBackendLabel(activeJob.resolvedEncoderBackend)
                   : latestCompletedJob?.resolvedEncoderBackend
-                    ? resolvedEncoderBackendLabel[latestCompletedJob.resolvedEncoderBackend]
-                    : 'In attesa',
+                    ? getResolvedEncoderBackendLabel(latestCompletedJob.resolvedEncoderBackend)
+                    : t('preview.pendingResolution'),
               },
               {
                 key: 'size',
-                label: 'Peso staging',
-                children: selectedFiles.length > 0 ? formatBytes(totalSize) : 'N/D',
+                label: t('preview.labels.stagingSize'),
+                children: selectedFiles.length > 0 ? formatBytes(totalSize) : t('common.notAvailable'),
               },
               {
                 key: 'delivery',
-                label: 'Consegna',
-                children: 'Un singolo file finale',
+                label: t('preview.labels.delivery'),
+                children: t('preview.singleFile'),
               },
             ]}
           />
 
           {activeJob ? (
             <div className="preview-runtime">
-              <Space align="center">
-                <Tag color={statusColor[activeJob.status]}>{statusLabel[activeJob.status]}</Tag>
-                {activeJob.resolvedEncoderBackend ? (
-                  <Tag bordered={false} color="blue">
-                    {resolvedEncoderBackendLabel[activeJob.resolvedEncoderBackend]}
-                  </Tag>
+              <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                <Space align="center" wrap>
+                  <Tag color={statusColor[activeJob.status]}>{getStatusLabel(activeJob.status)}</Tag>
+                  {activeJob.resolvedEncoderBackend ? (
+                    <Tag bordered={false} color="blue">
+                      {getResolvedEncoderBackendLabel(activeJob.resolvedEncoderBackend)}
+                    </Tag>
+                  ) : null}
+                  <Text type="secondary">{activeJob.message}</Text>
+                </Space>
+                <Progress percent={activeJob.progress} status={toProgressStatus(activeJob.status)} />
+                {activeJob.telemetry ? (
+                  <Text type="secondary">
+                    {`${formatDurationMs(activeJob.telemetry.processedDurationMs)} / ${formatDurationMs(activeJob.telemetry.totalDurationMs)} � ${formatSpeed(activeJob.telemetry.speed)}${activeJob.telemetry.bitrate ? ` � ${activeJob.telemetry.bitrate}` : ''}`}
+                  </Text>
                 ) : null}
-                <Text type="secondary">{activeJob.message}</Text>
               </Space>
-              <Progress
-                percent={activeJob.progress}
-                status={toProgressStatus(activeJob.status)}
-                showInfo={false}
-              />
             </div>
           ) : null}
 
@@ -128,7 +132,7 @@ export const MergePreviewCard = () => {
               <div>
                 <Space align="center">
                   <ClockCircleOutlined />
-                  <Text strong>Ordine clip corrente</Text>
+                  <Text strong>{t('preview.currentOrder')}</Text>
                 </Space>
                 <List
                   className="preview-list"
@@ -144,7 +148,7 @@ export const MergePreviewCard = () => {
                   )}
                 />
                 {selectedFiles.length > 4 ? (
-                  <Text type="secondary">+ {selectedFiles.length - 4} clip aggiuntivi in coda.</Text>
+                  <Text type="secondary">{t('preview.moreClips', { count: selectedFiles.length - 4 })}</Text>
                 ) : null}
               </div>
             </>
@@ -156,7 +160,7 @@ export const MergePreviewCard = () => {
               <div>
                 <Space align="center">
                   <FileDoneOutlined />
-                  <Text strong>Ultimo output generato</Text>
+                  <Text strong>{t('preview.lastOutput')}</Text>
                 </Space>
                 <Paragraph
                   className="preview-path"

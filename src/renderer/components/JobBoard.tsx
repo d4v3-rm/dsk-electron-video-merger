@@ -2,19 +2,21 @@ import { PlayCircleOutlined } from '@ant-design/icons';
 import { Card, Progress, Space, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Job } from '@shared/types';
+import { JobDetailsDrawer } from '@renderer/components/JobDetailsDrawer';
 import { useAppStore } from '@renderer/store/use-app-store';
 import {
-  requestedEncoderBackendLabel,
-  resolvedEncoderBackendLabel,
+  getCompressionPresetTechnicalLabel,
+  getRequestedEncoderBackendLabel,
+  getResolvedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
 import { getFileName } from '@renderer/utils/file-utils';
-import { statusColor, statusIcon, statusLabel, toProgressStatus } from '@renderer/utils/job-presentation';
-import { JobDetailsDrawer } from '@renderer/components/JobDetailsDrawer';
+import { getStatusLabel, statusColor, statusIcon, toProgressStatus } from '@renderer/utils/job-presentation';
 
 const { Text } = Typography;
 
-const dateFormatter = new Intl.DateTimeFormat('it-IT', {
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'short',
   timeStyle: 'short',
 });
@@ -26,6 +28,7 @@ const formatFiles = (files: Job['files']) => (
 );
 
 export const JobBoard = () => {
+  const { t } = useTranslation();
   const jobs = useAppStore((state) => state.jobs);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
@@ -36,73 +39,73 @@ export const JobBoard = () => {
 
   const columns: ColumnsType<Job> = [
     {
-      title: 'Merge',
+      title: t('history.columns.merge'),
       dataIndex: 'id',
       key: 'id',
       width: 120,
       render: (id: string) => <Text code>{id.slice(0, 8)}</Text>,
     },
     {
-      title: 'Input',
+      title: t('history.columns.input'),
       dataIndex: 'files',
       key: 'files',
       render: formatFiles,
       width: 110,
     },
     {
-      title: 'Profilo',
+      title: t('history.columns.profile'),
       key: 'settings',
       render: (_, job) => (
         <Space direction="vertical" size={0}>
           <Text>
-            {job.settings.outputFormat.toUpperCase()} - {job.settings.compression}
+            {job.settings.outputFormat.toUpperCase()} -{' '}
+            {getCompressionPresetTechnicalLabel(job.settings.compression)}
           </Text>
           <Text type="secondary">
-            {requestedEncoderBackendLabel[job.settings.encoderBackend]}
+            {getRequestedEncoderBackendLabel(job.settings.encoderBackend)}
             {job.resolvedEncoderBackend
-              ? ` -> ${resolvedEncoderBackendLabel[job.resolvedEncoderBackend]}`
+              ? ` -> ${getResolvedEncoderBackendLabel(job.resolvedEncoderBackend)}`
               : ''}
           </Text>
         </Space>
       ),
-      width: 210,
+      width: 320,
     },
     {
-      title: 'Stato',
+      title: t('history.columns.status'),
       dataIndex: 'status',
       key: 'status',
       width: 170,
       render: (status: Job['status']) => (
         <Tag icon={statusIcon[status]} color={statusColor[status]}>
-          {statusLabel[status]}
+          {getStatusLabel(status)}
         </Tag>
       ),
     },
     {
-      title: 'Output',
+      title: t('history.columns.output'),
       dataIndex: 'outputPaths',
       key: 'outputPaths',
       render: (outputPaths: string[]) =>
-        outputPaths[0] ? <Text>{getFileName(outputPaths[0])}</Text> : <Text type="secondary">In attesa</Text>,
+        outputPaths[0] ? (
+          <Text>{getFileName(outputPaths[0])}</Text>
+        ) : (
+          <Text type="secondary">{t('history.pendingOutput')}</Text>
+        ),
     },
     {
-      title: 'Avanzamento',
+      title: t('history.columns.progress'),
       key: 'progress',
-      width: 230,
+      width: 260,
       render: (_, job) => (
         <Space direction="vertical" size={1} style={{ width: '100%' }}>
-          <Progress
-            percent={job.progress}
-            size="small"
-            status={toProgressStatus(job.status)}
-            showInfo={false}
-          />
-          <Text type="secondary">{job.message || 'In attesa aggiornamenti...'}</Text>
+          <Progress percent={job.progress} size="small" status={toProgressStatus(job.status)} />
+          <Text type="secondary">{job.message || t('common.waiting')}</Text>
         </Space>
       ),
     },
     {
-      title: 'Aggiornato',
+      title: t('history.columns.updated'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 140,
@@ -114,10 +117,10 @@ export const JobBoard = () => {
     <>
       <Card
         className="modern-card history-card"
-        title="Cronologia merge"
+        title={t('history.cardTitle')}
         extra={
           <Space>
-            <Tag color="blue">Apri il dettaglio con un click</Tag>
+            <Tag color="blue">{t('history.openDetailHint')}</Tag>
             <PlayCircleOutlined />
           </Space>
         }
@@ -127,8 +130,8 @@ export const JobBoard = () => {
           columns={columns}
           dataSource={jobs}
           pagination={{ pageSize: 8, showSizeChanger: false }}
-          locale={{ emptyText: 'Nessun merge in coda' }}
-          scroll={{ x: 1120 }}
+          locale={{ emptyText: t('history.emptyText') }}
+          scroll={{ x: 1320 }}
           rowClassName="history-row"
           onRow={(job) => ({
             onClick: () => setSelectedJobId(job.id),

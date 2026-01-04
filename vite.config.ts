@@ -7,6 +7,22 @@ const rawPort = process.env.VITE_DEV_SERVER_PORT;
 const parsedPort = Number.parseInt(rawPort ?? '', 10);
 const devPort = Number.isNaN(parsedPort) ? 5173 : parsedPort;
 
+const resolveManualChunk = (id: string): string | undefined => {
+  if (!id.includes('node_modules')) {
+    return undefined;
+  }
+
+  if (id.includes('react-markdown') || id.includes('remark-gfm') || id.includes('mdast') || id.includes('unist')) {
+    return 'markdown-vendor';
+  }
+
+  if (id.includes('antd') || id.includes('@ant-design')) {
+    return 'antd-vendor';
+  }
+
+  return undefined;
+};
+
 export default defineConfig({
   root: path.resolve(__dirname, 'src/renderer'),
   base: './',
@@ -27,5 +43,10 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: resolveManualChunk,
+      },
+    },
   },
 });

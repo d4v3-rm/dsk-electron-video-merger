@@ -17,12 +17,10 @@ const getElectronAPI = (): RendererElectronApi | undefined => {
 };
 
 const createMissingBridgeError = (): Error =>
-  new Error(
-    "Bridge Electron non disponibile. Avvia l'app da Electron e verifica che preload.ts sia caricato.",
-  );
+  new Error('Electron bridge unavailable. Start the app with Electron and verify that preload.ts is loaded.');
 
 const noOpUnsubscribe = (): void => {
-  // Fallback sicuro quando il renderer non e ospitato da Electron.
+  // Safe fallback when the renderer is not hosted by Electron.
 };
 
 const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {

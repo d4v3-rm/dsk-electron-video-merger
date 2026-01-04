@@ -1,6 +1,7 @@
 import { BulbOutlined, MoonOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
 import type { SegmentedValue } from 'antd/es/segmented';
+import { useTranslation } from 'react-i18next';
 import { useUiStore } from '@renderer/store/use-ui-store';
 
 type ThemeSwitcherProps = {
@@ -9,6 +10,7 @@ type ThemeSwitcherProps = {
 };
 
 export const ThemeSwitcher = ({ size = 'middle', block = false }: ThemeSwitcherProps) => {
+  const { t } = useTranslation();
   const { themeMode, setThemeMode } = useUiStore();
 
   const options = [
@@ -16,8 +18,8 @@ export const ThemeSwitcher = ({ size = 'middle', block = false }: ThemeSwitcherP
       value: 'dark',
       icon: <MoonOutlined />,
       label: (
-        <Tooltip title="Tema scuro">
-          <span>Scuro</span>
+        <Tooltip title={t('theme.darkTooltip')}>
+          <span>{t('common.dark')}</span>
         </Tooltip>
       ),
     },
@@ -25,8 +27,8 @@ export const ThemeSwitcher = ({ size = 'middle', block = false }: ThemeSwitcherP
       value: 'light',
       icon: <BulbOutlined />,
       label: (
-        <Tooltip title="Tema chiaro">
-          <span>Chiaro</span>
+        <Tooltip title={t('theme.lightTooltip')}>
+          <span>{t('common.light')}</span>
         </Tooltip>
       ),
     },
