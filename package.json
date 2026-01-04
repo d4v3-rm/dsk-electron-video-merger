@@ -19,7 +19,8 @@
     "start": "node ./scripts/run-electron.cjs",
     "typecheck": "tsc -p tsconfig.main.json --noEmit && tsc -p tsconfig.renderer.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.cjs,.mjs",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,cjs,mjs,css,html,json}\" \"scripts/**/*.{js,cjs,mjs}\" \"*.{json,cjs,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,cjs,mjs,css,html,json}\" \"scripts/**/*.{js,cjs,mjs}\" \"*.{json,cjs,md}\"",
+    "set:version": "node ./scripts/set-version.mjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
