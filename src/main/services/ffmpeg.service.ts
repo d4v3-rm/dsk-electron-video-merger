@@ -6,33 +6,17 @@ import type {
   CompressionPreset,
   EncoderBackend,
   HardwareAccelerationProfile,
-  JobLogStage,
   JobTelemetry,
   OutputFormat,
   ResolvedEncoderBackend,
 } from '@shared/types';
 import { MediaProbeService } from '@main/services/media-probe.service';
-
-export interface JobProgressUpdate {
-  progress: number;
-  message: string;
-  stage: JobLogStage;
-  telemetry?: JobTelemetry;
-  logMessage?: string;
-}
-
-export type JobProgressCallback = (update: JobProgressUpdate) => void;
-
-interface EncoderArgs {
-  args: string[];
-}
-
-interface ProgressState {
-  bitrate?: string;
-  fps?: number;
-  outTime?: string;
-  speed?: number;
-}
+import type {
+  EncoderArgs,
+  JobProgressCallback,
+  ProcessSingleMergeOptions,
+  ProgressState,
+} from '@main/services/ffmpeg.types';
 
 const CPU_CRF_BY_PRESET: Record<CompressionPreset, string> = {
   light: '18',
@@ -112,6 +96,7 @@ const CPU_ENCODER_BY_FORMAT: Record<OutputFormat, EncoderArgs> = {
 
 const NVIDIA_SUPPORTED_FORMATS: OutputFormat[] = ['mp4', 'mov', 'mkv'];
 const PROGRESS_LOG_BUCKET_SIZE = 10;
+const PROGRESS_SEGMENT_SEPARATOR = ' | ';
 
 const clampProgress = (value: number): number => Math.max(1, Math.min(99, value));
 
@@ -191,6 +176,9 @@ const buildTelemetry = (state: ProgressState, totalDurationMs?: number): JobTele
   };
 };
 
+const joinProgressDetails = (parts: Array<string | undefined>): string =>
+  parts.filter((part): part is string => Boolean(part)).join(PROGRESS_SEGMENT_SEPARATOR);
+
 export class FfmpegService {
   private readonly ffmpegBinary = ffmpegPath;
   private readonly mediaProbeService = new MediaProbeService();
@@ -242,15 +230,7 @@ export class FfmpegService {
     resolvedEncoderBackend,
     tempDir,
     onProgress,
-  }: {
-    inputPaths: string[];
-    outputPath: string;
-    format: OutputFormat;
-    compression: CompressionPreset;
-    resolvedEncoderBackend: ResolvedEncoderBackend;
-    tempDir: string;
-    onProgress: JobProgressCallback;
-  }): Promise<string> {
+  }: ProcessSingleMergeOptions): Promise<string> {
     if (inputPaths.length === 0) {
       throw new Error('At least one input file is required to start the merge.');
     }
@@ -414,11 +394,12 @@ export class FfmpegService {
         const timeLabel = totalDurationMs
           ? `${formatDurationForLog(processedDurationMs)} / ${formatDurationForLog(totalDurationMs)}`
           : formatDurationForLog(processedDurationMs);
+        const runtimeDetails = joinProgressDetails([timeLabel, speedLabel]);
 
         const message =
           phase === 'finalize'
             ? 'Finalizing output container'
-            : `${processingLabel} ${progress}%${timeLabel ? ` � ${timeLabel}` : ''}${speedLabel ? ` � ${speedLabel}` : ''}`;
+            : `${processingLabel} ${progress}%${runtimeDetails ? `${PROGRESS_SEGMENT_SEPARATOR}${runtimeDetails}` : ''}`;
 
         const logBucket = Math.floor(progress / PROGRESS_LOG_BUCKET_SIZE);
         const shouldLog = phase === 'finalize' || logBucket > lastLoggedBucket;
@@ -428,13 +409,19 @@ export class FfmpegService {
         }
 
         lastEmittedProgress = progress;
+
+        const logDetails = joinProgressDetails([
+          telemetry.bitrate,
+          telemetry.fps ? `${telemetry.fps.toFixed(1)} fps` : undefined,
+        ]);
+
         onProgress({
           progress,
           message,
           stage: phase === 'finalize' ? 'finalize' : 'encode',
           telemetry,
           logMessage: shouldLog
-            ? `${message}${telemetry.bitrate ? ` � ${telemetry.bitrate}` : ''}${telemetry.fps ? ` � ${telemetry.fps.toFixed(1)} fps` : ''}`
+            ? `${message}${logDetails ? `${PROGRESS_SEGMENT_SEPARATOR}${logDetails}` : ''}`
             : undefined,
         });
       };

@@ -1,12 +1,7 @@
-﻿import { app } from 'electron';
+import { app } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-
-export interface AppPaths {
-  root: string;
-  output: string;
-  temp: string;
-}
+import type { AppPaths, JobFolders } from '@main/services/storage.types';
 
 export class StorageService {
   get paths(): AppPaths {
@@ -25,7 +20,7 @@ export class StorageService {
     await fs.mkdir(paths.temp, { recursive: true });
   }
 
-  async buildJobFolders(jobId: string): Promise<{ outputDir: string; tempDir: string }> {
+  async buildJobFolders(jobId: string): Promise<JobFolders> {
     await this.ensurePaths();
     const { temp, output } = this.paths;
     const outputDir = path.join(output, jobId);

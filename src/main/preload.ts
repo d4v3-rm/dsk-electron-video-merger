@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
 import type { IpcChannels } from '@shared/ipc';
+import type { ElectronApi } from '@shared/ipc.types';
 import type { HardwareAccelerationProfile, JobCreationPayload, JobProgressPayload } from '@shared/types';
 
 const IPC_CHANNELS: IpcChannels = {
@@ -10,7 +11,7 @@ const IPC_CHANNELS: IpcChannels = {
   systemCapabilities: 'system:capabilities',
 };
 
-contextBridge.exposeInMainWorld('electronAPI', {
+const electronApi: ElectronApi = {
   selectVideoFiles: () => ipcRenderer.invoke(IPC_CHANNELS.filesPick),
   createJob: (payload: JobCreationPayload) => ipcRenderer.invoke(IPC_CHANNELS.jobsCreate, payload),
   getJobs: () => ipcRenderer.invoke(IPC_CHANNELS.jobsList),
@@ -27,4 +28,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.removeListener(IPC_CHANNELS.jobsProgress, listener);
     };
   },
-});
+};
+
+contextBridge.exposeInMainWorld('electronAPI', electronApi);

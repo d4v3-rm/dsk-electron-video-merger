@@ -1,16 +1,10 @@
 import { dialog } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-
-export interface VideoChoice {
-  id: string;
-  name: string;
-  path: string;
-  size: number;
-}
+import type { InputFileDTO } from '@shared/types';
 
 export class FilePickerService {
-  async pickVideos(): Promise<VideoChoice[]> {
+  async pickVideos(): Promise<InputFileDTO[]> {
     const result = await dialog.showOpenDialog({
       title: 'Select one or more videos',
       properties: ['openFile', 'multiSelections'],
@@ -26,7 +20,7 @@ export class FilePickerService {
       return [];
     }
 
-    const files: VideoChoice[] = [];
+    const files: InputFileDTO[] = [];
     for (const filePath of result.filePaths) {
       const stat = await fs.stat(filePath);
       files.push({

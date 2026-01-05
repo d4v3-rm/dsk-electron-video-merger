@@ -14,23 +14,10 @@ import type {
   JobTelemetry,
   ResolvedEncoderBackend,
 } from '@shared/types';
-import type { JobProgressUpdate } from '@main/services/ffmpeg.service';
+import type { JobProgressUpdate } from '@main/services/ffmpeg.types';
 import { FfmpegService } from '@main/services/ffmpeg.service';
 import { StorageService } from '@main/services/storage.service';
-
-interface QueueJob extends Job {
-  sourcePaths: string[];
-}
-
-interface PublishJobEventOptions {
-  progress: number;
-  message: string;
-  outputPath?: string;
-  telemetry?: JobTelemetry;
-  logEntry?: JobLogEntry;
-  error?: string;
-  resolvedEncoderBackend?: ResolvedEncoderBackend;
-}
+import type { PublishJobEventOptions, QueueJob } from '@main/services/job.types';
 
 const MAX_JOB_LOG_ENTRIES = 160;
 
