@@ -16,7 +16,8 @@ import {
   theme,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
-import type { Job, JobLogEntry } from '@shared/types';
+import type { JobLogEntry } from '@shared/types';
+import type { JobDetailsDrawerProps } from '@renderer/components/job-details-drawer.types';
 import {
   getCompressionPresetTechnicalLabel,
   getRequestedEncoderBackendLabel,
@@ -32,12 +33,6 @@ import {
 import { formatDurationMs, formatSpeed } from '@renderer/utils/runtime-presentation';
 
 const { Text, Paragraph } = Typography;
-
-type Props = {
-  job: Job | null;
-  open: boolean;
-  onClose: () => void;
-};
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'short',
@@ -56,7 +51,7 @@ const getLogColor = (log: JobLogEntry): 'blue' | 'red' | 'orange' => {
   return 'blue';
 };
 
-export const JobDetailsDrawer = ({ job, open, onClose }: Props) => {
+export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) => {
   const { t } = useTranslation();
   const { token } = theme.useToken();
 

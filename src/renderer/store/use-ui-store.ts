@@ -1,13 +1,5 @@
 import { create } from 'zustand';
-
-export type AppThemeMode = 'light' | 'dark';
-
-type UiState = {
-  themeMode: AppThemeMode;
-  setThemeMode: (themeMode: AppThemeMode) => void;
-  toggleThemeMode: () => void;
-  syncThemeFromStorage: () => void;
-};
+import type { AppThemeMode, UiStoreState } from '@renderer/store/ui-store.types';
 
 const THEME_STORAGE_KEY = 'video-merger-theme-mode';
 const DEFAULT_THEME_MODE: AppThemeMode = 'dark';
@@ -33,7 +25,7 @@ const applyThemeToDom = (themeMode: AppThemeMode): void => {
   document.documentElement.setAttribute('data-theme', themeMode);
 };
 
-export const useUiStore = create<UiState>((set) => ({
+export const useUiStore = create<UiStoreState>((set) => ({
   themeMode: DEFAULT_THEME_MODE,
 
   setThemeMode: (themeMode) => {

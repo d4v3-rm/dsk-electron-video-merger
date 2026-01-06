@@ -1,19 +1,9 @@
-import type { ConversionSettings, HardwareAccelerationProfile, Job, JobProgressPayload } from '@shared/types';
+import type { JobCreationPayload } from '@shared/types';
+import type { ElectronApi } from '@shared/ipc.types';
+import type { ElectronBridgeWindow } from '@renderer/services/ipc.types';
 
-type RendererElectronApi = {
-  selectVideoFiles: () => Promise<{ id: string; name: string; path: string; size: number }[]>;
-  createJob: (payload: { filePaths: string[]; settings: ConversionSettings }) => Promise<Job>;
-  getJobs: () => Promise<Job[]>;
-  getHardwareAccelerationProfile: () => Promise<HardwareAccelerationProfile>;
-  onJobProgress: (cb: (payload: JobProgressPayload) => void) => () => void;
-};
-
-type BrowserWindowWithBridge = {
-  electronAPI?: RendererElectronApi;
-};
-
-const getElectronAPI = (): RendererElectronApi | undefined => {
-  return (globalThis as BrowserWindowWithBridge).electronAPI;
+const getElectronAPI = (): ElectronApi | undefined => {
+  return (globalThis as typeof globalThis & ElectronBridgeWindow).electronAPI;
 };
 
 const createMissingBridgeError = (): Error =>
@@ -23,7 +13,7 @@ const noOpUnsubscribe = (): void => {
   // Safe fallback when the renderer is not hosted by Electron.
 };
 
-const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {
+const withApi = <T>(handler: (api: ElectronApi) => T): T => {
   const api = getElectronAPI();
   if (!api) {
     throw createMissingBridgeError();
@@ -34,17 +24,16 @@ const withApi = <T>(handler: (api: RendererElectronApi) => T): T => {
 
 export const api = {
   selectVideoFiles: async () => withApi((electronAPI) => electronAPI.selectVideoFiles()),
-  createJob: async (payload: { filePaths: string[]; settings: ConversionSettings }) =>
-    withApi((electronAPI) => electronAPI.createJob(payload)),
+  createJob: async (payload: JobCreationPayload) => withApi((electronAPI) => electronAPI.createJob(payload)),
   getJobs: async () => withApi((electronAPI) => electronAPI.getJobs()),
   getHardwareAccelerationProfile: async () =>
     withApi((electronAPI) => electronAPI.getHardwareAccelerationProfile()),
-  subscribeJobProgress: (cb: (payload: JobProgressPayload) => void) => {
+  subscribeJobProgress: (callback: Parameters<ElectronApi['onJobProgress']>[0]) => {
     const electronAPI = getElectronAPI();
     if (!electronAPI) {
       return noOpUnsubscribe;
     }
 
-    return electronAPI.onJobProgress(cb);
+    return electronAPI.onJobProgress(callback);
   },
 };

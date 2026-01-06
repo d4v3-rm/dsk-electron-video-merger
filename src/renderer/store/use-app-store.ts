@@ -1,42 +1,7 @@
 import { create } from 'zustand';
-import type {
-  CompressionPreset,
-  ConversionSettings,
-  EncoderBackend,
-  HardwareAccelerationProfile,
-  Job,
-  JobProgressPayload,
-  OutputFormat,
-} from '@shared/types';
+import type { HardwareAccelerationProfile, JobCreationPayload } from '@shared/types';
 import { api } from '@renderer/services/ipc';
-
-export type SelectedVideo = {
-  id: string;
-  name: string;
-  path: string;
-  size: number;
-};
-
-interface AppState {
-  selectedFiles: SelectedVideo[];
-  jobs: Job[];
-  hardwareAccelerationProfile: HardwareAccelerationProfile;
-  hardwareAccelerationLoaded: boolean;
-  settings: ConversionSettings;
-  loading: boolean;
-  loaded: boolean;
-  refreshJobs: () => Promise<void>;
-  refreshHardwareAccelerationProfile: () => Promise<void>;
-  selectVideoFiles: () => Promise<void>;
-  setOutputFormat: (outputFormat: OutputFormat) => void;
-  setCompression: (compression: CompressionPreset) => void;
-  setEncoderBackend: (encoderBackend: EncoderBackend) => void;
-  clearSelectedFiles: () => void;
-  removeSelectedFile: (id: string) => void;
-  moveSelectedFile: (id: string, direction: 'up' | 'down') => void;
-  createJob: () => Promise<void>;
-  upsertJobProgress: (payload: JobProgressPayload) => void;
-}
+import type { AppStoreState } from '@renderer/store/app-store.types';
 
 const DEFAULT_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProfile = {
   nvidia: {
@@ -48,7 +13,7 @@ const DEFAULT_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProfile = {
   },
 };
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppStoreState>((set, get) => ({
   selectedFiles: [],
   jobs: [],
   hardwareAccelerationProfile: DEFAULT_HARDWARE_ACCELERATION_PROFILE,
@@ -151,7 +116,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
 
     set({ loading: true });
-    const payload = {
+    const payload: JobCreationPayload = {
       filePaths: selectedFiles.map((file) => file.path),
       settings,
     };
