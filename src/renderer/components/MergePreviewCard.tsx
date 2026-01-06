@@ -119,7 +119,7 @@ export const MergePreviewCard = () => {
                 <Progress percent={activeJob.progress} status={toProgressStatus(activeJob.status)} />
                 {activeJob.telemetry ? (
                   <Text type="secondary">
-                    {`${formatDurationMs(activeJob.telemetry.processedDurationMs)} / ${formatDurationMs(activeJob.telemetry.totalDurationMs)} � ${formatSpeed(activeJob.telemetry.speed)}${activeJob.telemetry.bitrate ? ` � ${activeJob.telemetry.bitrate}` : ''}`}
+                    {`${formatDurationMs(activeJob.telemetry.processedDurationMs)} / ${formatDurationMs(activeJob.telemetry.totalDurationMs)} | ${formatSpeed(activeJob.telemetry.speed)}${activeJob.telemetry.bitrate ? ` | ${activeJob.telemetry.bitrate}` : ''}`}
                   </Text>
                 ) : null}
               </Space>

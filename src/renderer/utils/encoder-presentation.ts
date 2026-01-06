@@ -57,7 +57,7 @@ export const getCompressionPresetParameters = (preset: CompressionPreset) => COM
 export const getCompressionPresetTechnicalLabel = (preset: CompressionPreset): string => {
   const parameters = COMPRESSION_PARAMETERS[preset];
 
-  return `${getCompressionPresetLabel(preset)} � H.264 CRF ${parameters.x264} / NVENC CQ ${parameters.nvenc} / VP9 CRF ${parameters.vp9}`;
+  return `${getCompressionPresetLabel(preset)} | H.264 CRF ${parameters.x264} / NVENC CQ ${parameters.nvenc} / VP9 CRF ${parameters.vp9}`;
 };
 
 export const isNvidiaSupportedOutputFormat = (outputFormat: OutputFormat): boolean => outputFormat !== 'webm';
