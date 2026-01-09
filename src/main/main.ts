@@ -2,13 +2,11 @@ import { app, BrowserWindow, type Input } from 'electron';
 import path from 'node:path';
 import { electronAppConfig } from '@main/config/electron-app-config';
 import { initializeIpc } from '@main/ipc/ipc-routes';
-import { JobService } from '@main/services/job.service';
-import { StorageService } from '@main/services/storage.service';
-import { FilePickerService } from '@main/services/file-picker.service';
-import { FfmpegService } from '@main/services/ffmpeg.service';
+import { MainProcessServices } from '@main/services/main-process-services';
 
 let mainWindow: BrowserWindow | null = null;
-let jobService: JobService | null = null;
+
+const services = MainProcessServices.getInstance();
 
 const getDevServerUrl = (): string =>
   process.env.VITE_DEV_SERVER_URL ?? electronAppConfig.runtime.defaultDevServerUrl;
@@ -79,11 +77,8 @@ const createWindow = async (): Promise<void> => {
 
   wireDevelopmentShortcuts(mainWindow);
 
-  const storageService = new StorageService();
-  const ffmpegService = new FfmpegService();
-  jobService = new JobService(storageService, ffmpegService);
-  jobService.setWindow(mainWindow);
-  initializeIpc(jobService, new FilePickerService());
+  services.jobService.setWindow(mainWindow);
+  initializeIpc(services.jobService, services.filePickerService);
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show();
@@ -102,7 +97,7 @@ const createWindow = async (): Promise<void> => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
-    jobService?.setWindow(null);
+    services.jobService.setWindow(null);
   });
 };
 
