@@ -24,6 +24,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
+    "@fontsource/orbitron": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
     "antd": "^5.25.0",
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
