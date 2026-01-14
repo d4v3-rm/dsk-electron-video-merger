@@ -1,38 +1,20 @@
 import {
-  ApiOutlined,
-  CheckCircleOutlined,
   CompressOutlined,
   DashboardOutlined,
+  DownOutlined,
+  PlayCircleOutlined,
+  ProfileOutlined,
   PushpinOutlined,
-  RadarChartOutlined,
-  ThunderboltOutlined,
   UpOutlined,
   VideoCameraOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  Descriptions,
-  Progress,
-  Row,
-  Space,
-  Statistic,
-  Tag,
-  Typography,
-} from 'antd';
+import { Avatar, Button, Card, Col, Row, Space, Statistic, Steps, Tag, Typography } from 'antd';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
 import { useCanHover } from '@renderer/hooks/use-can-hover';
 import { useAppStore } from '@renderer/store/use-app-store';
-import {
-  getCompressionPresetTechnicalLabel,
-  getRequestedEncoderBackendLabel,
-} from '@renderer/utils/encoder-presentation';
+import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -52,8 +34,6 @@ export const MergeOverview = () => {
   const { t } = useTranslation();
   const jobs = useAppStore((state) => state.jobs);
   const selectedFiles = useAppStore((state) => state.selectedFiles);
-  const settings = useAppStore((state) => state.settings);
-  const hardwareAccelerationProfile = useAppStore((state) => state.hardwareAccelerationProfile);
   const canHover = useCanHover();
   const shellRef = useRef<HTMLDivElement | null>(null);
   const detailsRef = useRef<HTMLDivElement | null>(null);
@@ -63,7 +43,6 @@ export const MergeOverview = () => {
   const queuedJobs = jobs.filter((job) => job.status === 'queued').length;
   const runningJobs = jobs.filter((job) => job.status === 'running').length;
   const completedJobs = jobs.filter((job) => job.status === 'completed').length;
-  const activeJob = jobs.find((job) => job.status === 'running') ?? null;
   const currentStep = getCurrentStep(selectedFiles.length, runningJobs, completedJobs);
   const isExpanded = canHover ? isPinnedOpen || isHoverActive : isPinnedOpen;
   const workspaceStatus =
@@ -85,7 +64,7 @@ export const MergeOverview = () => {
         key: 'queued',
         title: t('overview.metrics.queued'),
         value: queuedJobs,
-        prefix: <RadarChartOutlined />,
+        prefix: <ProfileOutlined />,
       },
       {
         key: 'running',
@@ -97,7 +76,7 @@ export const MergeOverview = () => {
         key: 'completed',
         title: t('overview.metrics.completed'),
         value: completedJobs,
-        prefix: <CheckCircleOutlined />,
+        prefix: <PlayCircleOutlined />,
       },
     ],
     [completedJobs, queuedJobs, runningJobs, selectedFiles.length, t],
@@ -158,6 +137,10 @@ export const MergeOverview = () => {
     };
   }, [isExpanded]);
 
+  const toggleOverview = () => {
+    setIsPinnedOpen((current) => !current);
+  };
+
   return (
     <Card
       className={`modern-card overview-card ${isExpanded ? 'overview-card-expanded' : 'overview-card-collapsed'}`}
@@ -170,49 +153,43 @@ export const MergeOverview = () => {
         onMouseLeave={canHover ? () => setIsHoverActive(false) : undefined}
       >
         <div className="overview-topbar">
-          <Space size="large" className="overview-brand">
-            <Avatar size={64} shape="square" icon={<DashboardOutlined />} />
+          <Space size="middle" className="overview-brand">
+            <Avatar size={48} shape="square" icon={<DashboardOutlined />} />
             <div>
-              <Text className="panel-kicker">{t('overview.kicker')}</Text>
-
-              <Space wrap size={[8, 8]} className="signal-pills overview-tags">
-                <Tag>{t('overview.tags.studio')}</Tag>
+              <Space wrap size={[8, 8]} className="overview-tags">
+                <Tag color="processing">{t('overview.tags.studio')}</Tag>
                 <Tag>{t('overview.tags.desktop')}</Tag>
                 <Tag>{t('overview.tags.singleOutput')}</Tag>
               </Space>
-
-              <Title level={2} className="overview-title display-face">
+              <Title level={3} className="overview-title">
                 {t('overview.title')}
               </Title>
-              <Paragraph className="overview-text">{t('overview.body')}</Paragraph>
             </div>
           </Space>
 
-          <Space direction="vertical" size="middle" align="end" className="overview-command-rail">
+          <Space size="small" wrap className="overview-actions">
             <ThemeSwitcher size="small" />
-            <Space wrap size={[10, 10]}>
-              <Text className="status-badge">{workspaceStatus}</Text>
-              <Button
-                size="small"
-                icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
-                onClick={() => setIsPinnedOpen((current) => !current)}
-              >
-                {canHover
-                  ? isPinnedOpen
-                    ? t('overview.actions.unpin')
-                    : t('overview.actions.pinOpen')
-                  : isExpanded
-                    ? t('overview.actions.collapse')
-                    : t('overview.actions.expand')}
-              </Button>
-            </Space>
+            <Text className="status-badge">{workspaceStatus}</Text>
+            <Button
+              size="small"
+              icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
+              onClick={toggleOverview}
+            >
+              {canHover
+                ? isPinnedOpen
+                  ? t('overview.actions.unpin')
+                  : t('overview.actions.pinOpen')
+                : isExpanded
+                  ? t('overview.actions.collapse')
+                  : t('overview.actions.expand')}
+            </Button>
           </Space>
         </div>
 
-        <Row gutter={[14, 14]} className="overview-kpi-grid">
+        <Row gutter={[12, 12]} className="overview-kpi-grid">
           {metrics.map((metric) => (
             <Col xs={12} xl={6} key={metric.key}>
-              <div className="metric-tile">
+              <div className="overview-kpi">
                 <Statistic title={metric.title} value={metric.value} prefix={metric.prefix} />
               </div>
             </Col>
@@ -220,135 +197,45 @@ export const MergeOverview = () => {
         </Row>
 
         <div ref={detailsRef} className="overview-details">
-          <Row gutter={[16, 16]} className="overview-detail-grid">
-            <Col xs={24} xl={8}>
-              <div className="overview-panel">
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <div>
-                    <Text className="panel-kicker">{t('overview.missionTitle')}</Text>
-                    <Title level={5} className="section-heading">
-                      {t('overview.missionHeading')}
-                    </Title>
-                  </div>
+          <Row gutter={[24, 24]} align="middle">
+            <Col xs={24} xl={12}>
+              <Space direction="vertical" size="middle" className="overview-copy">
+                <Paragraph className="overview-text">{t('overview.body')}</Paragraph>
 
-                  <Paragraph className="overview-text overview-panel-text">
-                    {t('overview.missionText')}
-                  </Paragraph>
-
-                  <Space wrap size={[8, 8]} className="signal-pills">
-                    <Tag bordered={false}>{t('overview.chips.explicitOrder')}</Tag>
-                    <Tag bordered={false}>{t('overview.chips.guidedCompression')}</Tag>
-                    <Tag bordered={false}>{t('overview.chips.localHistory')}</Tag>
-                    <Tag bordered={false}>{t('overview.chips.singleOutput')}</Tag>
-                  </Space>
-
-                  <Text type="secondary">
-                    {canHover ? t('overview.hoverHint') : t('overview.toggleHint')}
-                  </Text>
+                <Space wrap size={[8, 8]}>
+                  <Tag bordered={false}>{t('overview.chips.explicitOrder')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.guidedCompression')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.localHistory')}</Tag>
+                  <Tag bordered={false}>{t('overview.chips.singleOutput')}</Tag>
                 </Space>
-              </div>
+
+                <Text type="secondary">{canHover ? t('overview.hoverHint') : t('overview.toggleHint')}</Text>
+              </Space>
             </Col>
 
-            <Col xs={24} xl={8}>
-              <div className="overview-panel">
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <div>
-                    <Text className="panel-kicker">{t('overview.routeTitle')}</Text>
-                    <Title level={5} className="section-heading">
-                      {t('overview.liveTitle')}
-                    </Title>
-                  </div>
-
-                  <Progress
-                    percent={activeJob?.progress ?? 0}
-                    status={activeJob ? 'active' : 'normal'}
-                    format={(value) => `${value ?? 0}%`}
-                  />
-
-                  <Text type="secondary">{activeJob?.message ?? t('overview.signalIdle')}</Text>
-
-                  <div className="overview-progress-rail">
-                    <Descriptions
-                      column={1}
-                      size="small"
-                      items={[
-                        {
-                          key: 'step',
-                          label: t('overview.progressLabel'),
-                          children: `${currentStep + 1} / 3`,
-                        },
-                        {
-                          key: 'queued',
-                          label: t('overview.metrics.queued'),
-                          children: queuedJobs,
-                        },
-                        {
-                          key: 'running',
-                          label: t('overview.metrics.running'),
-                          children: runningJobs,
-                        },
-                      ]}
-                    />
-                  </div>
-                </Space>
-              </div>
-            </Col>
-
-            <Col xs={24} xl={8}>
-              <div className="overview-panel">
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <div>
-                    <Text className="panel-kicker">{t('overview.systemTitle')}</Text>
-                    <Title level={5} className="section-heading">
-                      {t('overview.systemHeading')}
-                    </Title>
-                  </div>
-
-                  <Descriptions
-                    column={1}
-                    size="small"
-                    items={[
-                      {
-                        key: 'format',
-                        label: t('overview.systemLabels.format'),
-                        children: settings.outputFormat.toUpperCase(),
-                      },
-                      {
-                        key: 'compression',
-                        label: t('overview.systemLabels.compression'),
-                        children: getCompressionPresetTechnicalLabel(settings.compression),
-                      },
-                      {
-                        key: 'backend',
-                        label: t('overview.systemLabels.backend'),
-                        children: getRequestedEncoderBackendLabel(settings.encoderBackend),
-                      },
-                      {
-                        key: 'acceleration',
-                        label: t('overview.systemLabels.acceleration'),
-                        children: hardwareAccelerationProfile.nvidia.available
-                          ? t('overview.accelerationOnline')
-                          : t('overview.accelerationOffline'),
-                      },
-                    ]}
-                  />
-
-                  <Space wrap size={[8, 8]} className="signal-pills">
-                    <Tag
-                      bordered={false}
-                      color={hardwareAccelerationProfile.nvidia.available ? 'success' : 'default'}
-                    >
-                      <ThunderboltOutlined /> {hardwareAccelerationProfile.nvidia.encoder ?? 'CPU'}
-                    </Tag>
-                    <Tag bordered={false} color="blue">
-                      <ApiOutlined /> {settings.outputFormat.toUpperCase()}
-                    </Tag>
-                  </Space>
-
-                  <Text type="secondary" className="overview-system-description">
-                    {hardwareAccelerationProfile.nvidia.reason}
-                  </Text>
-                </Space>
+            <Col xs={24} xl={12}>
+              <div className="overview-steps">
+                <Steps
+                  current={currentStep}
+                  responsive
+                  items={[
+                    {
+                      title: t('overview.steps.queueTitle'),
+                      description: t('overview.steps.queueDescription'),
+                      icon: <VideoCameraOutlined />,
+                    },
+                    {
+                      title: t('overview.steps.mergeTitle'),
+                      description: t('overview.steps.mergeDescription'),
+                      icon: <CompressOutlined />,
+                    },
+                    {
+                      title: t('overview.steps.outputTitle'),
+                      description: t('overview.steps.outputDescription'),
+                      icon: <PlayCircleOutlined />,
+                    },
+                  ]}
+                />
               </div>
             </Col>
           </Row>

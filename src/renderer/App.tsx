@@ -1,4 +1,4 @@
-import { Layout, Row, Col, Space, Spin, Typography } from 'antd';
+import { Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobBoard } from '@renderer/components/JobBoard';
@@ -24,33 +24,30 @@ function App() {
   return (
     <Layout className="app-shell">
       <Content className="app-content">
-        <div className="dashboard-container dashboard-stage">
-          <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        <div className="dashboard-container">
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <MergeOverview />
 
-            {loaded ? (
-              <Row gutter={[20, 20]} align="stretch" className="dashboard-main-grid">
-                <Col xs={24} xl={10} xxl={9} className="dashboard-side-column">
-                  <Space direction="vertical" size="large" className="panel-stack">
-                    <JobComposer />
-                  </Space>
-                </Col>
-
-                <Col xs={24} xl={14} xxl={15} className="dashboard-center-column">
+            <Row gutter={[16, 16]} align="stretch">
+              <Col xs={24} xl={9}>
+                <JobComposer />
+              </Col>
+              <Col xs={24} xl={15}>
+                {loaded ? (
                   <Space direction="vertical" size="large" className="panel-stack">
                     <MergePreviewCard />
                     <JobBoard />
                   </Space>
-                </Col>
-              </Row>
-            ) : (
-              <div className="loading-card">
-                <Space direction="vertical" size="middle" align="center">
-                  <Spin size="large" />
-                  <Text type="secondary">{t('app.loadingWorkspace')}</Text>
-                </Space>
-              </div>
-            )}
+                ) : (
+                  <div className="loading-card">
+                    <Space direction="vertical" size="middle" align="center">
+                      <Spin size="large" />
+                      <Text type="secondary">{t('app.loadingWorkspace')}</Text>
+                    </Space>
+                  </div>
+                )}
+              </Col>
+            </Row>
           </Space>
         </div>
       </Content>

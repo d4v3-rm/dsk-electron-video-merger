@@ -11,16 +11,13 @@ import {
   Alert,
   Button,
   Card,
-  Col,
-  Descriptions,
   Divider,
-  Empty,
   Flex,
   Form,
   List,
-  Row,
   Select,
   Space,
+  Statistic,
   Tag,
   Tooltip,
   Typography,
@@ -35,7 +32,7 @@ import {
   getRequestedEncoderBackendLabel,
   isNvidiaSupportedOutputFormat,
 } from '@renderer/utils/encoder-presentation';
-import { buildMergedOutputName, formatBytes } from '@renderer/utils/file-utils';
+import { formatBytes } from '@renderer/utils/file-utils';
 
 const { Text, Paragraph, Title } = Typography;
 
@@ -80,12 +77,11 @@ export const JobComposer = () => {
       : settings.outputFormat === 'webm'
         ? 'warning'
         : 'info';
-  const plannedOutputName = buildMergedOutputName(selectedFiles[0]?.name, settings.outputFormat);
 
   return (
     <Card
       title={t('composer.cardTitle')}
-      className="modern-card composer-card"
+      className="modern-card queue-card"
       extra={
         <Space size="small" wrap>
           <Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>
@@ -99,125 +95,14 @@ export const JobComposer = () => {
       }
     >
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        <div className="composer-header">
-          <Text className="panel-kicker">{t('composer.cardTitle')}</Text>
-          <Title level={4} className="section-heading section-title">
+        <div>
+          <Title level={4} className="section-title">
             {t('composer.title')}
           </Title>
           <Text type="secondary">{t('composer.subtitle')}</Text>
         </div>
 
-        <div className="composer-summary-grid">
-          <div className="data-tile">
-            <Text className="data-tile-label">{t('composer.stats.clips')}</Text>
-            <Text className="data-tile-value">{selectedStats.totalFiles}</Text>
-            <Text type="secondary" className="data-tile-meta">
-              <VideoCameraAddOutlined /> {t('composer.manifestSubtitle')}
-            </Text>
-          </div>
-          <div className="data-tile">
-            <Text className="data-tile-label">{t('composer.stats.stagingSize')}</Text>
-            <Text className="data-tile-value">{selectedStats.totalSize}</Text>
-            <Text type="secondary" className="data-tile-meta">
-              {settings.outputFormat.toUpperCase()} container lane
-            </Text>
-          </div>
-          <div className="data-tile">
-            <Text className="data-tile-label">{t('composer.summaryOutputName')}</Text>
-            <Text className="data-tile-value data-tile-code">{plannedOutputName}</Text>
-            <Text type="secondary" className="data-tile-meta">
-              {getRequestedEncoderBackendLabel(settings.encoderBackend)}
-            </Text>
-          </div>
-        </div>
-
         <Alert type="info" showIcon message={t('composer.orderInfo')} />
-
-        <div className="composer-signal">
-          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Text className="panel-kicker">{t('composer.summaryTitle')}</Text>
-            <Descriptions
-              column={1}
-              size="small"
-              items={[
-                {
-                  key: 'outputName',
-                  label: t('composer.summaryOutputName'),
-                  children: plannedOutputName,
-                },
-                {
-                  key: 'container',
-                  label: t('composer.summaryContainer'),
-                  children: settings.outputFormat.toUpperCase(),
-                },
-                {
-                  key: 'compression',
-                  label: t('composer.summaryCompression'),
-                  children: getCompressionPresetTechnicalLabel(settings.compression),
-                },
-                {
-                  key: 'backend',
-                  label: t('composer.summaryBackend'),
-                  children: getRequestedEncoderBackendLabel(settings.encoderBackend),
-                },
-              ]}
-            />
-          </Space>
-        </div>
-
-        <Form layout="vertical" className="control-grid">
-          <Row gutter={[14, 0]}>
-            <Col xs={24} lg={8}>
-              <Form.Item label={t('composer.fields.outputFormat')}>
-                <Select
-                  value={settings.outputFormat}
-                  onChange={setOutputFormat}
-                  options={['mp4', 'mov', 'mkv', 'webm'].map((value) => ({
-                    value,
-                    label: value.toUpperCase(),
-                  }))}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={24} lg={8}>
-              <Form.Item label={t('composer.fields.compression')}>
-                <Select
-                  value={settings.compression}
-                  onChange={setCompression}
-                  options={(['light', 'balanced', 'strong'] as const).map((preset) => ({
-                    value: preset,
-                    label: getCompressionPresetTechnicalLabel(preset),
-                  }))}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={24} lg={8}>
-              <Form.Item label={t('composer.fields.backend')}>
-                <Select
-                  value={settings.encoderBackend}
-                  onChange={setEncoderBackend}
-                  options={[
-                    {
-                      value: 'auto',
-                      label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? t('composer.autoPrefersNvidia') : t('composer.autoStaysCpu')})`,
-                    },
-                    {
-                      value: 'cpu',
-                      label: getRequestedEncoderBackendLabel('cpu'),
-                    },
-                    {
-                      value: 'nvidia',
-                      label: getRequestedEncoderBackendLabel('nvidia'),
-                      disabled: !nvidiaAvailable || !nvidiaSupportedForFormat,
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
 
         <Alert
           type={hardwareAlertType}
@@ -230,7 +115,77 @@ export const JobComposer = () => {
           description={encoderModeDescription}
         />
 
-        <div className="composer-action-bar">
+        <div className="queue-stats">
+          <div className="queue-stat-tile">
+            <Statistic
+              title={t('composer.stats.clips')}
+              value={selectedStats.totalFiles}
+              prefix={<VideoCameraAddOutlined />}
+            />
+          </div>
+          <div className="queue-stat-tile">
+            <Statistic title={t('composer.stats.stagingSize')} value={selectedStats.totalSize} />
+          </div>
+        </div>
+
+        <Form layout="vertical">
+          <Form.Item label={t('composer.fields.outputFormat')}>
+            <Select
+              value={settings.outputFormat}
+              onChange={setOutputFormat}
+              options={['mp4', 'mov', 'mkv', 'webm'].map((value) => ({
+                value,
+                label: value.toUpperCase(),
+              }))}
+            />
+          </Form.Item>
+
+          <Form.Item label={t('composer.fields.compression')}>
+            <Select
+              value={settings.compression}
+              onChange={setCompression}
+              options={(['light', 'balanced', 'strong'] as const).map((preset) => ({
+                value: preset,
+                label: getCompressionPresetTechnicalLabel(preset),
+              }))}
+            />
+          </Form.Item>
+
+          <Form.Item label={t('composer.fields.backend')}>
+            <Select
+              value={settings.encoderBackend}
+              onChange={setEncoderBackend}
+              options={[
+                {
+                  value: 'auto',
+                  label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? 'prefers NVIDIA' : 'stays on CPU'})`,
+                },
+                {
+                  value: 'cpu',
+                  label: getRequestedEncoderBackendLabel('cpu'),
+                },
+                {
+                  value: 'nvidia',
+                  label: getRequestedEncoderBackendLabel('nvidia'),
+                  disabled: !nvidiaAvailable || !nvidiaSupportedForFormat,
+                },
+              ]}
+            />
+          </Form.Item>
+        </Form>
+
+        <Text type="secondary">
+          {t('composer.backendSelected', {
+            backend: getRequestedEncoderBackendLabel(settings.encoderBackend),
+          })}{' '}
+          {settings.outputFormat === 'webm'
+            ? t('composer.backendWebm')
+            : nvidiaAvailable
+              ? t('composer.backendNvenc')
+              : t('composer.backendCpu')}
+        </Text>
+
+        <Space size="middle" wrap>
           <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large">
             {t('composer.buttons.addClips')}
           </Button>
@@ -253,22 +208,17 @@ export const JobComposer = () => {
           >
             {t('composer.buttons.startMerge')}
           </Button>
-        </div>
+        </Space>
 
         <Divider style={{ margin: 0 }} />
 
-        <div className="manifest-head">
-          <div>
-            <Text className="panel-kicker">{t('composer.manifestTitle')}</Text>
-            <Title level={5} className="section-heading section-title">
-              {t('composer.manifestTitle')}
-            </Title>
-            <Text type="secondary">{t('composer.manifestSubtitle')}</Text>
-          </div>
-        </div>
-
         {selectedFiles.length === 0 ? (
-          <Empty description={t('composer.empty.description')} />
+          <Alert
+            type="warning"
+            showIcon
+            message={t('composer.empty.title')}
+            description={t('composer.empty.description')}
+          />
         ) : (
           <List
             className="queue-list"

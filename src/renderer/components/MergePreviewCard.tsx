@@ -1,5 +1,5 @@
-import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined, RadarChartOutlined } from '@ant-design/icons';
-import { Alert, Card, Col, Empty, List, Progress, Row, Space, Tag, Typography } from 'antd';
+import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Divider, Empty, List, Progress, Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@renderer/store/use-app-store';
 import {
@@ -11,7 +11,7 @@ import { buildMergedOutputName, formatBytes } from '@renderer/utils/file-utils';
 import { getStatusLabel, statusColor, toProgressStatus } from '@renderer/utils/job-presentation';
 import { formatDurationMs, formatSpeed } from '@renderer/utils/runtime-presentation';
 
-const { Text, Paragraph, Title } = Typography;
+const { Text, Paragraph } = Typography;
 
 export const MergePreviewCard = () => {
   const { t } = useTranslation();
@@ -38,9 +38,6 @@ export const MergePreviewCard = () => {
         : selectedFiles.length > 0
           ? t('preview.status.ready')
           : t('preview.status.idle');
-  const stagedClips =
-    selectedFiles.length || activeJob?.files.length || latestCompletedJob?.files.length || 0;
-  const effectiveBackend = activeJob?.resolvedEncoderBackend ?? latestCompletedJob?.resolvedEncoderBackend;
 
   return (
     <Card
@@ -52,66 +49,64 @@ export const MergePreviewCard = () => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('preview.emptyDescription')} />
       ) : (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div className="preview-hero">
-            <div>
-              <Text className="panel-kicker">{t('preview.summaryTitle')}</Text>
-              <Title level={4} className="section-heading preview-output-name">
-                {previewName}
-              </Title>
-              <Text type="secondary">
-                {t('preview.summaryText', {
-                  format: previewSettings.outputFormat.toUpperCase(),
-                  clips: stagedClips,
-                })}
-              </Text>
-            </div>
-
-            <Space wrap size={[8, 8]} className="signal-pills">
-              <Tag color="blue">{previewSettings.outputFormat.toUpperCase()}</Tag>
-              <Tag>{getCompressionPresetTechnicalLabel(previewSettings.compression)}</Tag>
-              <Tag>{getRequestedEncoderBackendLabel(previewSettings.encoderBackend)}</Tag>
-            </Space>
-          </div>
-
-          <Row gutter={[12, 12]} className="preview-insight-grid">
-            <Col xs={24} md={8}>
-              <div className="data-tile">
-                <Text className="data-tile-label">{t('preview.labels.inputClips')}</Text>
-                <Text className="data-tile-value">{stagedClips}</Text>
-                <Text type="secondary" className="data-tile-meta">
-                  {t('preview.currentOrder')}
-                </Text>
-              </div>
-            </Col>
-            <Col xs={24} md={8}>
-              <div className="data-tile">
-                <Text className="data-tile-label">{t('preview.labels.stagingSize')}</Text>
-                <Text className="data-tile-value">
-                  {selectedFiles.length > 0 ? formatBytes(totalSize) : t('common.notAvailable')}
-                </Text>
-                <Text type="secondary" className="data-tile-meta">
-                  {t('preview.singleFile')}
-                </Text>
-              </div>
-            </Col>
-            <Col xs={24} md={8}>
-              <div className="data-tile">
-                <Text className="data-tile-label">{t('preview.labels.activeBackend')}</Text>
-                <Text className="data-tile-value">
-                  {effectiveBackend
-                    ? getResolvedEncoderBackendLabel(effectiveBackend)
-                    : t('preview.pendingResolution')}
-                </Text>
-                <Text type="secondary" className="data-tile-meta">
-                  {getRequestedEncoderBackendLabel(previewSettings.encoderBackend)}
-                </Text>
-              </div>
-            </Col>
-          </Row>
+          <Descriptions
+            column={2}
+            size="small"
+            items={[
+              {
+                key: 'name',
+                label: t('preview.labels.outputName'),
+                children: (
+                  <Text strong className="preview-output-name">
+                    {previewName}
+                  </Text>
+                ),
+              },
+              {
+                key: 'clips',
+                label: t('preview.labels.inputClips'),
+                children: selectedFiles.length || activeJob?.files.length || 0,
+              },
+              {
+                key: 'format',
+                label: t('preview.labels.format'),
+                children: previewSettings.outputFormat.toUpperCase(),
+              },
+              {
+                key: 'compression',
+                label: t('preview.labels.compression'),
+                children: getCompressionPresetTechnicalLabel(previewSettings.compression),
+              },
+              {
+                key: 'backendRequested',
+                label: t('preview.labels.requestedBackend'),
+                children: getRequestedEncoderBackendLabel(previewSettings.encoderBackend),
+              },
+              {
+                key: 'backendResolved',
+                label: t('preview.labels.activeBackend'),
+                children: activeJob?.resolvedEncoderBackend
+                  ? getResolvedEncoderBackendLabel(activeJob.resolvedEncoderBackend)
+                  : latestCompletedJob?.resolvedEncoderBackend
+                    ? getResolvedEncoderBackendLabel(latestCompletedJob.resolvedEncoderBackend)
+                    : t('preview.pendingResolution'),
+              },
+              {
+                key: 'size',
+                label: t('preview.labels.stagingSize'),
+                children: selectedFiles.length > 0 ? formatBytes(totalSize) : t('common.notAvailable'),
+              },
+              {
+                key: 'delivery',
+                label: t('preview.labels.delivery'),
+                children: t('preview.singleFile'),
+              },
+            ]}
+          />
 
           {activeJob ? (
             <div className="preview-runtime">
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+              <Space direction="vertical" size="small" style={{ width: '100%' }}>
                 <Space align="center" wrap>
                   <Tag color={statusColor[activeJob.status]}>{getStatusLabel(activeJob.status)}</Tag>
                   {activeJob.resolvedEncoderBackend ? (
@@ -121,105 +116,62 @@ export const MergePreviewCard = () => {
                   ) : null}
                   <Text type="secondary">{activeJob.message}</Text>
                 </Space>
-
-                <div>
-                  <Text className="panel-kicker">{t('preview.telemetryTitle')}</Text>
-                  <Progress percent={activeJob.progress} status={toProgressStatus(activeJob.status)} />
-                </div>
-
-                <div className="preview-telemetry-grid">
-                  <div className="telemetry-tile">
-                    <Text className="telemetry-tile-label">{t('details.labels.processedDuration')}</Text>
-                    <Text className="telemetry-tile-value">
-                      {formatDurationMs(activeJob.telemetry?.processedDurationMs)}
-                    </Text>
-                  </div>
-                  <div className="telemetry-tile">
-                    <Text className="telemetry-tile-label">{t('details.labels.speed')}</Text>
-                    <Text className="telemetry-tile-value">{formatSpeed(activeJob.telemetry?.speed)}</Text>
-                  </div>
-                  <div className="telemetry-tile">
-                    <Text className="telemetry-tile-label">{t('details.labels.bitrate')}</Text>
-                    <Text className="telemetry-tile-value">
-                      {activeJob.telemetry?.bitrate ?? t('common.notAvailable')}
-                    </Text>
-                  </div>
-                </div>
+                <Progress percent={activeJob.progress} status={toProgressStatus(activeJob.status)} />
+                {activeJob.telemetry ? (
+                  <Text type="secondary">
+                    {`${formatDurationMs(activeJob.telemetry.processedDurationMs)} / ${formatDurationMs(activeJob.telemetry.totalDurationMs)} | ${formatSpeed(activeJob.telemetry.speed)}${activeJob.telemetry.bitrate ? ` | ${activeJob.telemetry.bitrate}` : ''}`}
+                  </Text>
+                ) : null}
               </Space>
             </div>
-          ) : (
-            <Alert
-              type="info"
-              showIcon
-              icon={<RadarChartOutlined />}
-              message={t('preview.telemetryIdleTitle')}
-              description={t('preview.telemetryIdleDescription')}
-            />
-          )}
+          ) : null}
 
-          <Row gutter={[16, 16]}>
-            <Col xs={24} xl={12}>
-              <div className="preview-panel">
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <Space align="center">
-                    <ClockCircleOutlined />
-                    <Text className="panel-kicker">{t('preview.queueTitle')}</Text>
-                  </Space>
-
-                  {selectedFiles.length > 0 ? (
-                    <>
-                      <List
-                        className="preview-list"
-                        size="small"
-                        dataSource={selectedFiles.slice(0, 4)}
-                        renderItem={(file, index) => (
-                          <List.Item>
-                            <Space size="middle">
-                              <Tag bordered={false}>{index + 1}</Tag>
-                              <Text>{file.name}</Text>
-                            </Space>
-                          </List.Item>
-                        )}
-                      />
-                      {selectedFiles.length > 4 ? (
-                        <Text type="secondary">
-                          {t('preview.moreClips', { count: selectedFiles.length - 4 })}
-                        </Text>
-                      ) : null}
-                    </>
-                  ) : (
-                    <Empty
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description={t('preview.queueIdleDescription')}
-                    />
-                  )}
+          {selectedFiles.length > 0 ? (
+            <>
+              <Divider style={{ margin: 0 }} />
+              <div>
+                <Space align="center">
+                  <ClockCircleOutlined />
+                  <Text strong>{t('preview.currentOrder')}</Text>
                 </Space>
-              </div>
-            </Col>
-
-            <Col xs={24} xl={12}>
-              <div className="preview-panel">
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <Space align="center">
-                    <FileDoneOutlined />
-                    <Text className="panel-kicker">{t('preview.artifactTitle')}</Text>
-                  </Space>
-
-                  {latestCompletedJob?.outputPaths[0] ? (
-                    <Paragraph
-                      className="preview-path"
-                      copyable={{ text: latestCompletedJob.outputPaths[0] }}
-                      ellipsis={{ tooltip: latestCompletedJob.outputPaths[0] }}
-                    >
-                      <LinkOutlined /> {latestCompletedJob.outputPaths[0]}
-                    </Paragraph>
-                  ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('details.outputPending')} />
+                <List
+                  className="preview-list"
+                  size="small"
+                  dataSource={selectedFiles.slice(0, 4)}
+                  renderItem={(file, index) => (
+                    <List.Item>
+                      <Space size="middle">
+                        <Tag bordered={false}>{index + 1}</Tag>
+                        <Text>{file.name}</Text>
+                      </Space>
+                    </List.Item>
                   )}
-                </Space>
+                />
+                {selectedFiles.length > 4 ? (
+                  <Text type="secondary">{t('preview.moreClips', { count: selectedFiles.length - 4 })}</Text>
+                ) : null}
               </div>
-            </Col>
-          </Row>
+            </>
+          ) : null}
+
+          {latestCompletedJob?.outputPaths[0] ? (
+            <>
+              <Divider style={{ margin: 0 }} />
+              <div>
+                <Space align="center">
+                  <FileDoneOutlined />
+                  <Text strong>{t('preview.lastOutput')}</Text>
+                </Space>
+                <Paragraph
+                  className="preview-path"
+                  copyable={{ text: latestCompletedJob.outputPaths[0] }}
+                  ellipsis={{ tooltip: latestCompletedJob.outputPaths[0] }}
+                >
+                  <LinkOutlined /> {latestCompletedJob.outputPaths[0]}
+                </Paragraph>
+              </div>
+            </>
+          ) : null}
         </Space>
       )}
     </Card>

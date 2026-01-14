@@ -37,10 +37,6 @@ export const JobBoard = () => {
     [jobs, selectedJobId],
   );
 
-  const runningJobs = jobs.filter((job) => job.status === 'running').length;
-  const completedJobs = jobs.filter((job) => job.status === 'completed').length;
-  const erroredJobs = jobs.filter((job) => job.status === 'error').length;
-
   const columns: ColumnsType<Job> = [
     {
       title: t('history.columns.merge'),
@@ -129,44 +125,18 @@ export const JobBoard = () => {
           </Space>
         }
       >
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div className="history-toolbar">
-            <div>
-              <Text className="panel-kicker">{t('history.cardTitle')}</Text>
-              <Text type="secondary" className="history-table-note">
-                {t('history.subtitle')}
-              </Text>
-            </div>
-
-            <Space wrap size={[10, 10]} className="history-stat-grid">
-              <div className="history-stat-pill">
-                <Text strong>{runningJobs}</Text>
-                <Text type="secondary">{t('history.stats.running')}</Text>
-              </div>
-              <div className="history-stat-pill">
-                <Text strong>{completedJobs}</Text>
-                <Text type="secondary">{t('history.stats.completed')}</Text>
-              </div>
-              <div className="history-stat-pill">
-                <Text strong>{erroredJobs}</Text>
-                <Text type="secondary">{t('history.stats.error')}</Text>
-              </div>
-            </Space>
-          </div>
-
-          <Table<Job>
-            rowKey="id"
-            columns={columns}
-            dataSource={jobs}
-            pagination={{ pageSize: 8, showSizeChanger: false }}
-            locale={{ emptyText: t('history.emptyText') }}
-            scroll={{ x: 1320 }}
-            rowClassName="history-row"
-            onRow={(job) => ({
-              onClick: () => setSelectedJobId(job.id),
-            })}
-          />
-        </Space>
+        <Table<Job>
+          rowKey="id"
+          columns={columns}
+          dataSource={jobs}
+          pagination={{ pageSize: 8, showSizeChanger: false }}
+          locale={{ emptyText: t('history.emptyText') }}
+          scroll={{ x: 1320 }}
+          rowClassName="history-row"
+          onRow={(job) => ({
+            onClick: () => setSelectedJobId(job.id),
+          })}
+        />
       </Card>
 
       <JobDetailsDrawer
