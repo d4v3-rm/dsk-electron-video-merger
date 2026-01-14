@@ -16,12 +16,15 @@ export interface AppStoreState {
   jobs: Job[];
   hardwareAccelerationProfile: HardwareAccelerationProfile;
   hardwareAccelerationLoaded: boolean;
+  outputDirectory: string | null;
   settings: ConversionSettings;
   loading: boolean;
   loaded: boolean;
   refreshJobs: () => Promise<void>;
   refreshHardwareAccelerationProfile: () => Promise<void>;
   selectVideoFiles: () => Promise<void>;
+  selectOutputDirectory: () => Promise<void>;
+  clearOutputDirectory: () => void;
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
   setEncoderBackend: (encoderBackend: EncoderBackend) => void;

@@ -24,6 +24,7 @@ const withApi = <T>(handler: (api: ElectronApi) => T): T => {
 
 export const api = {
   selectVideoFiles: async () => withApi((electronAPI) => electronAPI.selectVideoFiles()),
+  selectOutputDirectory: async () => withApi((electronAPI) => electronAPI.selectOutputDirectory()),
   createJob: async (payload: JobCreationPayload) => withApi((electronAPI) => electronAPI.createJob(payload)),
   getJobs: async () => withApi((electronAPI) => electronAPI.getJobs()),
   getHardwareAccelerationProfile: async () =>

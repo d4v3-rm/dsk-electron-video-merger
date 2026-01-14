@@ -5,6 +5,7 @@ import type { HardwareAccelerationProfile, JobCreationPayload, JobProgressPayloa
 
 const IPC_CHANNELS: IpcChannels = {
   filesPick: 'videos:pick',
+  outputDirectoryPick: 'output-directory:pick',
   jobsCreate: 'jobs:create',
   jobsList: 'jobs:list',
   jobsProgress: 'jobs:progress',
@@ -13,6 +14,7 @@ const IPC_CHANNELS: IpcChannels = {
 
 const electronApi: ElectronApi = {
   selectVideoFiles: () => ipcRenderer.invoke(IPC_CHANNELS.filesPick),
+  selectOutputDirectory: () => ipcRenderer.invoke(IPC_CHANNELS.outputDirectoryPick),
   createJob: (payload: JobCreationPayload) => ipcRenderer.invoke(IPC_CHANNELS.jobsCreate, payload),
   getJobs: () => ipcRenderer.invoke(IPC_CHANNELS.jobsList),
   getHardwareAccelerationProfile: (): Promise<HardwareAccelerationProfile> =>

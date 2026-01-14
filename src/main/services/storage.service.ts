@@ -20,10 +20,10 @@ export class StorageService {
     await fs.mkdir(paths.temp, { recursive: true });
   }
 
-  async buildJobFolders(jobId: string): Promise<JobFolders> {
+  async buildJobFolders(jobId: string, outputDirectory?: string): Promise<JobFolders> {
     await this.ensurePaths();
     const { temp, output } = this.paths;
-    const outputDir = path.join(output, jobId);
+    const outputDir = outputDirectory ?? path.join(output, jobId);
     const tempDir = path.join(temp, jobId);
     await fs.mkdir(outputDir, { recursive: true });
     await fs.mkdir(tempDir, { recursive: true });

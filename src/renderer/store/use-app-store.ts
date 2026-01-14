@@ -18,6 +18,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   jobs: [],
   hardwareAccelerationProfile: DEFAULT_HARDWARE_ACCELERATION_PROFILE,
   hardwareAccelerationLoaded: false,
+  outputDirectory: null,
   settings: {
     outputFormat: 'mp4',
     compression: 'balanced',
@@ -70,6 +71,23 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     }
   },
 
+  selectOutputDirectory: async () => {
+    try {
+      const outputDirectory = await api.selectOutputDirectory();
+      if (!outputDirectory) {
+        return;
+      }
+
+      set({ outputDirectory });
+    } catch {
+      // no-op: the Electron bridge may be unavailable while rendering outside Electron.
+    }
+  },
+
+  clearOutputDirectory: () => {
+    set({ outputDirectory: null });
+  },
+
   setOutputFormat: (outputFormat) =>
     set((state) => ({
       settings: {
@@ -110,7 +128,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   },
 
   createJob: async () => {
-    const { selectedFiles, settings, loading } = get();
+    const { selectedFiles, settings, outputDirectory, loading } = get();
     if (selectedFiles.length === 0 || loading) {
       return;
     }
@@ -119,6 +137,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     const payload: JobCreationPayload = {
       filePaths: selectedFiles.map((file) => file.path),
       settings,
+      outputDirectory: outputDirectory ?? undefined,
     };
 
     try {

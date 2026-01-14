@@ -142,6 +142,21 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
                       children: job.files.length,
                     },
                     {
+                      key: 'destinationFolder',
+                      label: t('details.labels.destinationFolder'),
+                      children: job.outputDirectory ? (
+                        <Paragraph
+                          className="job-drawer-path"
+                          copyable={{ text: job.outputDirectory }}
+                          ellipsis={{ tooltip: job.outputDirectory }}
+                        >
+                          {job.outputDirectory}
+                        </Paragraph>
+                      ) : (
+                        t('details.defaultDestination')
+                      ),
+                    },
+                    {
                       key: 'createdAt',
                       label: t('details.labels.createdAt'),
                       children: dateFormatter.format(job.createdAt),

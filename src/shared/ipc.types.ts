@@ -4,6 +4,7 @@ import type { InputFileDTO } from './video.types';
 
 export interface ElectronApi {
   selectVideoFiles: () => Promise<InputFileDTO[]>;
+  selectOutputDirectory: () => Promise<string | null>;
   createJob: (payload: JobCreationPayload) => Promise<Job>;
   getJobs: () => Promise<Job[]>;
   getHardwareAccelerationProfile: () => Promise<HardwareAccelerationProfile>;

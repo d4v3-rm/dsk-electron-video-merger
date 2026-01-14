@@ -27,6 +27,7 @@ export interface Job {
   files: InputFileDTO[];
   settings: ConversionSettings;
   outputPaths: string[];
+  outputDirectory?: string;
   progress: number;
   message: string;
   createdAt: number;
@@ -44,6 +45,7 @@ export interface JobListPayload {
 export interface JobCreationPayload {
   filePaths: string[];
   settings: ConversionSettings;
+  outputDirectory?: string;
 }
 
 export interface JobProgressPayload {

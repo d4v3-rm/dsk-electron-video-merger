@@ -16,6 +16,7 @@ const { Text, Paragraph } = Typography;
 export const MergePreviewCard = () => {
   const { t } = useTranslation();
   const selectedFiles = useAppStore((state) => state.selectedFiles);
+  const outputDirectory = useAppStore((state) => state.outputDirectory);
   const settings = useAppStore((state) => state.settings);
   const jobs = useAppStore((state) => state.jobs);
 
@@ -28,6 +29,10 @@ export const MergePreviewCard = () => {
     selectedFiles.length > 0 ? settings : (activeJob?.settings ?? latestCompletedJob?.settings ?? settings);
   const previewSeedFile =
     selectedFiles[0]?.name ?? activeJob?.files[0]?.name ?? latestCompletedJob?.files[0]?.name ?? undefined;
+  const previewOutputDirectory =
+    selectedFiles.length > 0
+      ? outputDirectory
+      : (activeJob?.outputDirectory ?? latestCompletedJob?.outputDirectory ?? null);
 
   const previewName = buildMergedOutputName(previewSeedFile, previewSettings.outputFormat);
   const previewStatus =
@@ -100,6 +105,12 @@ export const MergePreviewCard = () => {
                 key: 'delivery',
                 label: t('preview.labels.delivery'),
                 children: t('preview.singleFile'),
+              },
+              {
+                key: 'destination',
+                label: t('preview.labels.destinationFolder'),
+                children: previewOutputDirectory ?? t('preview.defaultDestination'),
+                span: 2,
               },
             ]}
           />

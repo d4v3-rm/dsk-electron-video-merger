@@ -33,4 +33,17 @@ export class FilePickerService {
 
     return files;
   }
+
+  async pickOutputDirectory(): Promise<string | null> {
+    const result = await dialog.showOpenDialog({
+      title: 'Select the destination folder for merged output',
+      properties: ['openDirectory'],
+    });
+
+    if (result.canceled) {
+      return null;
+    }
+
+    return result.filePaths[0] ?? null;
+  }
 }

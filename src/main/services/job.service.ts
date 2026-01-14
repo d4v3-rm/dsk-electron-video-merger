@@ -66,6 +66,7 @@ export class JobService {
       files,
       settings: payload.settings,
       outputPaths: [],
+      outputDirectory: payload.outputDirectory,
       progress: 0,
       message: 'Queued',
       createdAt: now,
@@ -131,7 +132,10 @@ export class JobService {
         ),
       );
 
-      const { outputDir, tempDir: nextTempDir } = await this.storageService.buildJobFolders(job.id);
+      const { outputDir, tempDir: nextTempDir } = await this.storageService.buildJobFolders(
+        job.id,
+        job.outputDirectory,
+      );
       tempDir = nextTempDir;
       const outputPath = path.join(outputDir, `merged-${Date.now()}.${job.settings.outputFormat}`);
 
@@ -278,6 +282,7 @@ export class JobService {
       files: job.files,
       settings: job.settings,
       outputPaths: job.outputPaths,
+      outputDirectory: job.outputDirectory,
       progress: job.progress,
       message: job.message,
       createdAt: job.createdAt,

@@ -3,6 +3,7 @@ import {
   ArrowUpOutlined,
   ClearOutlined,
   DeleteOutlined,
+  FolderOpenOutlined,
   PlayCircleOutlined,
   UploadOutlined,
   VideoCameraAddOutlined,
@@ -14,6 +15,7 @@ import {
   Divider,
   Flex,
   Form,
+  Input,
   List,
   Select,
   Space,
@@ -42,12 +44,15 @@ export const JobComposer = () => {
     selectedFiles,
     hardwareAccelerationProfile,
     hardwareAccelerationLoaded,
+    outputDirectory,
     settings,
     loading,
     setCompression,
     setEncoderBackend,
     setOutputFormat,
     selectVideoFiles,
+    selectOutputDirectory,
+    clearOutputDirectory,
     clearSelectedFiles,
     removeSelectedFile,
     moveSelectedFile,
@@ -158,7 +163,7 @@ export const JobComposer = () => {
               options={[
                 {
                   value: 'auto',
-                  label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? 'prefers NVIDIA' : 'stays on CPU'})`,
+                  label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? t('composer.autoPrefersNvidia') : t('composer.autoStaysCpu')})`,
                 },
                 {
                   value: 'cpu',
@@ -172,6 +177,18 @@ export const JobComposer = () => {
               ]}
             />
           </Form.Item>
+
+          <Form.Item label={t('composer.fields.destinationFolder')}>
+            <Space.Compact style={{ width: '100%' }}>
+              <Input readOnly value={outputDirectory ?? t('composer.destinationDefault')} />
+              <Button icon={<FolderOpenOutlined />} onClick={selectOutputDirectory}>
+                {t('composer.buttons.selectDestination')}
+              </Button>
+              <Button onClick={clearOutputDirectory} disabled={!outputDirectory}>
+                {t('composer.buttons.useDefaultDestination')}
+              </Button>
+            </Space.Compact>
+          </Form.Item>
         </Form>
 
         <Text type="secondary">
@@ -183,6 +200,10 @@ export const JobComposer = () => {
             : nvidiaAvailable
               ? t('composer.backendNvenc')
               : t('composer.backendCpu')}
+        </Text>
+
+        <Text type="secondary">
+          {outputDirectory ? t('composer.destinationSelected') : t('composer.destinationAuto')}
         </Text>
 
         <Space size="middle" wrap>
