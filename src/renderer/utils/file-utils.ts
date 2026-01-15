@@ -1,4 +1,4 @@
-import type { OutputFormat } from '@shared/types';
+import type { JobMode, OutputFormat } from '@shared/types';
 
 export const formatBytes = (size: number): string => {
   const kilo = 1024;
@@ -30,4 +30,27 @@ export const buildMergedOutputName = (inputName: string | undefined, outputForma
   }
 
   return `${stripExtension(inputName)}-merged.${outputFormat}`;
+};
+
+export const buildCompressedOutputName = (
+  inputName: string | undefined,
+  outputFormat: OutputFormat,
+): string => {
+  if (!inputName) {
+    return `compressed-output.${outputFormat}`;
+  }
+
+  return `${stripExtension(inputName)}-compressed.${outputFormat}`;
+};
+
+export const buildOutputPreviewName = (
+  mode: JobMode,
+  inputName: string | undefined,
+  outputFormat: OutputFormat,
+): string => {
+  if (mode === 'compress') {
+    return buildCompressedOutputName(inputName, outputFormat);
+  }
+
+  return buildMergedOutputName(inputName, outputFormat);
 };

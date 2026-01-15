@@ -2,13 +2,13 @@ import { FileDoneOutlined, OrderedListOutlined, RadarChartOutlined } from '@ant-
 import {
   Alert,
   Card,
+  Col,
   Descriptions,
   Drawer,
   Empty,
   List,
   Progress,
   Row,
-  Col,
   Space,
   Tag,
   Timeline,
@@ -25,6 +25,7 @@ import {
 } from '@renderer/utils/encoder-presentation';
 import { getFileName } from '@renderer/utils/file-utils';
 import {
+  getJobModeLabel,
   getLogStageLabel,
   getStatusLabel,
   statusColor,
@@ -57,7 +58,11 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
 
   return (
     <Drawer
-      title={job ? t('details.title', { id: job.id.slice(0, 8) }) : t('details.defaultTitle')}
+      title={
+        job
+          ? t('details.title', { mode: getJobModeLabel(job.mode), id: job.id.slice(0, 8) })
+          : t('details.defaultTitle')
+      }
       open={open}
       onClose={onClose}
       width={680}
@@ -81,10 +86,11 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
     >
       {job ? (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <Card variant="borderless">
+          <Card>
             <Space direction="vertical" size="middle" style={{ width: '100%' }}>
               <Space align="center" wrap>
                 <Tag color={statusColor[job.status]}>{getStatusLabel(job.status)}</Tag>
+                <Tag bordered={false}>{getJobModeLabel(job.mode)}</Tag>
                 {job.resolvedEncoderBackend ? (
                   <Tag bordered={false} color="blue">
                     {getResolvedEncoderBackendLabel(job.resolvedEncoderBackend)}
@@ -109,11 +115,16 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
 
           <Row gutter={[16, 16]}>
             <Col xs={24}>
-              <Card variant="borderless" title={t('details.summaryTitle')}>
+              <Card title={t('details.summaryTitle')}>
                 <Descriptions
                   column={1}
                   size="small"
                   items={[
+                    {
+                      key: 'mode',
+                      label: t('details.labels.mode'),
+                      children: getJobModeLabel(job.mode),
+                    },
                     {
                       key: 'format',
                       label: t('details.labels.format'),
@@ -138,7 +149,7 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
                     },
                     {
                       key: 'clips',
-                      label: t('details.labels.clips'),
+                      label: t('details.labels.inputVideos'),
                       children: job.files.length,
                     },
                     {
@@ -167,7 +178,7 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
             </Col>
 
             <Col xs={24}>
-              <Card variant="borderless" title={t('details.runtimeTitle')}>
+              <Card title={t('details.runtimeTitle')}>
                 <Descriptions
                   column={2}
                   size="small"
@@ -205,7 +216,7 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
             </Col>
 
             <Col xs={24}>
-              <Card variant="borderless" title={t('details.logTitle')} extra={<RadarChartOutlined />}>
+              <Card title={t('details.logTitle')} extra={<RadarChartOutlined />}>
                 <Timeline
                   items={job.logs.map((log) => ({
                     color: getLogColor(log),
@@ -227,7 +238,6 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
 
             <Col xs={24}>
               <Card
-                variant="borderless"
                 title={
                   <Space>
                     <OrderedListOutlined />
@@ -261,7 +271,6 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
 
             <Col xs={24}>
               <Card
-                variant="borderless"
                 title={
                   <Space>
                     <FileDoneOutlined />

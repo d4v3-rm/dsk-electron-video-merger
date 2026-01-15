@@ -10,6 +10,8 @@ import i18n from '@renderer/i18n';
 
 export const getStatusLabel = (status: Job['status']): string => i18n.t(`status.${status}`);
 
+export const getJobModeLabel = (mode: Job['mode']): string => i18n.t(`modes.${mode}`);
+
 export const getLogStageLabel = (stage: 'queue' | 'prepare' | 'encode' | 'finalize' | 'system'): string =>
   i18n.t(`logs.${stage}`);
 

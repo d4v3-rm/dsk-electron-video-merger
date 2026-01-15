@@ -5,6 +5,7 @@ import type {
   HardwareAccelerationProfile,
   InputFileDTO,
   Job,
+  JobMode,
   JobProgressPayload,
   OutputFormat,
 } from '@shared/types';
@@ -12,6 +13,7 @@ import type {
 export type SelectedFileMoveDirection = 'up' | 'down';
 
 export interface AppStoreState {
+  jobMode: JobMode;
   selectedFiles: InputFileDTO[];
   jobs: Job[];
   hardwareAccelerationProfile: HardwareAccelerationProfile;
@@ -25,6 +27,7 @@ export interface AppStoreState {
   selectVideoFiles: () => Promise<void>;
   selectOutputDirectory: () => Promise<void>;
   clearOutputDirectory: () => void;
+  setJobMode: (jobMode: JobMode) => void;
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
   setEncoderBackend: (encoderBackend: EncoderBackend) => void;

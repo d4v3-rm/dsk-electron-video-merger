@@ -7,8 +7,13 @@ import {
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
-import { buildMergedOutputName, formatBytes } from '@renderer/utils/file-utils';
-import { getStatusLabel, statusColor, toProgressStatus } from '@renderer/utils/job-presentation';
+import { buildOutputPreviewName, formatBytes } from '@renderer/utils/file-utils';
+import {
+  getJobModeLabel,
+  getStatusLabel,
+  statusColor,
+  toProgressStatus,
+} from '@renderer/utils/job-presentation';
 import { formatDurationMs, formatSpeed } from '@renderer/utils/runtime-presentation';
 
 const { Text, Paragraph } = Typography;
@@ -18,6 +23,7 @@ export const MergePreviewCard = () => {
   const selectedFiles = useAppStore((state) => state.selectedFiles);
   const outputDirectory = useAppStore((state) => state.outputDirectory);
   const settings = useAppStore((state) => state.settings);
+  const jobMode = useAppStore((state) => state.jobMode);
   const jobs = useAppStore((state) => state.jobs);
 
   const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
@@ -25,6 +31,8 @@ export const MergePreviewCard = () => {
     jobs.find((job) => job.status === 'running') ?? jobs.find((job) => job.status === 'queued') ?? null;
   const latestCompletedJob =
     jobs.find((job) => job.status === 'completed' && job.outputPaths.length > 0) ?? null;
+  const previewMode =
+    selectedFiles.length > 0 ? jobMode : (activeJob?.mode ?? latestCompletedJob?.mode ?? jobMode);
   const previewSettings =
     selectedFiles.length > 0 ? settings : (activeJob?.settings ?? latestCompletedJob?.settings ?? settings);
   const previewSeedFile =
@@ -33,8 +41,9 @@ export const MergePreviewCard = () => {
     selectedFiles.length > 0
       ? outputDirectory
       : (activeJob?.outputDirectory ?? latestCompletedJob?.outputDirectory ?? null);
+  const latestOutputPath = latestCompletedJob?.outputPaths.at(-1) ?? null;
 
-  const previewName = buildMergedOutputName(previewSeedFile, previewSettings.outputFormat);
+  const previewName = buildOutputPreviewName(previewMode, previewSeedFile, previewSettings.outputFormat);
   const previewStatus =
     activeJob?.status === 'running'
       ? t('preview.status.active')
@@ -48,7 +57,12 @@ export const MergePreviewCard = () => {
     <Card
       className="modern-card preview-card"
       title={t('preview.cardTitle')}
-      extra={<Tag color={activeJob ? 'processing' : 'default'}>{previewStatus}</Tag>}
+      extra={
+        <Space size="small" wrap>
+          <Tag>{getJobModeLabel(activeJob?.mode ?? previewMode)}</Tag>
+          <Tag color={activeJob ? 'processing' : 'default'}>{previewStatus}</Tag>
+        </Space>
+      }
     >
       {selectedFiles.length === 0 && !activeJob && !latestCompletedJob ? (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('preview.emptyDescription')} />
@@ -68,8 +82,13 @@ export const MergePreviewCard = () => {
                 ),
               },
               {
+                key: 'mode',
+                label: t('preview.labels.mode'),
+                children: getJobModeLabel(previewMode),
+              },
+              {
                 key: 'clips',
-                label: t('preview.labels.inputClips'),
+                label: t('preview.labels.inputVideos'),
                 children: selectedFiles.length || activeJob?.files.length || 0,
               },
               {
@@ -104,7 +123,8 @@ export const MergePreviewCard = () => {
               {
                 key: 'delivery',
                 label: t('preview.labels.delivery'),
-                children: t('preview.singleFile'),
+                children:
+                  previewMode === 'merge' ? t('preview.delivery.merge') : t('preview.delivery.compress'),
               },
               {
                 key: 'destination',
@@ -120,6 +140,7 @@ export const MergePreviewCard = () => {
               <Space direction="vertical" size="small" style={{ width: '100%' }}>
                 <Space align="center" wrap>
                   <Tag color={statusColor[activeJob.status]}>{getStatusLabel(activeJob.status)}</Tag>
+                  <Tag>{getJobModeLabel(activeJob.mode)}</Tag>
                   {activeJob.resolvedEncoderBackend ? (
                     <Tag bordered={false} color="blue">
                       {getResolvedEncoderBackendLabel(activeJob.resolvedEncoderBackend)}
@@ -143,7 +164,9 @@ export const MergePreviewCard = () => {
               <div>
                 <Space align="center">
                   <ClockCircleOutlined />
-                  <Text strong>{t('preview.currentOrder')}</Text>
+                  <Text strong>
+                    {previewMode === 'merge' ? t('preview.currentOrder') : t('preview.selectedVideos')}
+                  </Text>
                 </Space>
                 <List
                   className="preview-list"
@@ -159,13 +182,13 @@ export const MergePreviewCard = () => {
                   )}
                 />
                 {selectedFiles.length > 4 ? (
-                  <Text type="secondary">{t('preview.moreClips', { count: selectedFiles.length - 4 })}</Text>
+                  <Text type="secondary">{t('preview.moreVideos', { count: selectedFiles.length - 4 })}</Text>
                 ) : null}
               </div>
             </>
           ) : null}
 
-          {latestCompletedJob?.outputPaths[0] ? (
+          {latestOutputPath ? (
             <>
               <Divider style={{ margin: 0 }} />
               <div>
@@ -175,10 +198,10 @@ export const MergePreviewCard = () => {
                 </Space>
                 <Paragraph
                   className="preview-path"
-                  copyable={{ text: latestCompletedJob.outputPaths[0] }}
-                  ellipsis={{ tooltip: latestCompletedJob.outputPaths[0] }}
+                  copyable={{ text: latestOutputPath }}
+                  ellipsis={{ tooltip: latestOutputPath }}
                 >
-                  <LinkOutlined /> {latestCompletedJob.outputPaths[0]}
+                  <LinkOutlined /> {latestOutputPath}
                 </Paragraph>
               </div>
             </>

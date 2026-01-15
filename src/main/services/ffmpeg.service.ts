@@ -14,6 +14,7 @@ import { MediaProbeService } from '@main/services/media-probe.service';
 import type {
   EncoderArgs,
   JobProgressCallback,
+  ProcessSingleCompressionOptions,
   ProcessSingleMergeOptions,
   ProgressState,
 } from '@main/services/ffmpeg.types';
@@ -179,6 +180,17 @@ const buildTelemetry = (state: ProgressState, totalDurationMs?: number): JobTele
 const joinProgressDetails = (parts: Array<string | undefined>): string =>
   parts.filter((part): part is string => Boolean(part)).join(PROGRESS_SEGMENT_SEPARATOR);
 
+interface ProcessTranscodeOptions {
+  inputPaths: string[];
+  outputPath: string;
+  format: OutputFormat;
+  compression: CompressionPreset;
+  resolvedEncoderBackend: ResolvedEncoderBackend;
+  tempDir?: string;
+  onProgress: JobProgressCallback;
+  processingLabel: string;
+}
+
 export class FfmpegService {
   private readonly ffmpegBinary = ffmpegPath;
   private readonly mediaProbeService = new MediaProbeService();
@@ -231,13 +243,68 @@ export class FfmpegService {
     tempDir,
     onProgress,
   }: ProcessSingleMergeOptions): Promise<string> {
+    return this.processTranscode({
+      inputPaths,
+      outputPath,
+      format,
+      compression,
+      resolvedEncoderBackend,
+      tempDir,
+      onProgress,
+      processingLabel:
+        resolvedEncoderBackend === 'nvidia'
+          ? 'Encoding merged output with NVIDIA NVENC'
+          : format === 'webm'
+            ? 'Encoding merged VP9 output on CPU'
+            : 'Encoding merged output on CPU',
+    });
+  }
+
+  async processSingleCompression({
+    inputPath,
+    outputPath,
+    format,
+    compression,
+    resolvedEncoderBackend,
+    onProgress,
+  }: ProcessSingleCompressionOptions): Promise<string> {
+    return this.processTranscode({
+      inputPaths: [inputPath],
+      outputPath,
+      format,
+      compression,
+      resolvedEncoderBackend,
+      onProgress,
+      processingLabel:
+        resolvedEncoderBackend === 'nvidia'
+          ? 'Compressing with NVIDIA NVENC'
+          : format === 'webm'
+            ? 'Compressing VP9 output on CPU'
+            : 'Compressing on CPU',
+    });
+  }
+
+  private async processTranscode({
+    inputPaths,
+    outputPath,
+    format,
+    compression,
+    resolvedEncoderBackend,
+    tempDir,
+    onProgress,
+    processingLabel,
+  }: ProcessTranscodeOptions): Promise<string> {
     if (inputPaths.length === 0) {
-      throw new Error('At least one input file is required to start the merge.');
+      throw new Error('At least one input file is required to start processing.');
+    }
+
+    if (inputPaths.length > 1 && !tempDir) {
+      throw new Error('A temporary workspace is required to build a merged timeline.');
     }
 
     const totalDurationMs = (await this.mediaProbeService.getTotalDurationMs(inputPaths)) ?? undefined;
     const concatInputFile =
-      inputPaths.length > 1 ? await this.createConcatInputFile(tempDir, inputPaths) : null;
+      inputPaths.length > 1 && tempDir ? await this.createConcatInputFile(tempDir, inputPaths) : null;
     const encoder = this.buildEncoderArgs(format, compression, resolvedEncoderBackend);
     const inputArgs = concatInputFile
       ? ['-f', 'concat', '-safe', '0', '-i', concatInputFile]
@@ -246,11 +313,7 @@ export class FfmpegService {
     await this.runFfMpeg(
       ['-y', ...inputArgs, ...encoder.args, outputPath],
       onProgress,
-      resolvedEncoderBackend === 'nvidia'
-        ? 'Encoding with NVIDIA NVENC'
-        : format === 'webm'
-          ? 'Encoding VP9 output on CPU'
-          : 'Encoding on CPU',
+      processingLabel,
       totalDurationMs,
     );
 

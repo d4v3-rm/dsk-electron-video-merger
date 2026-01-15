@@ -14,6 +14,7 @@ const DEFAULT_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProfile = {
 };
 
 export const useAppStore = create<AppStoreState>((set, get) => ({
+  jobMode: 'merge',
   selectedFiles: [],
   jobs: [],
   hardwareAccelerationProfile: DEFAULT_HARDWARE_ACCELERATION_PROFILE,
@@ -88,6 +89,10 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     set({ outputDirectory: null });
   },
 
+  setJobMode: (jobMode) => {
+    set({ jobMode });
+  },
+
   setOutputFormat: (outputFormat) =>
     set((state) => ({
       settings: {
@@ -128,13 +133,14 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   },
 
   createJob: async () => {
-    const { selectedFiles, settings, outputDirectory, loading } = get();
+    const { jobMode, selectedFiles, settings, outputDirectory, loading } = get();
     if (selectedFiles.length === 0 || loading) {
       return;
     }
 
     set({ loading: true });
     const payload: JobCreationPayload = {
+      mode: jobMode,
       filePaths: selectedFiles.map((file) => file.path),
       settings,
       outputDirectory: outputDirectory ?? undefined,

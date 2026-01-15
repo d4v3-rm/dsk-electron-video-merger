@@ -1,5 +1,6 @@
 import type { ConversionSettings, InputFileDTO, ResolvedEncoderBackend } from './video.types';
 
+export type JobMode = 'merge' | 'compress';
 export type JobStatus = 'queued' | 'running' | 'completed' | 'error';
 export type JobLogLevel = 'info' | 'warning' | 'error';
 export type JobLogStage = 'queue' | 'prepare' | 'encode' | 'finalize' | 'system';
@@ -23,6 +24,7 @@ export interface JobLogEntry {
 
 export interface Job {
   id: string;
+  mode: JobMode;
   status: JobStatus;
   files: InputFileDTO[];
   settings: ConversionSettings;
@@ -43,6 +45,7 @@ export interface JobListPayload {
 }
 
 export interface JobCreationPayload {
+  mode: JobMode;
   filePaths: string[];
   settings: ConversionSettings;
   outputDirectory?: string;

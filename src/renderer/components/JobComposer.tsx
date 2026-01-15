@@ -41,6 +41,7 @@ const { Text, Paragraph, Title } = Typography;
 export const JobComposer = () => {
   const { t } = useTranslation();
   const {
+    jobMode,
     selectedFiles,
     hardwareAccelerationProfile,
     hardwareAccelerationLoaded,
@@ -58,6 +59,8 @@ export const JobComposer = () => {
     moveSelectedFile,
     createJob,
   } = useAppStore();
+
+  const isMergeMode = jobMode === 'merge';
 
   const selectedStats = useMemo(() => {
     const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
@@ -85,12 +88,12 @@ export const JobComposer = () => {
 
   return (
     <Card
-      title={t('composer.cardTitle')}
+      title={isMergeMode ? t('composer.cardTitle.merge') : t('composer.cardTitle.compress')}
       className="modern-card queue-card"
       extra={
         <Space size="small" wrap>
-          <Tag color={selectedFiles.length > 1 ? 'processing' : 'default'}>
-            {t('composer.tags.orderedQueue')}
+          <Tag color={selectedFiles.length > (isMergeMode ? 1 : 0) ? 'processing' : 'default'}>
+            {isMergeMode ? t('composer.tags.orderedQueue') : t('composer.tags.batchCompression')}
           </Tag>
           <Tag color={nvidiaAvailable ? 'success' : 'default'}>
             {nvidiaAvailable ? t('composer.tags.nvidiaAvailable') : t('composer.tags.cpuOnly')}
@@ -102,12 +105,18 @@ export const JobComposer = () => {
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Title level={4} className="section-title">
-            {t('composer.title')}
+            {isMergeMode ? t('composer.title.merge') : t('composer.title.compress')}
           </Title>
-          <Text type="secondary">{t('composer.subtitle')}</Text>
+          <Text type="secondary">
+            {isMergeMode ? t('composer.subtitle.merge') : t('composer.subtitle.compress')}
+          </Text>
         </div>
 
-        <Alert type="info" showIcon message={t('composer.orderInfo')} />
+        <Alert
+          type={isMergeMode ? 'info' : 'warning'}
+          showIcon
+          message={isMergeMode ? t('composer.orderInfo.merge') : t('composer.orderInfo.compress')}
+        />
 
         <Alert
           type={hardwareAlertType}
@@ -123,7 +132,7 @@ export const JobComposer = () => {
         <div className="queue-stats">
           <div className="queue-stat-tile">
             <Statistic
-              title={t('composer.stats.clips')}
+              title={isMergeMode ? t('composer.stats.clips') : t('composer.stats.videos')}
               value={selectedStats.totalFiles}
               prefix={<VideoCameraAddOutlined />}
             />
@@ -208,7 +217,7 @@ export const JobComposer = () => {
 
         <Space size="middle" wrap>
           <Button icon={<UploadOutlined />} onClick={selectVideoFiles} size="large">
-            {t('composer.buttons.addClips')}
+            {isMergeMode ? t('composer.buttons.addClips') : t('composer.buttons.addVideos')}
           </Button>
           <Button
             icon={<ClearOutlined />}
@@ -217,7 +226,7 @@ export const JobComposer = () => {
             disabled={selectedFiles.length === 0}
             size="large"
           >
-            {t('composer.buttons.clearQueue')}
+            {isMergeMode ? t('composer.buttons.clearQueue') : t('composer.buttons.clearSelection')}
           </Button>
           <Button
             type="primary"
@@ -227,7 +236,7 @@ export const JobComposer = () => {
             size="large"
             onClick={createJob}
           >
-            {t('composer.buttons.startMerge')}
+            {isMergeMode ? t('composer.buttons.startMerge') : t('composer.buttons.startCompression')}
           </Button>
         </Space>
 
@@ -237,8 +246,10 @@ export const JobComposer = () => {
           <Alert
             type="warning"
             showIcon
-            message={t('composer.empty.title')}
-            description={t('composer.empty.description')}
+            message={isMergeMode ? t('composer.empty.mergeTitle') : t('composer.empty.compressTitle')}
+            description={
+              isMergeMode ? t('composer.empty.mergeDescription') : t('composer.empty.compressDescription')
+            }
           />
         ) : (
           <List
@@ -247,11 +258,8 @@ export const JobComposer = () => {
             renderItem={(item, index) => {
               const isFirst = index === 0;
               const isLast = index === selectedFiles.length - 1;
-
-              return (
-                <List.Item
-                  className="queue-item"
-                  actions={[
+              const actions = isMergeMode
+                ? [
                     <Space key="controls" size="small">
                       <Tooltip title={t('composer.tooltips.moveUp')}>
                         <Button
@@ -278,15 +286,31 @@ export const JobComposer = () => {
                         />
                       </Tooltip>
                     </Space>,
-                  ]}
-                >
+                  ]
+                : [
+                    <Tooltip key="remove" title={t('composer.tooltips.removeClip')}>
+                      <Button
+                        size="small"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => removeSelectedFile(item.id)}
+                      />
+                    </Tooltip>,
+                  ];
+
+              return (
+                <List.Item className="queue-item" actions={actions}>
                   <List.Item.Meta
                     avatar={<div className="queue-index">{index + 1}</div>}
                     title={
                       <Space wrap>
                         <Text strong>{item.name}</Text>
-                        {isFirst ? <Tag color="cyan">{t('composer.clipTag.start')}</Tag> : null}
-                        {isLast ? <Tag color="geekblue">{t('composer.clipTag.end')}</Tag> : null}
+                        {isMergeMode && isFirst ? (
+                          <Tag color="cyan">{t('composer.clipTag.start')}</Tag>
+                        ) : null}
+                        {isMergeMode && isLast ? (
+                          <Tag color="geekblue">{t('composer.clipTag.end')}</Tag>
+                        ) : null}
                       </Space>
                     }
                     description={
@@ -296,13 +320,17 @@ export const JobComposer = () => {
                         </Paragraph>
                         <Space size="middle">
                           <Text type="secondary">{formatBytes(item.size)}</Text>
-                          <Text type="secondary">
-                            {isFirst
-                              ? t('composer.clipRole.start')
-                              : isLast
-                                ? t('composer.clipRole.end')
-                                : t('composer.clipRole.middle')}
-                          </Text>
+                          {isMergeMode ? (
+                            <Text type="secondary">
+                              {isFirst
+                                ? t('composer.clipRole.start')
+                                : isLast
+                                  ? t('composer.clipRole.end')
+                                  : t('composer.clipRole.middle')}
+                            </Text>
+                          ) : (
+                            <Text type="secondary">{t('composer.videoRole.source')}</Text>
+                          )}
                         </Space>
                       </Flex>
                     }

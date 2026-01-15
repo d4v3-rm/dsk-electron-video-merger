@@ -36,3 +36,12 @@ export interface ProcessSingleMergeOptions {
   tempDir: string;
   onProgress: JobProgressCallback;
 }
+
+export interface ProcessSingleCompressionOptions {
+  inputPath: string;
+  outputPath: string;
+  format: OutputFormat;
+  compression: CompressionPreset;
+  resolvedEncoderBackend: ResolvedEncoderBackend;
+  onProgress: JobProgressCallback;
+}

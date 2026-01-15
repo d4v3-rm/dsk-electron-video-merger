@@ -12,7 +12,13 @@ import {
   getResolvedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
 import { getFileName } from '@renderer/utils/file-utils';
-import { getStatusLabel, statusColor, statusIcon, toProgressStatus } from '@renderer/utils/job-presentation';
+import {
+  getJobModeLabel,
+  getStatusLabel,
+  statusColor,
+  statusIcon,
+  toProgressStatus,
+} from '@renderer/utils/job-presentation';
 
 const { Text } = Typography;
 
@@ -21,11 +27,20 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   timeStyle: 'short',
 });
 
-const formatFiles = (files: Job['files']) => (
-  <Text>
-    {files.length} file{files.length === 1 ? '' : 's'}
-  </Text>
-);
+const summarizeOutputs = (job: Job, t: (key: string, options?: Record<string, unknown>) => string) => {
+  if (job.outputPaths.length === 0) {
+    return <Text type="secondary">{t('history.pendingOutput')}</Text>;
+  }
+
+  const firstOutputName = getFileName(job.outputPaths[0]);
+  if (job.outputPaths.length === 1) {
+    return <Text>{firstOutputName}</Text>;
+  }
+
+  return (
+    <Text>{t('history.outputSummary', { name: firstOutputName, count: job.outputPaths.length - 1 })}</Text>
+  );
+};
 
 export const JobBoard = () => {
   const { t } = useTranslation();
@@ -39,18 +54,29 @@ export const JobBoard = () => {
 
   const columns: ColumnsType<Job> = [
     {
-      title: t('history.columns.merge'),
+      title: t('history.columns.job'),
       dataIndex: 'id',
       key: 'id',
       width: 120,
       render: (id: string) => <Text code>{id.slice(0, 8)}</Text>,
     },
     {
+      title: t('history.columns.mode'),
+      dataIndex: 'mode',
+      key: 'mode',
+      width: 140,
+      render: (mode: Job['mode']) => <Tag bordered={false}>{getJobModeLabel(mode)}</Tag>,
+    },
+    {
       title: t('history.columns.input'),
       dataIndex: 'files',
       key: 'files',
-      render: formatFiles,
-      width: 110,
+      render: (files: Job['files']) => (
+        <Text>
+          {t('history.inputSummary', { count: files.length, suffix: files.length === 1 ? '' : 's' })}
+        </Text>
+      ),
+      width: 130,
     },
     {
       title: t('history.columns.profile'),
@@ -84,14 +110,9 @@ export const JobBoard = () => {
     },
     {
       title: t('history.columns.output'),
-      dataIndex: 'outputPaths',
       key: 'outputPaths',
-      render: (outputPaths: string[]) =>
-        outputPaths[0] ? (
-          <Text>{getFileName(outputPaths[0])}</Text>
-        ) : (
-          <Text type="secondary">{t('history.pendingOutput')}</Text>
-        ),
+      render: (_, job) => summarizeOutputs(job, t),
+      width: 260,
     },
     {
       title: t('history.columns.progress'),
@@ -131,7 +152,7 @@ export const JobBoard = () => {
           dataSource={jobs}
           pagination={{ pageSize: 8, showSizeChanger: false }}
           locale={{ emptyText: t('history.emptyText') }}
-          scroll={{ x: 1320 }}
+          scroll={{ x: 1440 }}
           rowClassName="history-row"
           onRow={(job) => ({
             onClick: () => setSelectedJobId(job.id),
