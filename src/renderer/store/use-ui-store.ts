@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { applyThemeCssVariables } from '@renderer/theme/app-theme';
 import type { AppThemeMode, UiStoreState } from '@renderer/store/ui-store.types';
 
 const THEME_STORAGE_KEY = 'video-merger-theme-mode';
@@ -23,6 +24,7 @@ const applyThemeToDom = (themeMode: AppThemeMode): void => {
   }
 
   document.documentElement.setAttribute('data-theme', themeMode);
+  applyThemeCssVariables(themeMode);
 };
 
 export const useUiStore = create<UiStoreState>((set) => ({
