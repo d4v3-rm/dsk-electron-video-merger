@@ -1,11 +1,13 @@
 import { Col, Layout, Row, Space, Spin, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { JobBoard } from '@renderer/components/JobBoard';
 import { JobComposer } from '@renderer/components/JobComposer';
 import { MergeOverview } from '@renderer/components/MergeOverview';
 import { MergePreviewCard } from '@renderer/components/MergePreviewCard';
 import { useJobProgress } from '@renderer/hooks/use-job-progress';
+import { selectAppBootstrapState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
 
 const { Content, Footer } = Layout;
@@ -13,7 +15,9 @@ const { Text } = Typography;
 
 function App() {
   const { t } = useTranslation();
-  const { refreshJobs, refreshHardwareAccelerationProfile, loaded } = useAppStore();
+  const { refreshJobs, refreshHardwareAccelerationProfile, loaded } = useAppStore(
+    useShallow(selectAppBootstrapState),
+  );
   useJobProgress();
 
   useEffect(() => {

@@ -1,6 +1,8 @@
 import { ClockCircleOutlined, FileDoneOutlined, LinkOutlined } from '@ant-design/icons';
 import { Card, Descriptions, Divider, Empty, List, Progress, Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
+import { selectPreviewState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
 import {
   getCompressionPresetTechnicalLabel,
@@ -20,11 +22,9 @@ const { Text, Paragraph } = Typography;
 
 export const MergePreviewCard = () => {
   const { t } = useTranslation();
-  const selectedFiles = useAppStore((state) => state.selectedFiles);
-  const outputDirectory = useAppStore((state) => state.outputDirectory);
-  const settings = useAppStore((state) => state.settings);
-  const jobMode = useAppStore((state) => state.jobMode);
-  const jobs = useAppStore((state) => state.jobs);
+  const { selectedFiles, outputDirectory, settings, jobMode, jobs } = useAppStore(
+    useShallow(selectPreviewState),
+  );
 
   const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
   const activeJob =

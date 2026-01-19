@@ -1,11 +1,13 @@
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
-import { PropsWithChildren, useEffect, useMemo } from 'react';
-import { getAntdThemeConfig } from '@renderer/theme/app-theme';
+import { type PropsWithChildren, useEffect, useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { selectThemeProviderState } from '@renderer/store/ui-store.selectors';
 import { useUiStore } from '@renderer/store/use-ui-store';
+import { getAntdThemeConfig } from '@renderer/theme/app-theme';
 
 export const AppThemeProvider = ({ children }: PropsWithChildren) => {
-  const { themeMode, syncThemeFromStorage } = useUiStore();
+  const { themeMode, syncThemeFromStorage } = useUiStore(useShallow(selectThemeProviderState));
   const themeConfig = useMemo(() => getAntdThemeConfig(themeMode), [themeMode]);
 
   useEffect(() => {

@@ -1,24 +1,24 @@
 import {
   CompressOutlined,
-  DashboardOutlined,
-  DownOutlined,
   PlayCircleOutlined,
   ProfileOutlined,
-  PushpinOutlined,
-  UpOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Row, Segmented, Space, Statistic, Steps, Tag, Typography } from 'antd';
+import { Card } from 'antd';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { JobMode } from '@shared/types';
-import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
+import { useShallow } from 'zustand/react/shallow';
+import {
+  getOverviewModeCopy,
+  OverviewDetails,
+  OverviewHeader,
+  OverviewMetrics,
+} from '@renderer/components/overview';
 import { useCanHover } from '@renderer/hooks/use-can-hover';
+import { selectOverviewState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
 import { getJobModeLabel } from '@renderer/utils/job-presentation';
-
-const { Title, Text, Paragraph } = Typography;
 
 const getCurrentStep = (selectedFilesCount: number, runningJobsCount: number, completedJobsCount: number) => {
   if (runningJobsCount > 0) {
@@ -34,14 +34,11 @@ const getCurrentStep = (selectedFilesCount: number, runningJobsCount: number, co
 
 export const MergeOverview = () => {
   const { t } = useTranslation();
-  const jobs = useAppStore((state) => state.jobs);
-  const selectedFiles = useAppStore((state) => state.selectedFiles);
-  const jobMode = useAppStore((state) => state.jobMode);
-  const setJobMode = useAppStore((state) => state.setJobMode);
+  const { jobs, selectedFiles, jobMode, setJobMode } = useAppStore(useShallow(selectOverviewState));
   const canHover = useCanHover();
   const shellRef = useRef<HTMLDivElement | null>(null);
   const detailsRef = useRef<HTMLDivElement | null>(null);
-  const previousModeRef = useRef<JobMode>(jobMode);
+  const previousModeRef = useRef(jobMode);
   const [isPinnedOpen, setIsPinnedOpen] = useState(() => !canHover);
   const [isHoverActive, setIsHoverActive] = useState(false);
 
@@ -60,71 +57,7 @@ export const MergeOverview = () => {
         ? t('overview.status.ready', { mode: getJobModeLabel(jobMode) })
         : t('overview.status.idle');
 
-  const modeCopy = useMemo(() => {
-    if (jobMode === 'compress') {
-      return {
-        studioTag: t('overview.tags.compressionLab'),
-        deliveryTag: t('overview.tags.perFileOutput'),
-        title: t('overview.modes.compress.title'),
-        body: t('overview.modes.compress.body'),
-        chips: [
-          t('overview.chips.batchCompression'),
-          t('overview.chips.guidedCompression'),
-          t('overview.chips.localHistory'),
-          t('overview.chips.perFileOutput'),
-        ],
-        steps: [
-          {
-            title: t('overview.modes.compress.steps.selectTitle'),
-            description: t('overview.modes.compress.steps.selectDescription'),
-            icon: <VideoCameraOutlined />,
-          },
-          {
-            title: t('overview.modes.compress.steps.encodeTitle'),
-            description: t('overview.modes.compress.steps.encodeDescription'),
-            icon: <CompressOutlined />,
-          },
-          {
-            title: t('overview.modes.compress.steps.outputTitle'),
-            description: t('overview.modes.compress.steps.outputDescription'),
-            icon: <PlayCircleOutlined />,
-          },
-        ],
-        firstMetricTitle: t('overview.metrics.videos'),
-      };
-    }
-
-    return {
-      studioTag: t('overview.tags.studio'),
-      deliveryTag: t('overview.tags.singleOutput'),
-      title: t('overview.modes.merge.title'),
-      body: t('overview.modes.merge.body'),
-      chips: [
-        t('overview.chips.explicitOrder'),
-        t('overview.chips.guidedCompression'),
-        t('overview.chips.localHistory'),
-        t('overview.chips.singleOutput'),
-      ],
-      steps: [
-        {
-          title: t('overview.modes.merge.steps.queueTitle'),
-          description: t('overview.modes.merge.steps.queueDescription'),
-          icon: <VideoCameraOutlined />,
-        },
-        {
-          title: t('overview.modes.merge.steps.encodeTitle'),
-          description: t('overview.modes.merge.steps.encodeDescription'),
-          icon: <CompressOutlined />,
-        },
-        {
-          title: t('overview.modes.merge.steps.outputTitle'),
-          description: t('overview.modes.merge.steps.outputDescription'),
-          icon: <PlayCircleOutlined />,
-        },
-      ],
-      firstMetricTitle: t('overview.metrics.clips'),
-    };
-  }, [jobMode, t]);
+  const modeCopy = useMemo(() => getOverviewModeCopy(jobMode, t), [jobMode, t]);
 
   const metrics = useMemo(
     () => [
@@ -247,10 +180,6 @@ export const MergeOverview = () => {
     };
   }, [jobMode]);
 
-  const toggleOverview = () => {
-    setIsPinnedOpen((current) => !current);
-  };
-
   return (
     <Card
       className={`modern-card overview-card ${isExpanded ? 'overview-card-expanded' : 'overview-card-collapsed'}`}
@@ -261,99 +190,31 @@ export const MergeOverview = () => {
         onMouseEnter={canHover ? () => setIsHoverActive(true) : undefined}
         onMouseLeave={canHover ? () => setIsHoverActive(false) : undefined}
       >
-        <div className="overview-topbar">
-          <Space size="middle" className="overview-brand">
-            <Avatar size={48} shape="square" icon={<DashboardOutlined />} />
-            <div className="overview-brand-copy overview-mode-animate">
-              <Space wrap size={[8, 8]} className="overview-tags">
-                <Tag color="processing">{modeCopy.studioTag}</Tag>
-                <Tag>{t('overview.tags.desktop')}</Tag>
-                <Tag>{modeCopy.deliveryTag}</Tag>
-              </Space>
-              <Title level={3} className="overview-title">
-                {modeCopy.title}
-              </Title>
-            </div>
-          </Space>
+        <OverviewHeader
+          canHover={canHover}
+          isExpanded={isExpanded}
+          isPinnedOpen={isPinnedOpen}
+          jobMode={jobMode}
+          workspaceStatus={workspaceStatus}
+          title={modeCopy.title}
+          studioTag={modeCopy.studioTag}
+          deliveryTag={modeCopy.deliveryTag}
+          onToggleOverview={() => setIsPinnedOpen((current) => !current)}
+          onModeChange={setJobMode}
+        />
 
-          <Space size="small" wrap className="overview-actions">
-            <ThemeSwitcher size="small" />
-            <Segmented
-              className="overview-mode-switch"
-              value={jobMode}
-              onChange={(value) => setJobMode(value as JobMode)}
-              options={[
-                {
-                  label: (
-                    <Space size={6}>
-                      <VideoCameraOutlined />
-                      {t('modes.merge')}
-                    </Space>
-                  ),
-                  value: 'merge',
-                },
-                {
-                  label: (
-                    <Space size={6}>
-                      <CompressOutlined />
-                      {t('modes.compress')}
-                    </Space>
-                  ),
-                  value: 'compress',
-                },
-              ]}
-            />
-            <Text className="status-badge">{workspaceStatus}</Text>
-            <Button
-              size="small"
-              icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
-              onClick={toggleOverview}
-            >
-              {canHover
-                ? isPinnedOpen
-                  ? t('overview.actions.unpin')
-                  : t('overview.actions.pinOpen')
-                : isExpanded
-                  ? t('overview.actions.collapse')
-                  : t('overview.actions.expand')}
-            </Button>
-          </Space>
-        </div>
-
-        <Row gutter={[12, 12]} className="overview-kpi-grid overview-mode-animate">
-          {metrics.map((metric) => (
-            <Col xs={12} xl={6} key={metric.key}>
-              <div className="overview-kpi">
-                <Statistic title={metric.title} value={metric.value} prefix={metric.prefix} />
-              </div>
-            </Col>
-          ))}
-        </Row>
+        <OverviewMetrics metrics={metrics} />
 
         <div ref={detailsRef} className="overview-details">
-          <Row gutter={[24, 24]} align="middle">
-            <Col xs={24} xl={12}>
-              <Space direction="vertical" size="middle" className="overview-copy overview-mode-animate">
-                <Paragraph className="overview-text">{modeCopy.body}</Paragraph>
-
-                <Space wrap size={[8, 8]}>
-                  {modeCopy.chips.map((chip) => (
-                    <Tag key={chip} bordered={false}>
-                      {chip}
-                    </Tag>
-                  ))}
-                </Space>
-
-                <Text type="secondary">{canHover ? t('overview.hoverHint') : t('overview.toggleHint')}</Text>
-              </Space>
-            </Col>
-
-            <Col xs={24} xl={12}>
-              <div className="overview-steps overview-mode-animate">
-                <Steps current={currentStep} responsive items={modeCopy.steps} />
-              </div>
-            </Col>
-          </Row>
+          <OverviewDetails
+            body={modeCopy.body}
+            chips={modeCopy.chips}
+            canHover={canHover}
+            hoverHint={t('overview.hoverHint')}
+            toggleHint={t('overview.toggleHint')}
+            currentStep={currentStep}
+            steps={modeCopy.steps}
+          />
         </div>
       </div>
     </Card>
