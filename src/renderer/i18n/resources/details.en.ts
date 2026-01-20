@@ -1,0 +1,32 @@
+const detailsEn = {
+  title: '{{mode}} details #{{id}}',
+  defaultTitle: 'Job details',
+  updatedAt: 'Updated {{value}}',
+  errorTitle: 'Job failed',
+  runtimeTitle: 'Runtime telemetry',
+  progressTitle: 'Progress',
+  summaryTitle: 'Job summary',
+  logTitle: 'Activity log',
+  inputTitle: 'Input files',
+  outputTitle: 'Outputs',
+  outputPending: 'The generated output paths will appear here as soon as the job starts writing files.',
+  defaultDestination: 'App-managed output folder',
+  labels: {
+    mode: 'Mode',
+    format: 'Output format',
+    compression: 'Compression',
+    requestedBackend: 'Requested backend',
+    activeBackend: 'Effective backend',
+    inputVideos: 'Input videos',
+    destinationFolder: 'Destination folder',
+    createdAt: 'Created',
+    processedDuration: 'Processed duration',
+    totalDuration: 'Total duration',
+    fps: 'Encoder fps',
+    speed: 'Speed',
+    bitrate: 'Bitrate',
+  },
+  logPending: 'Processing is still active. New FFmpeg telemetry will appear here while the job runs.',
+};
+
+export default detailsEn;

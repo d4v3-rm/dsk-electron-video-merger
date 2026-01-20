@@ -1,0 +1,88 @@
+const composerEn = {
+  cardTitle: {
+    merge: 'Merge setup',
+    compress: 'Compression setup',
+  },
+  tags: {
+    orderedQueue: 'Ordered queue',
+    batchCompression: 'Batch compression',
+    nvidiaAvailable: 'NVENC available',
+    cpuOnly: 'CPU only',
+  },
+  title: {
+    merge: 'Build the final merge',
+    compress: 'Build the compression batch',
+  },
+  subtitle: {
+    merge: 'Define clip order, choose the export profile, and render one final master.',
+    compress: 'Select source videos, choose one export profile, and encode each file independently.',
+  },
+  orderInfo: {
+    merge: 'The list order becomes the real order of the final merged video.',
+    compress:
+      'Every selected video is compressed independently. Queue order does not affect the generated outputs.',
+  },
+  hardwareDetecting: 'Hardware detection in progress',
+  stats: {
+    clips: 'Clips',
+    videos: 'Videos',
+    stagingSize: 'Staging size',
+  },
+  fields: {
+    outputFormat: 'Output format',
+    compression: 'Compression profile',
+    backend: 'Encoding backend',
+    destinationFolder: 'Destination folder',
+  },
+  backendSelected: 'Selected backend: {{backend}}.',
+  backendWebm: 'WebM always uses the CPU path.',
+  backendNvenc: 'MP4, MOV, and MKV can use NVIDIA NVENC when available.',
+  backendCpu: 'NVIDIA was not detected, so the job stays on CPU.',
+  autoPrefersNvidia: 'prefers NVIDIA',
+  autoStaysCpu: 'stays on CPU',
+  encoderSoftwareOnly: 'Software encoding only via CPU.',
+  encoderNvencActive: 'NVIDIA NVENC will be used for the final transcode.',
+  encoderNvencFallback: 'NVIDIA NVENC is unavailable. The job will fall back to CPU automatically.',
+  encoderAutoGpu: 'Auto will choose NVIDIA NVENC for MP4, MOV, and MKV. Otherwise it falls back to CPU.',
+  encoderAutoCpu: 'Auto will remain on CPU until NVIDIA NVENC becomes available.',
+  destinationDefault: 'App-managed output folder',
+  destinationSelected: 'The next job will write the generated output into the selected folder.',
+  destinationAuto: 'No custom folder selected. The app will use its default local output folder.',
+  buttons: {
+    addClips: 'Add clips',
+    addVideos: 'Add videos',
+    clearQueue: 'Clear queue',
+    clearSelection: 'Clear selection',
+    startMerge: 'Start merge',
+    startCompression: 'Start compression',
+    selectDestination: 'Choose folder',
+    useDefaultDestination: 'Use default',
+  },
+  empty: {
+    mergeTitle: 'No clips in queue',
+    mergeDescription: 'Add the videos you want to concatenate. You can reorder them before export.',
+    compressTitle: 'No videos selected',
+    compressDescription:
+      'Add the videos you want to compress. Each source will generate its own output file.',
+  },
+  tooltips: {
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    removeClip: 'Remove file',
+    codecGuide: 'Open codec and container guide',
+  },
+  clipRole: {
+    start: 'Starts the merge',
+    end: 'Ends the merge',
+    middle: 'Intermediate clip',
+  },
+  videoRole: {
+    source: 'Independent source video',
+  },
+  clipTag: {
+    start: 'Start',
+    end: 'End',
+  },
+};
+
+export default composerEn;

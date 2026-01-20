@@ -1,279 +1,31 @@
+import app from '@renderer/i18n/resources/app.en';
+import codecGuide from '@renderer/i18n/resources/codec-guide.en';
+import common from '@renderer/i18n/resources/common.en';
+import compression from '@renderer/i18n/resources/compression.en';
+import composer from '@renderer/i18n/resources/composer.en';
+import details from '@renderer/i18n/resources/details.en';
+import history from '@renderer/i18n/resources/history.en';
+import logs from '@renderer/i18n/resources/logs.en';
+import modes from '@renderer/i18n/resources/modes.en';
+import overview from '@renderer/i18n/resources/overview.en';
+import preview from '@renderer/i18n/resources/preview.en';
+import status from '@renderer/i18n/resources/status.en';
+import theme from '@renderer/i18n/resources/theme.en';
+
 const en = {
-  common: {
-    auto: 'Auto',
-    cpu: 'CPU',
-    nvidiaNvenc: 'NVIDIA NVENC',
-    dark: 'Dark',
-    light: 'Light',
-    waiting: 'Waiting',
-    pending: 'Pending',
-    notAvailable: 'N/A',
-  },
-  modes: {
-    merge: 'Merge',
-    compress: 'Compression',
-  },
-  app: {
-    loadingWorkspace: 'Loading workspace...',
-    footer:
-      'Workspace designed to merge ordered clips, compress source videos, monitor FFmpeg telemetry, and reopen local outputs quickly.',
-  },
-  theme: {
-    darkTooltip: 'Use dark theme',
-    lightTooltip: 'Use light theme',
-  },
-  overview: {
-    status: {
-      running: '{{mode}} in progress',
-      ready: 'Ready for {{mode}}',
-      idle: 'Local studio',
-    },
-    tags: {
-      studio: 'Merge Studio',
-      compressionLab: 'Compression Lab',
-      desktop: 'Desktop',
-      singleOutput: 'Single output',
-      perFileOutput: 'Per-file output',
-    },
-    metrics: {
-      clips: 'Staging clips',
-      videos: 'Selected videos',
-      queued: 'Queued jobs',
-      running: 'Active jobs',
-      completed: 'Completed',
-    },
-    modes: {
-      merge: {
-        title: 'Arrange clips and generate one final master with full control over the timeline.',
-        body: 'Merge mode keeps the source order explicit. Select clips, define the queue, and render a single final deliverable with one compression profile and one destination path.',
-        steps: {
-          queueTitle: 'Clip queue',
-          queueDescription: 'Select and order the timeline',
-          encodeTitle: 'Merge',
-          encodeDescription: 'Transcode the final master',
-          outputTitle: 'Output',
-          outputDescription: 'Review and reuse the merged file',
-        },
-      },
-      compress: {
-        title:
-          'Switch to compressor mode to encode source videos individually with one shared export profile.',
-        body: 'Compression mode keeps every selected source as an independent output. Use it when you need lighter deliverables without concatenating clips into a single timeline.',
-        steps: {
-          selectTitle: 'Video selection',
-          selectDescription: 'Collect the sources to encode',
-          encodeTitle: 'Compress',
-          encodeDescription: 'Encode each source with the chosen profile',
-          outputTitle: 'Outputs',
-          outputDescription: 'Review the compressed files one by one',
-        },
-      },
-    },
-    chips: {
-      explicitOrder: 'Explicit order',
-      batchCompression: 'Batch compression',
-      guidedCompression: 'Guided compression',
-      localHistory: 'Local history',
-      singleOutput: 'Single output',
-      perFileOutput: 'Per-file output',
-    },
-    hoverHint:
-      'Hover the hero to expand the operating context, or pin it open while you configure the workspace.',
-    toggleHint: 'Use the toggle to collapse or reopen the introductory panel.',
-    actions: {
-      pinOpen: 'Pin open',
-      unpin: 'Unpin',
-      collapse: 'Collapse',
-      expand: 'Expand',
-    },
-  },
-  composer: {
-    cardTitle: {
-      merge: 'Merge setup',
-      compress: 'Compression setup',
-    },
-    tags: {
-      orderedQueue: 'Ordered queue',
-      batchCompression: 'Batch compression',
-      nvidiaAvailable: 'NVENC available',
-      cpuOnly: 'CPU only',
-    },
-    title: {
-      merge: 'Build the final merge',
-      compress: 'Build the compression batch',
-    },
-    subtitle: {
-      merge: 'Define clip order, choose the export profile, and render one final master.',
-      compress: 'Select source videos, choose one export profile, and encode each file independently.',
-    },
-    orderInfo: {
-      merge: 'The list order becomes the real order of the final merged video.',
-      compress:
-        'Every selected video is compressed independently. Queue order does not affect the generated outputs.',
-    },
-    hardwareDetecting: 'Hardware detection in progress',
-    stats: {
-      clips: 'Clips',
-      videos: 'Videos',
-      stagingSize: 'Staging size',
-    },
-    fields: {
-      outputFormat: 'Output format',
-      compression: 'Compression profile',
-      backend: 'Encoding backend',
-      destinationFolder: 'Destination folder',
-    },
-    backendSelected: 'Selected backend: {{backend}}.',
-    backendWebm: 'WebM always uses the CPU path.',
-    backendNvenc: 'MP4, MOV, and MKV can use NVIDIA NVENC when available.',
-    backendCpu: 'NVIDIA was not detected, so the job stays on CPU.',
-    autoPrefersNvidia: 'prefers NVIDIA',
-    autoStaysCpu: 'stays on CPU',
-    encoderSoftwareOnly: 'Software encoding only via CPU.',
-    encoderNvencActive: 'NVIDIA NVENC will be used for the final transcode.',
-    encoderNvencFallback: 'NVIDIA NVENC is unavailable. The job will fall back to CPU automatically.',
-    encoderAutoGpu: 'Auto will choose NVIDIA NVENC for MP4, MOV, and MKV. Otherwise it falls back to CPU.',
-    encoderAutoCpu: 'Auto will remain on CPU until NVIDIA NVENC becomes available.',
-    destinationDefault: 'App-managed output folder',
-    destinationSelected: 'The next job will write the generated output into the selected folder.',
-    destinationAuto: 'No custom folder selected. The app will use its default local output folder.',
-    buttons: {
-      addClips: 'Add clips',
-      addVideos: 'Add videos',
-      clearQueue: 'Clear queue',
-      clearSelection: 'Clear selection',
-      startMerge: 'Start merge',
-      startCompression: 'Start compression',
-      selectDestination: 'Choose folder',
-      useDefaultDestination: 'Use default',
-    },
-    empty: {
-      mergeTitle: 'No clips in queue',
-      mergeDescription: 'Add the videos you want to concatenate. You can reorder them before export.',
-      compressTitle: 'No videos selected',
-      compressDescription:
-        'Add the videos you want to compress. Each source will generate its own output file.',
-    },
-    tooltips: {
-      moveUp: 'Move up',
-      moveDown: 'Move down',
-      removeClip: 'Remove file',
-      codecGuide: 'Open codec and container guide',
-    },
-    clipRole: {
-      start: 'Starts the merge',
-      end: 'Ends the merge',
-      middle: 'Intermediate clip',
-    },
-    videoRole: {
-      source: 'Independent source video',
-    },
-    clipTag: {
-      start: 'Start',
-      end: 'End',
-    },
-  },
-  preview: {
-    cardTitle: 'Output plan',
-    status: {
-      active: 'Active job',
-      queued: 'Queued',
-      ready: 'Ready to launch',
-      idle: 'Waiting',
-    },
-    emptyDescription: 'Select videos to preview the active job plan.',
-    labels: {
-      outputName: 'Output name',
-      mode: 'Mode',
-      inputVideos: 'Input videos',
-      format: 'Format',
-      compression: 'Compression',
-      requestedBackend: 'Requested backend',
-      activeBackend: 'Effective backend',
-      stagingSize: 'Staging size',
-      delivery: 'Delivery',
-      destinationFolder: 'Destination folder',
-    },
-    pendingResolution: 'Pending resolution',
-    defaultDestination: 'App-managed output folder',
-    delivery: {
-      merge: 'One final merged file',
-      compress: 'One compressed file per input video',
-    },
-    currentOrder: 'Current clip order',
-    selectedVideos: 'Selected videos',
-    moreVideos: '+ {{count}} additional videos selected.',
-    lastOutput: 'Latest generated output',
-  },
-  history: {
-    cardTitle: 'Job history',
-    openDetailHint: 'Open details with one click',
-    columns: {
-      job: 'Job',
-      mode: 'Mode',
-      input: 'Input',
-      profile: 'Profile',
-      status: 'Status',
-      output: 'Output',
-      progress: 'Progress',
-      updated: 'Updated',
-    },
-    inputSummary: '{{count}} source file{{suffix}}',
-    outputSummary: '{{name}} + {{count}} more',
-    pendingOutput: 'Pending',
-    emptyText: 'No jobs yet',
-  },
-  details: {
-    title: '{{mode}} details #{{id}}',
-    defaultTitle: 'Job details',
-    updatedAt: 'Updated {{value}}',
-    errorTitle: 'Job failed',
-    runtimeTitle: 'Runtime telemetry',
-    progressTitle: 'Progress',
-    summaryTitle: 'Job summary',
-    logTitle: 'Activity log',
-    inputTitle: 'Input files',
-    outputTitle: 'Outputs',
-    outputPending: 'The generated output paths will appear here as soon as the job starts writing files.',
-    defaultDestination: 'App-managed output folder',
-    labels: {
-      mode: 'Mode',
-      format: 'Output format',
-      compression: 'Compression',
-      requestedBackend: 'Requested backend',
-      activeBackend: 'Effective backend',
-      inputVideos: 'Input videos',
-      destinationFolder: 'Destination folder',
-      createdAt: 'Created',
-      processedDuration: 'Processed duration',
-      totalDuration: 'Total duration',
-      fps: 'Encoder fps',
-      speed: 'Speed',
-      bitrate: 'Bitrate',
-    },
-    logPending: 'Processing is still active. New FFmpeg telemetry will appear here while the job runs.',
-  },
-  codecGuide: {
-    title: 'Codec guide',
-  },
-  compression: {
-    light: 'Light',
-    balanced: 'Balanced',
-    strong: 'Strong',
-  },
-  status: {
-    queued: 'Queued',
-    running: 'Running',
-    completed: 'Completed',
-    error: 'Error',
-  },
-  logs: {
-    queue: 'Queue',
-    prepare: 'Prepare',
-    encode: 'Encode',
-    finalize: 'Finalize',
-    system: 'System',
-  },
+  common,
+  modes,
+  app,
+  theme,
+  overview,
+  composer,
+  preview,
+  history,
+  details,
+  codecGuide,
+  compression,
+  status,
+  logs,
 };
 
 export default en;
