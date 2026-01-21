@@ -1,9 +1,15 @@
-import { VideoCameraAddOutlined } from '@ant-design/icons';
+import { DeploymentUnitOutlined, VideoCameraAddOutlined } from '@ant-design/icons';
 import { Statistic } from 'antd';
 import type { JobComposerStatsProps } from '@renderer/components/job-composer/job-composer.types';
 import { formatBytes } from '@renderer/utils/file-utils';
 
-export const JobComposerStats = ({ selectedFiles, statsLabel, stagingSizeLabel }: JobComposerStatsProps) => {
+export const JobComposerStats = ({
+  selectedFiles,
+  statsLabel,
+  stagingSizeLabel,
+  deliveryLabel,
+  deliveryValue,
+}: JobComposerStatsProps) => {
   const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
 
   return (
@@ -13,6 +19,9 @@ export const JobComposerStats = ({ selectedFiles, statsLabel, stagingSizeLabel }
       </div>
       <div className="queue-stat-tile">
         <Statistic title={stagingSizeLabel} value={formatBytes(totalSize)} />
+      </div>
+      <div className="queue-stat-tile">
+        <Statistic title={deliveryLabel} value={deliveryValue} prefix={<DeploymentUnitOutlined />} />
       </div>
     </div>
   );

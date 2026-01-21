@@ -1,4 +1,4 @@
-import type { HardwareAccelerationProfile, InputFileDTO, ConversionSettings } from '@shared/types';
+import type { ConversionSettings, HardwareAccelerationProfile, InputFileDTO } from '@shared/types';
 
 export interface JobComposerModeCopy {
   cardTitle: string;
@@ -36,6 +36,8 @@ export interface JobComposerStatsProps {
   statsLabel: string;
   selectedFiles: InputFileDTO[];
   stagingSizeLabel: string;
+  deliveryLabel: string;
+  deliveryValue: string;
 }
 
 export interface JobComposerSettingsFormProps {

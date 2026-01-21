@@ -17,22 +17,38 @@ const composerEn = {
     merge: 'Define clip order, choose the export profile, and render one final master.',
     compress: 'Select source videos, choose one export profile, and encode each file independently.',
   },
+  sections: {
+    exportProfile: 'Export profile',
+    executionNotes: 'Execution notes',
+    queueMerge: 'Timeline queue',
+    queueCompress: 'Source selection',
+  },
   orderInfo: {
     merge: 'The list order becomes the real order of the final merged video.',
     compress:
       'Every selected video is compressed independently. Queue order does not affect the generated outputs.',
+  },
+  queueHint: {
+    merge: 'Order directly controls the final merged timeline. Reorder clips before launch.',
+    compress: 'Each source stays independent. The list is only for review and cleanup before launch.',
   },
   hardwareDetecting: 'Hardware detection in progress',
   stats: {
     clips: 'Clips',
     videos: 'Videos',
     stagingSize: 'Staging size',
+    delivery: 'Delivery',
   },
   fields: {
     outputFormat: 'Output format',
     compression: 'Compression profile',
     backend: 'Encoding backend',
     destinationFolder: 'Destination folder',
+    delivery: 'Delivery',
+  },
+  delivery: {
+    merge: 'Single merged file',
+    compress: 'One output per source',
   },
   backendSelected: 'Selected backend: {{backend}}.',
   backendWebm: 'WebM always uses the CPU path.',

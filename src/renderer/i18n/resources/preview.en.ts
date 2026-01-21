@@ -6,6 +6,24 @@ const previewEn = {
     ready: 'Ready to launch',
     idle: 'Waiting',
   },
+  metrics: {
+    inputVideos: 'Inputs',
+    format: 'Format',
+    backend: 'Backend',
+    delivery: 'Delivery',
+  },
+  sections: {
+    packet: 'Output packet',
+    runtime: 'Runtime status',
+    inputs: 'Staged inputs',
+    artifact: 'Latest artifact',
+  },
+  runtime: {
+    readyTitle: 'Ready to launch',
+    readyDescription: 'The workspace is configured. Start the next job to stream live telemetry here.',
+    idleTitle: 'No active runtime',
+    idleDescription: 'Start a merge or compression job to populate this area with live progress data.',
+  },
   emptyDescription: 'Select videos to preview the active job plan.',
   labels: {
     outputName: 'Output name',
