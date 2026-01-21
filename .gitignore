@@ -1,4 +1,4 @@
-﻿node_modules
+node_modules
 .vite
 dist
 out
@@ -12,7 +12,8 @@ yarn-debug.log*
 *.log
 build/*
 !build/icon-attribution.md
-!build/icon-source-material-movie.svg
+!build/icon-source.svg
 !build/icon.svg
 !build/icon.png
 !build/icon.ico
+
