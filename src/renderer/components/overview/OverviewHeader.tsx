@@ -41,51 +41,62 @@ export const OverviewHeader = ({
           <Title level={3} className="overview-title">
             {title}
           </Title>
+          <Text className="status-badge">{workspaceStatus}</Text>
         </div>
       </Space>
 
-      <Space size="small" wrap className="overview-actions">
-        <ThemeSwitcher size="small" />
-        <Segmented
-          className="overview-mode-switch"
-          value={jobMode}
-          onChange={(value) => onModeChange(value as JobMode)}
-          options={[
-            {
-              label: (
-                <Space size={6}>
-                  <VideoCameraOutlined />
-                  {t('modes.merge')}
-                </Space>
-              ),
-              value: 'merge',
-            },
-            {
-              label: (
-                <Space size={6}>
-                  <CompressOutlined />
-                  {t('modes.compress')}
-                </Space>
-              ),
-              value: 'compress',
-            },
-          ]}
-        />
-        <Text className="status-badge">{workspaceStatus}</Text>
-        <Button
-          size="small"
-          icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
-          onClick={onToggleOverview}
-        >
-          {canHover
-            ? isPinnedOpen
-              ? t('overview.actions.unpin')
-              : t('overview.actions.pinOpen')
-            : isExpanded
-              ? t('overview.actions.collapse')
-              : t('overview.actions.expand')}
-        </Button>
-      </Space>
+      <div className="overview-controls overview-mode-animate">
+        <Space size="small" wrap className="overview-toolbar">
+          <ThemeSwitcher size="small" />
+          <Button
+            size="small"
+            icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
+            onClick={onToggleOverview}
+          >
+            {canHover
+              ? isPinnedOpen
+                ? t('overview.actions.unpin')
+                : t('overview.actions.pinOpen')
+              : isExpanded
+                ? t('overview.actions.collapse')
+                : t('overview.actions.expand')}
+          </Button>
+        </Space>
+
+        <div className="overview-mode-panel">
+          <Text type="secondary" className="overview-mode-label">
+            {t('overview.modeLabel')}
+          </Text>
+          <Segmented
+            block
+            size="large"
+            className="overview-mode-switch"
+            value={jobMode}
+            onChange={(value) => onModeChange(value as JobMode)}
+            options={[
+              {
+                label: (
+                  <Space size={6}>
+                    <VideoCameraOutlined />
+                    {t('modes.merge')}
+                  </Space>
+                ),
+                value: 'merge',
+              },
+              {
+                label: (
+                  <Space size={6}>
+                    <CompressOutlined />
+                    {t('modes.compress')}
+                  </Space>
+                ),
+                value: 'compress',
+              },
+            ]}
+          />
+          <Text type="secondary">{t('overview.modeHint')}</Text>
+        </div>
+      </div>
     </div>
   );
 };

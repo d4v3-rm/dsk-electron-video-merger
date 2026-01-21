@@ -52,6 +52,8 @@ const overviewEn = {
     singleOutput: 'Single output',
     perFileOutput: 'Per-file output',
   },
+  modeLabel: 'Workspace mode',
+  modeHint: 'Choose between one merged timeline or one compressed output per source.',
   hoverHint:
     'Hover the hero to expand the operating context, or pin it open while you configure the workspace.',
   toggleHint: 'Use the toggle to collapse or reopen the introductory panel.',

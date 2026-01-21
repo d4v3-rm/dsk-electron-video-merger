@@ -1,6 +1,6 @@
 import { theme as antdTheme, type ThemeConfig } from 'antd';
-import type { ThemePalette } from '@renderer/theme/app-theme.types';
 import type { AppThemeMode } from '@renderer/store/ui-store.types';
+import type { ThemePalette } from '@renderer/theme/app-theme.types';
 
 const FONT_FAMILY = "Inter, 'Segoe UI', Arial, sans-serif";
 const BORDER_RADIUS = 18;
@@ -225,14 +225,14 @@ const createThemeConfig = (palette: ThemePalette, mode: AppThemeMode): ThemeConf
       multipleItemBorderColorDisabled: palette.border,
     },
     Segmented: {
-      trackBg: palette.surfaceAlt,
+      trackBg: palette.surfaceMuted,
       trackPadding: 4,
       itemColor: palette.textSecondary,
       itemHoverColor: palette.heading,
-      itemHoverBg: palette.surfaceMuted,
-      itemActiveBg: palette.surfaceMuted,
-      itemSelectedBg: palette.primarySoft,
-      itemSelectedColor: palette.heading,
+      itemHoverBg: palette.surfaceAlt,
+      itemActiveBg: palette.primarySoft,
+      itemSelectedBg: palette.primary,
+      itemSelectedColor: '#f8fbff',
     },
     Tag: {
       defaultBg: palette.surfaceAlt,
