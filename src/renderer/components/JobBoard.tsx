@@ -1,5 +1,11 @@
-import { PlayCircleOutlined } from '@ant-design/icons';
-import { Card, Progress, Space, Table, Tag, Typography } from 'antd';
+import {
+  CheckCircleOutlined,
+  OrderedListOutlined,
+  PlayCircleOutlined,
+  SyncOutlined,
+  WarningOutlined,
+} from '@ant-design/icons';
+import { Card, Progress, Space, Statistic, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,6 +57,38 @@ export const JobBoard = () => {
     () => jobs.find((job) => job.id === selectedJobId) ?? null,
     [jobs, selectedJobId],
   );
+
+  const queuedJobs = jobs.filter((job) => job.status === 'queued').length;
+  const runningJobs = jobs.filter((job) => job.status === 'running').length;
+  const completedJobs = jobs.filter((job) => job.status === 'completed').length;
+  const failedJobs = jobs.filter((job) => job.status === 'error').length;
+
+  const historySummary = [
+    {
+      key: 'total',
+      title: t('history.metrics.total'),
+      value: jobs.length,
+      prefix: <OrderedListOutlined />,
+    },
+    {
+      key: 'queued',
+      title: t('history.metrics.queued'),
+      value: queuedJobs,
+      prefix: <PlayCircleOutlined />,
+    },
+    {
+      key: 'running',
+      title: t('history.metrics.running'),
+      value: runningJobs,
+      prefix: <SyncOutlined />,
+    },
+    {
+      key: 'completed',
+      title: t('history.metrics.completed'),
+      value: completedJobs,
+      prefix: failedJobs > 0 ? <WarningOutlined /> : <CheckCircleOutlined />,
+    },
+  ];
 
   const columns: ColumnsType<Job> = [
     {
@@ -141,23 +179,37 @@ export const JobBoard = () => {
         title={t('history.cardTitle')}
         extra={
           <Space>
+            <Tag>{t('history.jobsCount', { count: jobs.length })}</Tag>
+            {failedJobs > 0 ? (
+              <Tag color="error">{t('history.failedCount', { count: failedJobs })}</Tag>
+            ) : null}
             <Tag color="blue">{t('history.openDetailHint')}</Tag>
-            <PlayCircleOutlined />
           </Space>
         }
       >
-        <Table<Job>
-          rowKey="id"
-          columns={columns}
-          dataSource={jobs}
-          pagination={{ pageSize: 8, showSizeChanger: false }}
-          locale={{ emptyText: t('history.emptyText') }}
-          scroll={{ x: 1440 }}
-          rowClassName="history-row"
-          onRow={(job) => ({
-            onClick: () => setSelectedJobId(job.id),
-          })}
-        />
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <div className="history-summary-grid">
+            {historySummary.map((item) => (
+              <div key={item.key} className="history-stat-tile">
+                <Statistic title={item.title} value={item.value} prefix={item.prefix} />
+              </div>
+            ))}
+          </div>
+
+          <Table<Job>
+            rowKey="id"
+            columns={columns}
+            dataSource={jobs}
+            size="middle"
+            pagination={{ pageSize: 8, showSizeChanger: false, position: ['bottomRight'] }}
+            locale={{ emptyText: t('history.emptyText') }}
+            scroll={{ x: 1440 }}
+            rowClassName="history-row"
+            onRow={(job) => ({
+              onClick: () => setSelectedJobId(job.id),
+            })}
+          />
+        </Space>
       </Card>
 
       <JobDetailsDrawer

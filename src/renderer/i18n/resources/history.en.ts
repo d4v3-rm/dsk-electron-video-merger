@@ -1,6 +1,14 @@
 const historyEn = {
   cardTitle: 'Job history',
   openDetailHint: 'Open details with one click',
+  jobsCount: '{{count}} jobs',
+  failedCount: '{{count}} failed',
+  metrics: {
+    total: 'Total jobs',
+    queued: 'Queued',
+    running: 'Running',
+    completed: 'Completed',
+  },
   columns: {
     job: 'Job',
     mode: 'Mode',
