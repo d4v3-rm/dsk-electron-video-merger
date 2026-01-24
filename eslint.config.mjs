@@ -1,11 +1,11 @@
-const js = require('@eslint/js');
-const tsParser = require('@typescript-eslint/parser');
-const tsPlugin = require('@typescript-eslint/eslint-plugin');
-const reactPlugin = require('eslint-plugin-react');
-const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const eslintConfigPrettier = require('eslint-config-prettier');
+import js from '@eslint/js';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
-module.exports = [
+export default [
   {
     ignores: [
       'node_modules/**',
@@ -20,7 +20,7 @@ module.exports = [
   },
   js.configs.recommended,
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
     plugins: {
       '@typescript-eslint': tsPlugin,
       react: reactPlugin,
@@ -54,13 +54,13 @@ module.exports = [
   },
   {
     files: [
-      'src/main/**/*.{ts,js}',
-      'src/shared/**/*.{ts,js}',
-      'scripts/**/*.{cjs,mjs,js}',
+      'src/main/**/*.{ts,js,mjs}',
+      'src/shared/**/*.{ts,js,mjs}',
+      'scripts/**/*.{mjs,js}',
       'vite.config.ts',
-      'eslint.config.cjs',
-      '.prettierrc.cjs',
-      'electron-builder.config.cjs',
+      'eslint.config.mjs',
+      'prettier.config.mjs',
+      'electron-builder.config.mjs',
     ],
     languageOptions: {
       globals: {

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-'use strict';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { fileURLToPath, URL } from 'node:url';
+import waitOn from 'wait-on';
+import { createRequire } from 'node:module';
 
-const path = require('node:path');
-const { spawn } = require('node:child_process');
-const { URL } = require('node:url');
-const waitOn = require('wait-on');
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 const projectRoot = path.resolve(__dirname, '..');
 const electronAppConfig = require(path.join(projectRoot, 'electron.app.config.json'));
 const isWindows = process.platform === 'win32';
@@ -60,7 +61,7 @@ const run = async () => {
 
   await runNpmScript('build:main');
 
-  await runCommand(process.execPath, ['./scripts/run-electron.cjs'], {
+  await runCommand(process.execPath, ['./scripts/run-electron.mjs'], {
     NODE_ENV: 'development',
     VITE_DEV_SERVER_URL: devServerUrl,
   });

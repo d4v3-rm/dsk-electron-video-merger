@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-'use strict';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const path = require('node:path');
-const { spawn } = require('node:child_process');
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const electronCliPath = path.join(projectRoot, 'node_modules', 'electron', 'cli.js');
 
