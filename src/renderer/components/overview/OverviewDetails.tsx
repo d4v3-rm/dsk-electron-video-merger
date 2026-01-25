@@ -23,7 +23,7 @@ export const OverviewDetails = ({ body, chips, toggleHint, currentStep, steps }:
 
     <Col xs={24} xl={12}>
       <div className="overview-steps overview-mode-animate">
-        <Steps current={currentStep} responsive items={steps} />
+        <Steps current={currentStep} responsive={false} direction="vertical" size="small" items={steps} />
       </div>
     </Col>
   </Row>

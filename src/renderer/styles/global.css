@@ -263,8 +263,22 @@ body {
   border: 1px solid var(--app-border);
 }
 
+.overview-steps .ant-steps {
+  width: 100%;
+}
+
+.overview-steps .ant-steps-item {
+  align-items: flex-start;
+}
+
+.overview-steps .ant-steps-item-content {
+  min-width: 0;
+}
+
+.overview-steps .ant-steps-item-title,
 .overview-steps .ant-steps-item-description {
   max-width: 100%;
+  white-space: normal;
 }
 
 .section-title {
@@ -494,6 +508,14 @@ body {
   .app-footer {
     font-size: 12px;
   }
+
+  .workspace-stepper-card {
+    padding: 12px;
+  }
+
+  .workspace-stepper-card .ant-steps-item-container {
+    padding: 8px 10px;
+  }
 }
 
 .workspace-stepper-card {
@@ -505,17 +527,35 @@ body {
 }
 
 .workspace-stepper-card .ant-steps {
+  width: 100%;
   margin: 0;
 }
 
 .workspace-stepper-card .ant-steps-item {
+  min-width: 0;
   cursor: pointer;
 }
 
 .workspace-stepper-card .ant-steps-item-container {
+  min-width: 0;
+  padding: 10px 12px;
   border-radius: 12px;
+}
+
+.workspace-stepper-card .ant-steps-item-content {
+  min-width: 0;
 }
 
 .workspace-stepper-card .ant-steps-item-title {
   font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.workspace-stepper-card .ant-steps-item-description {
+  display: none;
+}
+
+.workspace-stepper-card .ant-steps-item-icon {
+  margin-inline-end: 10px;
 }

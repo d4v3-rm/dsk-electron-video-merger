@@ -17,9 +17,10 @@ export const WorkspaceStepper = () => {
   return (
     <div className="workspace-stepper-card">
       <Steps
-        type="navigation"
+        size="small"
         current={currentIndex}
         responsive={false}
+        progressDot
         onChange={(nextIndex) => setActiveWorkspacePanel(WORKSPACE_PANELS[nextIndex])}
         items={[
           {
