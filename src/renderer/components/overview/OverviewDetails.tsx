@@ -3,15 +3,7 @@ import type { OverviewDetailsProps } from '@renderer/components/overview/overvie
 
 const { Paragraph, Text } = Typography;
 
-export const OverviewDetails = ({
-  body,
-  chips,
-  canHover,
-  hoverHint,
-  toggleHint,
-  currentStep,
-  steps,
-}: OverviewDetailsProps) => (
+export const OverviewDetails = ({ body, chips, toggleHint, currentStep, steps }: OverviewDetailsProps) => (
   <Row gutter={[24, 24]} align="middle">
     <Col xs={24} xl={12}>
       <Space direction="vertical" size="middle" className="overview-copy overview-mode-animate">
@@ -25,7 +17,7 @@ export const OverviewDetails = ({
           ))}
         </Space>
 
-        <Text type="secondary">{canHover ? hoverHint : toggleHint}</Text>
+        <Text type="secondary">{toggleHint}</Text>
       </Space>
     </Col>
 

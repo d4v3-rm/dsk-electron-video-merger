@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { Card } from 'antd';
 import { gsap } from 'gsap';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -15,7 +15,6 @@ import {
   OverviewHeader,
   OverviewMetrics,
 } from '@renderer/components/overview';
-import { useCanHover } from '@renderer/hooks/use-can-hover';
 import { selectOverviewState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
 import { getJobModeLabel } from '@renderer/utils/job-presentation';
@@ -35,12 +34,10 @@ const getCurrentStep = (selectedFilesCount: number, runningJobsCount: number, co
 export const MergeOverview = () => {
   const { t } = useTranslation();
   const { jobs, selectedFiles, jobMode, setJobMode } = useAppStore(useShallow(selectOverviewState));
-  const canHover = useCanHover();
   const shellRef = useRef<HTMLDivElement | null>(null);
   const detailsRef = useRef<HTMLDivElement | null>(null);
   const previousModeRef = useRef(jobMode);
-  const [isPinnedOpen, setIsPinnedOpen] = useState(() => !canHover);
-  const [isHoverActive, setIsHoverActive] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const queuedJobs = jobs.filter((job) => job.status === 'queued').length;
   const runningJobs = jobs.filter((job) => job.status === 'running').length;
@@ -48,7 +45,6 @@ export const MergeOverview = () => {
   const activeJob =
     jobs.find((job) => job.status === 'running') ?? jobs.find((job) => job.status === 'queued') ?? null;
   const currentStep = getCurrentStep(selectedFiles.length, runningJobs, completedJobs);
-  const isExpanded = canHover ? isPinnedOpen || isHoverActive : isPinnedOpen;
   const workspaceMode = activeJob?.mode ?? jobMode;
   const workspaceStatus =
     runningJobs > 0
@@ -88,11 +84,6 @@ export const MergeOverview = () => {
     ],
     [completedJobs, modeCopy.firstMetricTitle, queuedJobs, runningJobs, selectedFiles.length, t],
   );
-
-  useEffect(() => {
-    setIsPinnedOpen(!canHover);
-    setIsHoverActive(false);
-  }, [canHover]);
 
   useLayoutEffect(() => {
     const shell = shellRef.current;
@@ -184,22 +175,15 @@ export const MergeOverview = () => {
     <Card
       className={`modern-card overview-card ${isExpanded ? 'overview-card-expanded' : 'overview-card-collapsed'}`}
     >
-      <div
-        ref={shellRef}
-        className="overview-shell"
-        onMouseEnter={canHover ? () => setIsHoverActive(true) : undefined}
-        onMouseLeave={canHover ? () => setIsHoverActive(false) : undefined}
-      >
+      <div ref={shellRef} className="overview-shell">
         <OverviewHeader
-          canHover={canHover}
           isExpanded={isExpanded}
-          isPinnedOpen={isPinnedOpen}
           jobMode={jobMode}
           workspaceStatus={workspaceStatus}
           title={modeCopy.title}
           studioTag={modeCopy.studioTag}
           deliveryTag={modeCopy.deliveryTag}
-          onToggleOverview={() => setIsPinnedOpen((current) => !current)}
+          onToggleOverview={() => setIsExpanded((current) => !current)}
           onModeChange={setJobMode}
         />
 
@@ -209,8 +193,6 @@ export const MergeOverview = () => {
           <OverviewDetails
             body={modeCopy.body}
             chips={modeCopy.chips}
-            canHover={canHover}
-            hoverHint={t('overview.hoverHint')}
             toggleHint={t('overview.toggleHint')}
             currentStep={currentStep}
             steps={modeCopy.steps}

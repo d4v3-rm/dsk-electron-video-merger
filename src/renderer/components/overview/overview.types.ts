@@ -16,9 +16,7 @@ export interface OverviewModeCopy {
 }
 
 export interface OverviewHeaderProps {
-  canHover: boolean;
   isExpanded: boolean;
-  isPinnedOpen: boolean;
   jobMode: JobMode;
   workspaceStatus: string;
   title: string;
@@ -42,8 +40,6 @@ export interface OverviewMetricsProps {
 export interface OverviewDetailsProps {
   body: string;
   chips: string[];
-  canHover: boolean;
-  hoverHint: string;
   toggleHint: string;
   currentStep: number;
   steps: OverviewModeCopy['steps'];

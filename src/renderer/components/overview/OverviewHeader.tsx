@@ -1,12 +1,11 @@
 import {
-  DashboardOutlined,
-  DownOutlined,
-  PushpinOutlined,
-  UpOutlined,
-  VideoCameraOutlined,
   CompressOutlined,
+  DashboardOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Segmented, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Segmented, Space, Tag, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import type { JobMode } from '@shared/types';
 import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
@@ -15,9 +14,7 @@ import type { OverviewHeaderProps } from '@renderer/components/overview/overview
 const { Title, Text } = Typography;
 
 export const OverviewHeader = ({
-  canHover,
   isExpanded,
-  isPinnedOpen,
   jobMode,
   workspaceStatus,
   title,
@@ -48,19 +45,14 @@ export const OverviewHeader = ({
       <div className="overview-controls overview-mode-animate">
         <Space size="small" wrap className="overview-toolbar">
           <ThemeSwitcher size="small" />
-          <Button
-            size="small"
-            icon={canHover ? <PushpinOutlined /> : isExpanded ? <UpOutlined /> : <DownOutlined />}
-            onClick={onToggleOverview}
-          >
-            {canHover
-              ? isPinnedOpen
-                ? t('overview.actions.unpin')
-                : t('overview.actions.pinOpen')
-              : isExpanded
-                ? t('overview.actions.collapse')
-                : t('overview.actions.expand')}
-          </Button>
+          <Tooltip title={isExpanded ? t('overview.actions.collapse') : t('overview.actions.expand')}>
+            <Button
+              ghost
+              shape="circle"
+              icon={isExpanded ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+              onClick={onToggleOverview}
+            />
+          </Tooltip>
         </Space>
 
         <div className="overview-mode-panel">
