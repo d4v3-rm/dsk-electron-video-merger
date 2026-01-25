@@ -495,3 +495,27 @@ body {
     font-size: 12px;
   }
 }
+
+.workspace-stepper-card {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+}
+
+.workspace-stepper-card .ant-steps {
+  margin: 0;
+}
+
+.workspace-stepper-card .ant-steps-item {
+  cursor: pointer;
+}
+
+.workspace-stepper-card .ant-steps-item-container {
+  border-radius: 12px;
+}
+
+.workspace-stepper-card .ant-steps-item-title {
+  font-weight: 600;
+}

@@ -1,7 +1,7 @@
 const composerEn = {
   cardTitle: {
-    merge: 'Merge setup',
-    compress: 'Compression setup',
+    merge: '1 Merge setup',
+    compress: '1 Compression setup',
   },
   tags: {
     orderedQueue: 'Ordered queue',

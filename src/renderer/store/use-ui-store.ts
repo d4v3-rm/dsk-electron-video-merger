@@ -29,6 +29,7 @@ const applyThemeToDom = (themeMode: AppThemeMode): void => {
 
 export const useUiStore = create<UiStoreState>((set) => ({
   themeMode: DEFAULT_THEME_MODE,
+  activeWorkspacePanel: 'setup',
 
   setThemeMode: (themeMode) => {
     if (typeof window !== 'undefined') {
@@ -50,6 +51,10 @@ export const useUiStore = create<UiStoreState>((set) => ({
       applyThemeToDom(nextThemeMode);
       return { themeMode: nextThemeMode };
     });
+  },
+
+  setActiveWorkspacePanel: (activeWorkspacePanel) => {
+    set({ activeWorkspacePanel });
   },
 
   syncThemeFromStorage: () => {
