@@ -512,10 +512,6 @@ body {
   .workspace-stepper-card {
     padding: 12px;
   }
-
-  .workspace-stepper-card .ant-steps-item-container {
-    padding: 8px 10px;
-  }
 }
 
 .workspace-stepper-card {
@@ -533,22 +529,25 @@ body {
 
 .workspace-stepper-card .ant-steps-item {
   min-width: 0;
+  overflow: visible;
   cursor: pointer;
 }
 
 .workspace-stepper-card .ant-steps-item-container {
   min-width: 0;
-  padding: 10px 12px;
+  padding: 4px 8px 0;
   border-radius: 12px;
 }
 
 .workspace-stepper-card .ant-steps-item-content {
   min-width: 0;
+  text-align: center;
 }
 
 .workspace-stepper-card .ant-steps-item-title {
+  padding-inline: 0;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.35;
   white-space: normal;
 }
 
@@ -557,5 +556,5 @@ body {
 }
 
 .workspace-stepper-card .ant-steps-item-icon {
-  margin-inline-end: 10px;
+  margin-inline-end: 0;
 }

@@ -17,10 +17,11 @@ export const WorkspaceStepper = () => {
   return (
     <div className="workspace-stepper-card">
       <Steps
+        className="workspace-stepper"
         size="small"
         current={currentIndex}
         responsive={false}
-        progressDot
+        labelPlacement="vertical"
         onChange={(nextIndex) => setActiveWorkspacePanel(WORKSPACE_PANELS[nextIndex])}
         items={[
           {
