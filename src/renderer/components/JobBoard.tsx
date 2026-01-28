@@ -191,7 +191,12 @@ export const JobBoard = () => {
           <div className="history-summary-grid">
             {historySummary.map((item) => (
               <div key={item.key} className="history-stat-tile">
-                <Statistic title={item.title} value={item.value} prefix={item.prefix} />
+                <Statistic
+                  className="metric-stat"
+                  title={item.title}
+                  value={item.value}
+                  prefix={item.prefix}
+                />
               </div>
             ))}
           </div>

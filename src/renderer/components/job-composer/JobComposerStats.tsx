@@ -15,13 +15,23 @@ export const JobComposerStats = ({
   return (
     <div className="queue-stats">
       <div className="queue-stat-tile">
-        <Statistic title={statsLabel} value={selectedFiles.length} prefix={<VideoCameraAddOutlined />} />
+        <Statistic
+          className="metric-stat"
+          title={statsLabel}
+          value={selectedFiles.length}
+          prefix={<VideoCameraAddOutlined />}
+        />
       </div>
       <div className="queue-stat-tile">
-        <Statistic title={stagingSizeLabel} value={formatBytes(totalSize)} />
+        <Statistic className="metric-stat" title={stagingSizeLabel} value={formatBytes(totalSize)} />
       </div>
       <div className="queue-stat-tile">
-        <Statistic title={deliveryLabel} value={deliveryValue} prefix={<DeploymentUnitOutlined />} />
+        <Statistic
+          className="metric-stat"
+          title={deliveryLabel}
+          value={deliveryValue}
+          prefix={<DeploymentUnitOutlined />}
+        />
       </div>
     </div>
   );

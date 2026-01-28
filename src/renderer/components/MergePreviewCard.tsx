@@ -106,7 +106,12 @@ export const MergePreviewCard = () => {
           <div className="preview-summary-grid">
             {previewSummaryItems.map((item) => (
               <div key={item.key} className="preview-stat-tile">
-                <Statistic title={item.title} value={item.value} prefix={item.prefix} />
+                <Statistic
+                  className="metric-stat"
+                  title={item.title}
+                  value={item.value}
+                  prefix={item.prefix}
+                />
               </div>
             ))}
           </div>

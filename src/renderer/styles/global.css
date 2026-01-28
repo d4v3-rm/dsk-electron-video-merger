@@ -225,6 +225,19 @@ body {
   margin-top: 0 !important;
 }
 
+.metric-stat .ant-statistic-content-prefix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-end: 12px !important;
+  line-height: 1;
+}
+
+.metric-stat .ant-statistic-content-prefix .anticon {
+  display: inline-flex;
+  align-items: center;
+}
+
 .overview-kpi {
   height: 100%;
   min-height: 108px;
@@ -244,7 +257,6 @@ body {
 }
 
 .overview-kpi .ant-statistic-content-prefix {
-  margin-right: 10px;
   color: var(--app-accent);
 }
 
@@ -316,7 +328,6 @@ body {
 .queue-stat-tile .ant-statistic-content-prefix,
 .preview-stat-tile .ant-statistic-content-prefix,
 .history-stat-tile .ant-statistic-content-prefix {
-  margin-right: 10px;
   color: var(--app-accent);
 }
 

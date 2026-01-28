@@ -6,7 +6,12 @@ export const OverviewMetrics = ({ metrics }: OverviewMetricsProps) => (
     {metrics.map((metric) => (
       <Col xs={12} xl={6} key={metric.key}>
         <div className="overview-kpi">
-          <Statistic title={metric.title} value={metric.value} prefix={metric.prefix} />
+          <Statistic
+            className="metric-stat"
+            title={metric.title}
+            value={metric.value}
+            prefix={metric.prefix}
+          />
         </div>
       </Col>
     ))}
