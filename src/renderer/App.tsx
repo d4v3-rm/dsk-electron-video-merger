@@ -6,7 +6,7 @@ import { JobBoard } from '@renderer/components/JobBoard';
 import { JobComposer } from '@renderer/components/JobComposer';
 import { MergeOverview } from '@renderer/components/MergeOverview';
 import { MergePreviewCard } from '@renderer/components/MergePreviewCard';
-import { WorkspaceStepper } from '@renderer/components/WorkspaceStepper';
+import { WorkspaceSwitcher } from '@renderer/components/WorkspaceSwitcher';
 import { useJobProgress } from '@renderer/hooks/use-job-progress';
 import { selectAppBootstrapState } from '@renderer/store/app-store.selectors';
 import { selectWorkspacePanelState } from '@renderer/store/ui-store.selectors';
@@ -58,7 +58,7 @@ function App() {
         <div className="dashboard-container">
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <MergeOverview />
-            <WorkspaceStepper />
+            <WorkspaceSwitcher />
             {renderPanel()}
           </Space>
         </div>

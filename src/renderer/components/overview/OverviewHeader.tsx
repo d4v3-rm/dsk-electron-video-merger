@@ -31,9 +31,9 @@ export const OverviewHeader = ({
         <Avatar size={48} shape="square" icon={<DashboardOutlined />} />
         <div className="overview-brand-copy overview-mode-animate">
           <Space wrap size={[8, 8]} className="overview-tags">
-            <Tag color="processing">{studioTag}</Tag>
-            <Tag>{t('overview.tags.desktop')}</Tag>
-            <Tag>{deliveryTag}</Tag>
+            <Tag className="overview-tag">{studioTag}</Tag>
+            <Tag className="overview-tag">{t('overview.tags.desktop')}</Tag>
+            <Tag className="overview-tag">{deliveryTag}</Tag>
           </Space>
           <Title level={3} className="overview-title">
             {title}

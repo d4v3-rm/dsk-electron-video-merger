@@ -1,5 +1,5 @@
 const previewEn = {
-  cardTitle: '2 Output plan',
+  cardTitle: 'Output plan',
   status: {
     active: 'Active job',
     queued: 'Queued',

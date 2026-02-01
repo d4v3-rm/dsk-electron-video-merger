@@ -1,5 +1,5 @@
 const historyEn = {
-  cardTitle: '3 Job history',
+  cardTitle: 'Job history',
   openDetailHint: 'Open details with one click',
   jobsCount: '{{count}} jobs',
   failedCount: '{{count}} failed',

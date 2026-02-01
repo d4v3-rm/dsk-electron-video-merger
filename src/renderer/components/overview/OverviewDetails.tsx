@@ -11,7 +11,7 @@ export const OverviewDetails = ({ body, chips, toggleHint, currentStep, steps }:
 
         <Space wrap size={[8, 8]}>
           {chips.map((chip) => (
-            <Tag key={chip} bordered={false}>
+            <Tag key={chip} bordered={false} className="overview-chip">
               {chip}
             </Tag>
           ))}
