@@ -58,6 +58,7 @@ export default [
       'src/shared/**/*.{ts,js,mjs}',
       'scripts/**/*.{mjs,js}',
       'vite.config.ts',
+      'vite.website.config.ts',
       'eslint.config.mjs',
       'prettier.config.mjs',
       'electron-builder.config.mjs',
@@ -76,7 +77,16 @@ export default [
     },
   },
   {
-    files: ['src/renderer/**/*.ts', 'src/renderer/**/*.tsx', 'src/renderer/**/*.js', 'src/renderer/**/*.jsx'],
+    files: [
+      'src/renderer/**/*.ts',
+      'src/renderer/**/*.tsx',
+      'src/renderer/**/*.js',
+      'src/renderer/**/*.jsx',
+      'website/src/**/*.ts',
+      'website/src/**/*.tsx',
+      'website/src/**/*.js',
+      'website/src/**/*.jsx',
+    ],
     languageOptions: {
       globals: {
         window: 'readonly',
