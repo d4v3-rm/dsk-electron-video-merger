@@ -1,4 +1,4 @@
-﻿# 🎬 Video Merger Desktop
+# ?? Video Merger Desktop
 
 <p align="center">
   <strong>Desktop-first video merge and compression studio built with Electron, Vite, React, TypeScript, FFmpeg, Zustand, and Ant Design.</strong>
@@ -17,9 +17,13 @@
   <img alt="Windows Portable" src="https://img.shields.io/badge/Windows-Portable%20Build-0078D4?logo=windows&logoColor=white" />
 </p>
 
-> 🏷️ Tags: `#electron` `#desktop` `#ffmpeg` `#video-merging` `#video-compression` `#vite` `#react` `#typescript` `#zustand` `#ant-design` `#nvenc`
+<p align="center">
+  <img src="./assets/screen-1.png" alt="Video Merger Desktop merge workspace screenshot" width="1200" />
+</p>
 
-## 🚀 Overview
+> ??? Tags: `#electron` `#desktop` `#ffmpeg` `#video-merging` `#video-compression` `#vite` `#react` `#typescript` `#zustand` `#ant-design` `#nvenc`
+
+## ?? Overview
 
 Video Merger Desktop is a desktop-only video workstation focused on two practical jobs:
 
@@ -28,28 +32,29 @@ Video Merger Desktop is a desktop-only video workstation focused on two practica
 
 This repository does **not** use a database and does **not** ship a client/server web stack. The application runs as a local Electron desktop app, with Node.js handling the video pipeline and React handling the workspace UI.
 
-## ✨ Feature Snapshot
+## ? Feature Snapshot
 
 | Area                   | What it does                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| 🎞️ Merge mode          | Concatenates clips in the exact order defined in the queue and renders one final file         |
-| 🗜️ Compression mode    | Encodes each selected source video independently using a shared export profile                |
-| 📦 Output formats      | Supports `mp4`, `mov`, `mkv`, and `webm`                                                      |
-| 🧭 Destination control | Lets the user choose a custom output folder or fall back to the app-managed output directory  |
-| ⚙️ Encoding profiles   | Exposes `light`, `balanced`, and `strong` compression presets with technical labels in the UI |
-| 🖥️ GPU support         | Can prefer NVIDIA NVENC for supported containers when available                               |
-| 📡 Telemetry           | Streams FFmpeg progress, status text, runtime metrics, and detailed job logs                  |
-| 🧾 History             | Stores local job history for quick review and output path access                              |
-| 🪟 Packaging           | Produces a Windows portable executable                                                        |
+| ??? Merge mode         | Concatenates clips in the exact order defined in the queue and renders one final file         |
+| ??? Compression mode   | Encodes each selected source video independently using a shared export profile                |
+| ?? Output formats      | Supports `mp4`, `mov`, `mkv`, and `webm`                                                      |
+| ?? Destination control | Lets the user choose a custom output folder or fall back to the app-managed output directory  |
+| ?? Encoding profiles   | Exposes `light`, `balanced`, and `strong` compression presets with technical labels in the UI |
+| ??? GPU support        | Can prefer NVIDIA NVENC for supported containers when available                               |
+| ?? Telemetry           | Streams FFmpeg progress, status text, runtime metrics, and detailed job logs                  |
+| ?? History             | Stores local job history for quick review and output path access                              |
+| ?? Presentation site   | Includes a standalone product website workspace under `website/`                              |
+| ?? Packaging           | Produces a Windows portable executable                                                        |
 
-## 🧪 Product Scope
+## ?? Product Scope
 
 ### Desktop only
 
 The project is intentionally desktop-first:
 
 - no REST API
-- no web client/server split
+- no web client/server split for the app runtime
 - no database dependency
 - no background cloud service
 
@@ -64,14 +69,14 @@ The application is designed for real local media operations:
 5. monitor progress and logs
 6. reopen the generated artifact locally
 
-## 🧰 Operating Modes
+## ?? Operating Modes
 
 | Mode          | Input model               | Output model               | Best use case                                               |
 | ------------- | ------------------------- | -------------------------- | ----------------------------------------------------------- |
 | `Merge`       | Ordered timeline of clips | One final merged file      | Course modules, demos, recordings, stitched timelines       |
 | `Compression` | Independent source files  | One output file per source | Batch size reduction, delivery copies, archive optimization |
 
-## 🎛️ Containers, Codecs, and Backends
+## ??? Containers, Codecs, and Backends
 
 | Container | Typical codec path in this app           | Backend support     |
 | --------- | ---------------------------------------- | ------------------- |
@@ -88,19 +93,19 @@ When NVIDIA NVENC is available, the app can use it for supported output containe
 - unsupported combinations fall back to CPU automatically
 - WebM remains CPU-only in the current pipeline
 
-## 🧭 UI and Workspace Design
+## ?? UI and Workspace Design
 
 The renderer is organized as a dashboard-style workspace:
 
 - **Hero / overview panel** for mode switching, workspace status, and key metrics
-- **Workspace stepper** to move between setup, output plan, and job history
+- **Workspace switcher** to move between setup, output plan, and job history
 - **Setup panel** for source selection, ordering, export profile, backend, and destination folder
 - **Output plan panel** for runtime summary, generated output naming, and latest artifact
 - **Job history panel** for completed, queued, active, and failed jobs
 - **Job details drawer** for logs, progress, telemetry, input list, and output list
 - **Codec guide modal** rendered from Markdown for detailed codec/container guidance
 
-## 📁 Output Behavior
+## ?? Output Behavior
 
 The generated files are written to:
 
@@ -109,13 +114,14 @@ The generated files are written to:
 
 Temporary processing assets remain isolated from final outputs so the generated deliverables stay available after the job ends.
 
-## 🧱 Architecture
+## ?? Architecture
 
 ### Runtime split
 
 - `src/main`: Electron main process, IPC, FFmpeg orchestration, storage, file dialogs
 - `src/renderer`: React UI, Zustand state, Ant Design workspace, i18n resources
 - `src/shared`: Shared types for IPC, jobs, hardware, and video models
+- `website`: standalone presentation website sources powered by Vite + React + TypeScript
 
 ### Key responsibilities
 
@@ -129,10 +135,12 @@ Temporary processing assets remain isolated from final outputs so the generated 
 | `services/storage.service.ts` | Temp/output directory resolution and file system handling  |
 | `renderer/store`              | Zustand slices for workspace, jobs, settings, and UI state |
 | `renderer/i18n`               | English localization resources split by domain             |
+| `website/src`                 | Presentation website UI, motion, and screenshot showcase   |
 
 ### Project map
 
 ```text
+assets/
 src/
   main/
     config/
@@ -152,12 +160,17 @@ src/
     styles/
     theme/
   shared/
+website/
+  src/
+    components/
+    content/
+    theme/
 scripts/
 .github/workflows/
 build/
 ```
 
-## 🛠️ Development
+## ??? Development
 
 ### Requirements
 
@@ -171,34 +184,37 @@ build/
 npm install
 ```
 
-### Run in development mode
+### Run the desktop app in development mode
 
 ```bash
 npm run dev
 ```
 
-This starts:
+### Run the presentation website in development mode
 
-- the Vite renderer development server
-- the Electron main process launcher
-- the preload and main build flow used by the desktop shell
+```bash
+npm run dev:website
+```
 
 ### Main scripts
 
-| Command                  | Purpose                                                       |
-| ------------------------ | ------------------------------------------------------------- |
-| `npm run dev`            | Start renderer + Electron development mode                    |
-| `npm run build`          | Build main process, renderer, and Windows portable package    |
-| `npm run build:portable` | Alias for the portable build flow                             |
-| `npm run build:main`     | Compile the Electron main process                             |
-| `npm run build:renderer` | Build the Vite renderer bundle                                |
-| `npm run typecheck`      | Run TypeScript checks for shared, main, and renderer projects |
-| `npm run lint`           | Run ESLint across the repository                              |
-| `npm run format`         | Run Prettier on source, scripts, and root config files        |
-| `npm run set:version`    | Recompute the project version from conventional commits       |
-| `npm run generate:icon`  | Regenerate the application icon assets                        |
+| Command                   | Purpose                                                       |
+| ------------------------- | ------------------------------------------------------------- |
+| `npm run dev`             | Start renderer + Electron development mode                    |
+| `npm run dev:website`     | Start the standalone presentation website locally             |
+| `npm run build`           | Build main process, renderer, and Windows portable package    |
+| `npm run build:portable`  | Alias for the portable build flow                             |
+| `npm run build:main`      | Compile the Electron main process                             |
+| `npm run build:renderer`  | Build the Vite renderer bundle                                |
+| `npm run build:website`   | Build the presentation website bundle                         |
+| `npm run preview:website` | Preview the built website locally                             |
+| `npm run typecheck`       | Run TypeScript checks for shared, main, renderer, and website |
+| `npm run lint`            | Run ESLint across the repository                              |
+| `npm run format`          | Run Prettier on source, website, scripts, and root configs    |
+| `npm run set:version`     | Recompute the project version from conventional commits       |
+| `npm run generate:icon`   | Regenerate the application icon assets                        |
 
-## 📦 Build and Release
+## ?? Build and Release
 
 ### Portable build
 
@@ -209,6 +225,13 @@ npm run build
 Expected packaged output:
 
 - `dist/packaged/Video Merger Desktop-<version>-portable.exe`
+
+### Website build
+
+```bash
+npm run build:website
+npm run preview:website
+```
 
 ### Release automation
 
@@ -224,7 +247,7 @@ The repository includes a GitHub Actions workflow at [desktop-release.yml](./.gi
 
 The repository also includes [`scripts/set-version.mjs`](./scripts/set-version.mjs), which derives the version from commit history using conventional commit semantics.
 
-## 🧹 Tooling Standards
+## ?? Tooling Standards
 
 - **Electron + Vite + React + TypeScript** desktop stack
 - **Zustand** for application state
@@ -233,7 +256,7 @@ The repository also includes [`scripts/set-version.mjs`](./scripts/set-version.m
 - **No unit test suite**, by project requirement
 - **Monorepo-style structure without server/database layers**, but still split by runtime and responsibility
 
-## 🔍 Troubleshooting Notes
+## ?? Troubleshooting Notes
 
 ### Outputs are not visible in the UI yet
 
@@ -255,7 +278,7 @@ Check:
 - whether the selected container supports NVENC in the current app pipeline
 - whether the backend is set to `Auto` or `NVIDIA NVENC`
 
-## 📜 License
+## ?? License
 
 This project is released under the **MIT License**.
 
