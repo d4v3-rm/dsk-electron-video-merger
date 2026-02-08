@@ -2,11 +2,10 @@ import { Layout } from 'antd';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLayoutEffect, useRef } from 'react';
-import { FeatureSection } from '@website/components/FeatureSection';
-import { PerformanceSection } from '@website/components/PerformanceSection';
+import { FeatureGrid } from '@website/components/FeatureGrid';
+import { LandingHero } from '@website/components/LandingHero';
+import { ProductShowcase } from '@website/components/ProductShowcase';
 import { SiteFooter } from '@website/components/SiteFooter';
-import { SiteHero } from '@website/components/SiteHero';
-import { WorkflowSection } from '@website/components/WorkflowSection';
 
 const { Content } = Layout;
 
@@ -23,66 +22,92 @@ function App() {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.site-hero-copy > *',
-        { autoAlpha: 0, y: 28 },
+        '.site-animate',
+        { autoAlpha: 0, y: 32 },
         {
           autoAlpha: 1,
           y: 0,
-          duration: 0.72,
+          duration: 0.8,
           ease: 'power3.out',
           stagger: 0.12,
         },
       );
 
-      gsap.fromTo(
-        '.site-hero-visual .site-panel',
-        { autoAlpha: 0, y: 32, scale: 0.98 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.86,
-          ease: 'power3.out',
-          stagger: 0.1,
-          delay: 0.18,
+      gsap.utils.toArray<HTMLElement>('.site-shot-card').forEach((card) => {
+        const speed = Number(card.dataset.speed ?? '1');
+
+        gsap.fromTo(
+          card,
+          { autoAlpha: 0, y: 40, rotate: speed === 2 ? -3 : speed === 3 ? 4 : 0 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            rotate: speed === 2 ? -3 : speed === 3 ? 4 : 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            delay: 0.18 + speed * 0.08,
+          },
+        );
+
+        gsap.to(card, {
+          yPercent: -6 * speed,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.site-hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>('.site-float-card').forEach((card, index) => {
+        gsap.fromTo(
+          card,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.72,
+            ease: 'power3.out',
+            delay: 0.42 + index * 0.1,
+          },
+        );
+
+        gsap.to(card, {
+          yPercent: -4 - index * 2,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.site-hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      });
+
+      gsap.to('.site-hero-copy', {
+        yPercent: -5,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.site-hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
         },
-      );
+      });
 
       gsap.utils.toArray<HTMLElement>('.site-reveal').forEach((element) => {
         gsap.fromTo(
           element,
-          { autoAlpha: 0, y: 36 },
+          { autoAlpha: 0, y: 44 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.8,
+            duration: 0.84,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: element,
-              start: 'top 82%',
-              once: true,
-            },
-          },
-        );
-      });
-
-      gsap.utils.toArray<HTMLElement>('.site-stagger').forEach((container) => {
-        const targets = Array.from(container.children);
-        if (targets.length === 0) {
-          return;
-        }
-
-        gsap.fromTo(
-          targets,
-          { autoAlpha: 0, y: 24 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.64,
-            ease: 'power2.out',
-            stagger: 0.08,
-            scrollTrigger: {
-              trigger: container,
               start: 'top 84%',
               once: true,
             },
@@ -98,16 +123,12 @@ function App() {
   }, []);
 
   return (
-    <Layout className="site-shell" id="top">
-      <div className="site-grid" aria-hidden="true" />
-      <Content className="site-content">
-        <div ref={rootRef} className="site-page-frame">
-          <SiteHero />
-          <FeatureSection />
-          <WorkflowSection />
-          <PerformanceSection />
-          <SiteFooter />
-        </div>
+    <Layout className="site-shell">
+      <Content className="site-content" ref={rootRef}>
+        <LandingHero />
+        <ProductShowcase />
+        <FeatureGrid />
+        <SiteFooter />
       </Content>
     </Layout>
   );
