@@ -1,6 +1,6 @@
 import { ArrowDownOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Row, Space, Tag, Typography } from 'antd';
-import { heroStats, heroTags } from '@website/content/site-content';
+import { Button, Col, Row, Space, Tag, Typography } from 'antd';
+import { heroFacts, heroTags } from '@website/content/site-content';
 import { productScreens } from '@website/content/site-media';
 
 const { Paragraph, Text, Title } = Typography;
@@ -8,11 +8,11 @@ const { Paragraph, Text, Title } = Typography;
 export const LandingHero = () => (
   <section className="site-hero" id="top">
     <div className="site-hero-inner">
-      <div className="site-topbar site-animate">
-        <div>
-          <Text className="site-brand">dsk-electron-video-merger</Text>
+      <header className="site-topbar site-animate">
+        <div className="site-brand-block">
+          <Text className="site-brand-label">Video Merger Desktop</Text>
           <Paragraph className="site-topbar-copy">
-            Desktop video operations without the web-app overhead.
+            Local video operations for merge, compression, and final file delivery.
           </Paragraph>
         </div>
 
@@ -20,11 +20,11 @@ export const LandingHero = () => (
           <Tag className="site-tag">MIT licensed</Tag>
           <Tag className="site-tag">Full dark UI</Tag>
         </Space>
-      </div>
+      </header>
 
-      <Row gutter={[32, 32]} align="middle" className="site-hero-grid">
-        <Col xs={24} xl={10}>
-          <Space direction="vertical" size="large" className="site-hero-copy">
+      <Row gutter={[40, 40]} align="middle" className="site-hero-grid">
+        <Col xs={24} xl={9}>
+          <div className="site-hero-copy">
             <Space wrap size={[8, 8]} className="site-animate">
               {heroTags.map((tag) => (
                 <Tag key={tag} className="site-tag">
@@ -34,14 +34,23 @@ export const LandingHero = () => (
             </Space>
 
             <div className="site-animate">
-              <Text className="site-kicker">Video Merger Desktop</Text>
+              <Text className="site-kicker">Desktop merge and compression studio</Text>
               <Title className="site-hero-title">
-                Merge timelines and compress source videos in one local desktop studio.
+                One local workspace for final masters and compression batches.
               </Title>
               <Paragraph className="site-hero-description">
-                Built for practical media operations: explicit ordering, technical output planning, readable
-                runtime progress, and direct control over the destination folder.
+                Built for operators who need explicit ordering, technical export control, live runtime
+                progress, and direct access to the final artifact path.
               </Paragraph>
+            </div>
+
+            <div className="site-fact-list site-animate">
+              {heroFacts.map((fact) => (
+                <div key={fact.label} className="site-fact-row">
+                  <Text className="site-fact-label">{fact.label}</Text>
+                  <Text className="site-fact-value">{fact.value}</Text>
+                </div>
+              ))}
             </div>
 
             <Space wrap size="middle" className="site-animate">
@@ -49,46 +58,30 @@ export const LandingHero = () => (
                 Explore screens
               </Button>
               <Button size="large" href="#highlights" icon={<HighlightOutlined />}>
-                Read highlights
+                Why it works
               </Button>
             </Space>
-
-            <div className="site-stat-rail site-animate">
-              {heroStats.map((stat) => (
-                <Card key={stat.label} className="site-stat-card site-panel">
-                  <Text className="site-stat-label">{stat.label}</Text>
-                  <Title level={4} className="site-stat-value">
-                    {stat.value}
-                  </Title>
-                </Card>
-              ))}
-            </div>
-          </Space>
+          </div>
         </Col>
 
-        <Col xs={24} xl={14}>
-          <div className="site-shot-rail">
-            <Card className="site-shot-card site-shot-card-primary site-panel" data-speed="1">
+        <Col xs={24} xl={15}>
+          <div className="site-shot-stage">
+            <figure className="site-shot-panel site-shot-panel-primary" data-speed="1">
               <img src={productScreens[0].src} alt={productScreens[0].alt} className="site-shot-image" />
-            </Card>
+            </figure>
 
-            <Card className="site-shot-card site-shot-card-secondary site-panel" data-speed="2">
+            <figure className="site-shot-panel site-shot-panel-secondary" data-speed="2">
               <img src={productScreens[1].src} alt={productScreens[1].alt} className="site-shot-image" />
-            </Card>
+            </figure>
 
-            <Card className="site-shot-card site-shot-card-tertiary site-panel" data-speed="3">
+            <figure className="site-shot-panel site-shot-panel-tertiary" data-speed="3">
               <img src={productScreens[2].src} alt={productScreens[2].alt} className="site-shot-image" />
-            </Card>
+            </figure>
 
-            <Card className="site-float-card site-float-card-left site-panel">
-              <Text className="site-float-label">Output planning</Text>
-              <Title level={5}>Format, profile, backend, and destination stay visible.</Title>
-            </Card>
-
-            <Card className="site-float-card site-float-card-right site-panel">
-              <Text className="site-float-label">Runtime clarity</Text>
-              <Title level={5}>Progress, logs, and history remain in the same language.</Title>
-            </Card>
+            <div className="site-inline-note site-inline-note-left">Output planning stays readable.</div>
+            <div className="site-inline-note site-inline-note-right">
+              History and review stay in the same flow.
+            </div>
           </div>
         </Col>
       </Row>

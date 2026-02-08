@@ -32,11 +32,6 @@ export const siteTheme: ThemeConfig = {
       headerBg: 'transparent',
       footerBg: 'transparent',
     },
-    Card: {
-      bodyPadding: 22,
-      headerPadding: 22,
-      headerHeight: 56,
-    },
     Button: {
       borderRadius: 999,
       controlHeight: 44,

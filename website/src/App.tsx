@@ -2,7 +2,7 @@ import { Layout } from 'antd';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLayoutEffect, useRef } from 'react';
-import { FeatureGrid } from '@website/components/FeatureGrid';
+import { EditorialHighlights } from '@website/components/EditorialHighlights';
 import { LandingHero } from '@website/components/LandingHero';
 import { ProductShowcase } from '@website/components/ProductShowcase';
 import { SiteFooter } from '@website/components/SiteFooter';
@@ -23,34 +23,34 @@ function App() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.site-animate',
-        { autoAlpha: 0, y: 32 },
+        { autoAlpha: 0, y: 28 },
         {
           autoAlpha: 1,
           y: 0,
-          duration: 0.8,
+          duration: 0.76,
           ease: 'power3.out',
-          stagger: 0.12,
+          stagger: 0.1,
         },
       );
 
-      gsap.utils.toArray<HTMLElement>('.site-shot-card').forEach((card) => {
-        const speed = Number(card.dataset.speed ?? '1');
+      gsap.utils.toArray<HTMLElement>('.site-shot-panel').forEach((panel) => {
+        const speed = Number(panel.dataset.speed ?? '1');
 
         gsap.fromTo(
-          card,
-          { autoAlpha: 0, y: 40, rotate: speed === 2 ? -3 : speed === 3 ? 4 : 0 },
+          panel,
+          { autoAlpha: 0, y: 40, rotate: speed === 2 ? -2 : speed === 3 ? 3 : 0 },
           {
             autoAlpha: 1,
             y: 0,
-            rotate: speed === 2 ? -3 : speed === 3 ? 4 : 0,
-            duration: 0.9,
+            rotate: speed === 2 ? -2 : speed === 3 ? 3 : 0,
+            duration: 0.88,
             ease: 'power3.out',
             delay: 0.18 + speed * 0.08,
           },
         );
 
-        gsap.to(card, {
-          yPercent: -6 * speed,
+        gsap.to(panel, {
+          yPercent: -4 * speed,
           ease: 'none',
           scrollTrigger: {
             trigger: '.site-hero',
@@ -61,54 +61,32 @@ function App() {
         });
       });
 
-      gsap.utils.toArray<HTMLElement>('.site-float-card').forEach((card, index) => {
+      gsap.utils.toArray<HTMLElement>('.site-inline-note').forEach((note, index) => {
         gsap.fromTo(
-          card,
-          { autoAlpha: 0, y: 28 },
+          note,
+          { autoAlpha: 0, y: 24 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.72,
+            duration: 0.7,
             ease: 'power3.out',
-            delay: 0.42 + index * 0.1,
+            delay: 0.4 + index * 0.1,
           },
         );
-
-        gsap.to(card, {
-          yPercent: -4 - index * 2,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.site-hero',
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-        });
-      });
-
-      gsap.to('.site-hero-copy', {
-        yPercent: -5,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.site-hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
       });
 
       gsap.utils.toArray<HTMLElement>('.site-reveal').forEach((element) => {
         gsap.fromTo(
           element,
-          { autoAlpha: 0, y: 44 },
+          { autoAlpha: 0, y: 40 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.84,
+            duration: 0.82,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: element,
-              start: 'top 84%',
+              start: 'top 85%',
               once: true,
             },
           },
@@ -127,7 +105,7 @@ function App() {
       <Content className="site-content" ref={rootRef}>
         <LandingHero />
         <ProductShowcase />
-        <FeatureGrid />
+        <EditorialHighlights />
         <SiteFooter />
       </Content>
     </Layout>
