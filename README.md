@@ -1,4 +1,4 @@
-# ?? Video Merger Desktop
+# 🎬 Video Merger Desktop
 
 <p align="center">
   <strong>Desktop-first video merge and compression studio built with Electron, Vite, React, TypeScript, FFmpeg, Zustand, and Ant Design.</strong>
@@ -21,9 +21,9 @@
   <img src="./assets/screen-1.png" alt="Video Merger Desktop merge workspace screenshot" width="1200" />
 </p>
 
-> ??? Tags: `#electron` `#desktop` `#ffmpeg` `#video-merging` `#video-compression` `#vite` `#react` `#typescript` `#zustand` `#ant-design` `#nvenc`
+> 🏷️ Tags: `#electron` `#desktop` `#ffmpeg` `#video-merging` `#video-compression` `#vite` `#react` `#typescript` `#zustand` `#ant-design` `#nvenc`
 
-## ?? Overview
+## 🚀 Overview
 
 Video Merger Desktop is a desktop-only video workstation focused on two practical jobs:
 
@@ -32,22 +32,22 @@ Video Merger Desktop is a desktop-only video workstation focused on two practica
 
 This repository does **not** use a database and does **not** ship a client/server web stack. The application runs as a local Electron desktop app, with Node.js handling the video pipeline and React handling the workspace UI.
 
-## ? Feature Snapshot
+## ✨ Feature Snapshot
 
 | Area                   | What it does                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| ??? Merge mode         | Concatenates clips in the exact order defined in the queue and renders one final file         |
-| ??? Compression mode   | Encodes each selected source video independently using a shared export profile                |
-| ?? Output formats      | Supports `mp4`, `mov`, `mkv`, and `webm`                                                      |
-| ?? Destination control | Lets the user choose a custom output folder or fall back to the app-managed output directory  |
-| ?? Encoding profiles   | Exposes `light`, `balanced`, and `strong` compression presets with technical labels in the UI |
-| ??? GPU support        | Can prefer NVIDIA NVENC for supported containers when available                               |
-| ?? Telemetry           | Streams FFmpeg progress, status text, runtime metrics, and detailed job logs                  |
-| ?? History             | Stores local job history for quick review and output path access                              |
-| ?? Presentation site   | Includes a standalone product website workspace under `website/`                              |
-| ?? Packaging           | Produces a Windows portable executable                                                        |
+| 🎞️ Merge mode         | Concatenates clips in the exact order defined in the queue and renders one final file         |
+| 🗜️ Compression mode   | Encodes each selected source video independently using a shared export profile                |
+| 📦 Output formats      | Supports `mp4`, `mov`, `mkv`, and `webm`                                                      |
+| 🧭 Destination control | Lets the user choose a custom output folder or fall back to the app-managed output directory  |
+| ⚙️ Encoding profiles   | Exposes `light`, `balanced`, and `strong` compression presets with technical labels in the UI |
+| 🖥️ GPU support        | Can prefer NVIDIA NVENC for supported containers when available                               |
+| 📡 Telemetry           | Streams FFmpeg progress, status text, runtime metrics, and detailed job logs                  |
+| 🧾 History             | Stores local job history for quick review and output path access                              |
+| 🌐 Presentation site   | Includes a standalone product website workspace under `website/`                              |
+| 🪟 Packaging           | Produces a Windows portable executable                                                        |
 
-## ?? Product Scope
+## 🧪 Product Scope
 
 ### Desktop only
 
@@ -69,14 +69,14 @@ The application is designed for real local media operations:
 5. monitor progress and logs
 6. reopen the generated artifact locally
 
-## ?? Operating Modes
+## 🧰 Operating Modes
 
 | Mode          | Input model               | Output model               | Best use case                                               |
 | ------------- | ------------------------- | -------------------------- | ----------------------------------------------------------- |
 | `Merge`       | Ordered timeline of clips | One final merged file      | Course modules, demos, recordings, stitched timelines       |
 | `Compression` | Independent source files  | One output file per source | Batch size reduction, delivery copies, archive optimization |
 
-## ??? Containers, Codecs, and Backends
+## 🎛️ Containers, Codecs, and Backends
 
 | Container | Typical codec path in this app           | Backend support     |
 | --------- | ---------------------------------------- | ------------------- |
@@ -93,7 +93,7 @@ When NVIDIA NVENC is available, the app can use it for supported output containe
 - unsupported combinations fall back to CPU automatically
 - WebM remains CPU-only in the current pipeline
 
-## ?? UI and Workspace Design
+## 🧭 UI and Workspace Design
 
 The renderer is organized as a dashboard-style workspace:
 
@@ -105,7 +105,7 @@ The renderer is organized as a dashboard-style workspace:
 - **Job details drawer** for logs, progress, telemetry, input list, and output list
 - **Codec guide modal** rendered from Markdown for detailed codec/container guidance
 
-## ?? Output Behavior
+## 📁 Output Behavior
 
 The generated files are written to:
 
@@ -114,7 +114,7 @@ The generated files are written to:
 
 Temporary processing assets remain isolated from final outputs so the generated deliverables stay available after the job ends.
 
-## ?? Architecture
+## 🧱 Architecture
 
 ### Runtime split
 
@@ -170,7 +170,7 @@ scripts/
 build/
 ```
 
-## ??? Development
+## 🛠️ Development
 
 ### Requirements
 
@@ -214,7 +214,7 @@ npm run dev:website
 | `npm run set:version`     | Recompute the project version from conventional commits       |
 | `npm run generate:icon`   | Regenerate the application icon assets                        |
 
-## ?? Build and Release
+## 📦 Build and Release
 
 ### Portable build
 
@@ -247,7 +247,7 @@ The repository includes a GitHub Actions workflow at [desktop-release.yml](./.gi
 
 The repository also includes [`scripts/set-version.mjs`](./scripts/set-version.mjs), which derives the version from commit history using conventional commit semantics.
 
-## ?? Tooling Standards
+## 🧹 Tooling Standards
 
 - **Electron + Vite + React + TypeScript** desktop stack
 - **Zustand** for application state
@@ -256,7 +256,7 @@ The repository also includes [`scripts/set-version.mjs`](./scripts/set-version.m
 - **No unit test suite**, by project requirement
 - **Monorepo-style structure without server/database layers**, but still split by runtime and responsibility
 
-## ?? Troubleshooting Notes
+## 🔍 Troubleshooting Notes
 
 ### Outputs are not visible in the UI yet
 
@@ -278,7 +278,7 @@ Check:
 - whether the selected container supports NVENC in the current app pipeline
 - whether the backend is set to `Auto` or `NVIDIA NVENC`
 
-## ?? License
+## 📜 License
 
 This project is released under the **MIT License**.
 
