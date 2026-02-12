@@ -112,8 +112,8 @@ figure {
 }
 
 .site-hero-title {
-  max-width: 12ch;
-  font-size: clamp(2.8rem, 4.9vw, 5.1rem) !important;
+  max-width: 10ch;
+  font-size: clamp(2.5rem, 4.3vw, 4.6rem) !important;
 }
 
 .site-hero-description,

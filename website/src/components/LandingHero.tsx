@@ -35,9 +35,7 @@ export const LandingHero = () => (
 
             <div className="site-animate">
               <Text className="site-kicker">Desktop merge and compression studio</Text>
-              <Title className="site-hero-title">
-                One local workspace for final masters and compression batches.
-              </Title>
+              <Title className="site-hero-title">Merge timelines. Compress sources. Stay local.</Title>
               <Paragraph className="site-hero-description">
                 Built for operators who need explicit ordering, technical export control, live runtime
                 progress, and direct access to the final artifact path.
