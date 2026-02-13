@@ -36,12 +36,12 @@ This repository does **not** use a database and does **not** ship a client/serve
 
 | Area                   | What it does                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| 🎞️ Merge mode         | Concatenates clips in the exact order defined in the queue and renders one final file         |
-| 🗜️ Compression mode   | Encodes each selected source video independently using a shared export profile                |
+| 🎞️ Merge mode          | Concatenates clips in the exact order defined in the queue and renders one final file         |
+| 🗜️ Compression mode    | Encodes each selected source video independently using a shared export profile                |
 | 📦 Output formats      | Supports `mp4`, `mov`, `mkv`, and `webm`                                                      |
 | 🧭 Destination control | Lets the user choose a custom output folder or fall back to the app-managed output directory  |
 | ⚙️ Encoding profiles   | Exposes `light`, `balanced`, and `strong` compression presets with technical labels in the UI |
-| 🖥️ GPU support        | Can prefer NVIDIA NVENC for supported containers when available                               |
+| 🖥️ GPU support         | Can prefer NVIDIA NVENC for supported containers when available                               |
 | 📡 Telemetry           | Streams FFmpeg progress, status text, runtime metrics, and detailed job logs                  |
 | 🧾 History             | Stores local job history for quick review and output path access                              |
 | 🌐 Presentation site   | Includes a standalone product website workspace under `website/`                              |
