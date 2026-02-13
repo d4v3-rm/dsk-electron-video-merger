@@ -61,20 +61,6 @@ function App() {
         });
       });
 
-      gsap.utils.toArray<HTMLElement>('.site-inline-note').forEach((note, index) => {
-        gsap.fromTo(
-          note,
-          { autoAlpha: 0, y: 24 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.7,
-            ease: 'power3.out',
-            delay: 0.4 + index * 0.1,
-          },
-        );
-      });
-
       gsap.utils.toArray<HTMLElement>('.site-reveal').forEach((element) => {
         gsap.fromTo(
           element,

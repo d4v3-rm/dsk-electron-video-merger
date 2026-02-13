@@ -22,9 +22,9 @@ export const LandingHero = () => (
         </Space>
       </header>
 
-      <Row gutter={[40, 40]} align="middle" className="site-hero-grid">
+      <Row gutter={[32, 32]} align="middle" className="site-hero-grid">
         <Col xs={24} xl={9}>
-          <div className="site-hero-copy">
+          <Space direction="vertical" size={24} className="site-hero-copy">
             <Space wrap size={[8, 8]} className="site-animate">
               {heroTags.map((tag) => (
                 <Tag key={tag} className="site-tag">
@@ -59,7 +59,7 @@ export const LandingHero = () => (
                 Why it works
               </Button>
             </Space>
-          </div>
+          </Space>
         </Col>
 
         <Col xs={24} xl={15}>
@@ -75,11 +75,6 @@ export const LandingHero = () => (
             <figure className="site-shot-panel site-shot-panel-tertiary" data-speed="3">
               <img src={productScreens[2].src} alt={productScreens[2].alt} className="site-shot-image" />
             </figure>
-
-            <div className="site-inline-note site-inline-note-left">Output planning stays readable.</div>
-            <div className="site-inline-note site-inline-note-right">
-              History and review stay in the same flow.
-            </div>
           </div>
         </Col>
       </Row>
