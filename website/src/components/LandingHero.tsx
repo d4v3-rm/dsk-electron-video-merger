@@ -1,6 +1,6 @@
-import { ArrowDownOutlined, HighlightOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, GithubOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Space, Tag, Typography } from 'antd';
-import { heroFacts, heroTags } from '@website/content/site-content';
+import { githubUrl, heroFacts, heroTags } from '@website/content/site-content';
 import { productScreens } from '@website/content/site-media';
 
 const { Paragraph, Text, Title } = Typography;
@@ -57,6 +57,15 @@ export const LandingHero = () => (
               </Button>
               <Button size="large" href="#highlights" icon={<HighlightOutlined />}>
                 Why it works
+              </Button>
+              <Button
+                size="large"
+                href={githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                icon={<GithubOutlined />}
+              >
+                GitHub
               </Button>
             </Space>
           </Space>

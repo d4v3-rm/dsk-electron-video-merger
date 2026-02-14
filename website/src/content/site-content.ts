@@ -26,3 +26,5 @@ export const highlightRows = [
       'Progress, logs, history, and artifact references stay available after execution so the UI remains operationally useful.',
   },
 ];
+
+export const githubUrl = 'https://github.com/search?q=dsk-electron-video-merger&type=repositories';
