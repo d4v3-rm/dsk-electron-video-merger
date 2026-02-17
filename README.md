@@ -18,6 +18,14 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/d4v3-rm/dsk-electron-video-merger">Repository</a>
+  ·
+  <a href="https://d4v3-rm.github.io/dsk-electron-video-merger/">Website</a>
+  ·
+  <a href="https://github.com/d4v3-rm/dsk-electron-video-merger/issues">Issues</a>
+</p>
+
+<p align="center">
   <img src="./assets/screen-1.png" alt="Video Merger Desktop merge workspace screenshot" width="1200" />
 </p>
 

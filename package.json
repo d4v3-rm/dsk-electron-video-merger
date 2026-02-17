@@ -2,7 +2,7 @@
   "name": "dsk-electron-video-merger",
   "private": true,
   "version": "1.0.0",
-  "author": "Video Merger Desktop contributors",
+  "author": "d4v3-rm",
   "description": "Desktop video merge, compression, conversion, and presentation website workspace built with Electron, Vite, React, and TypeScript",
   "type": "commonjs",
   "main": "dist/main/main.js",
@@ -95,5 +95,13 @@
     "zustand",
     "nvenc",
     "windows-portable"
-  ]
+  ],
+  "homepage": "https://d4v3-rm.github.io/dsk-electron-video-merger/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d4v3-rm/dsk-electron-video-merger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/d4v3-rm/dsk-electron-video-merger/issues"
+  }
 }

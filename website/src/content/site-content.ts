@@ -27,4 +27,4 @@ export const highlightRows = [
   },
 ];
 
-export const githubUrl = 'https://github.com/search?q=dsk-electron-video-merger&type=repositories';
+export const githubUrl = 'https://github.com/d4v3-rm/dsk-electron-video-merger';
