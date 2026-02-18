@@ -1,7 +1,7 @@
 {
   "name": "dsk-electron-video-merger",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.28.6",
   "author": "d4v3-rm",
   "description": "Desktop video merge, compression, conversion, and presentation website workspace built with Electron, Vite, React, and TypeScript",
   "type": "commonjs",
