@@ -10,6 +10,7 @@ import type {
   OutputFormat,
   ResolvedEncoderBackend,
 } from '@shared/types';
+import { resolveBundledBinaryPath } from '@main/services/binary-path.utils';
 import { MediaProbeService } from '@main/services/media-probe.service';
 import type {
   EncoderArgs,
@@ -192,7 +193,7 @@ interface ProcessTranscodeOptions {
 }
 
 export class FfmpegService {
-  private readonly ffmpegBinary = ffmpegPath;
+  private readonly ffmpegBinary = resolveBundledBinaryPath(ffmpegPath);
   private readonly mediaProbeService = new MediaProbeService();
   private hardwareAccelerationProfilePromise: Promise<HardwareAccelerationProfile> | null = null;
 

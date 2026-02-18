@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import ffprobeStatic from 'ffprobe-static';
+import { resolveBundledBinaryPath } from '@main/services/binary-path.utils';
 
 const toMilliseconds = (durationSeconds: string): number | null => {
   const parsed = Number.parseFloat(durationSeconds);
@@ -11,7 +12,7 @@ const toMilliseconds = (durationSeconds: string): number | null => {
 };
 
 export class MediaProbeService {
-  private readonly ffprobeBinary = ffprobeStatic.path ?? null;
+  private readonly ffprobeBinary = resolveBundledBinaryPath(ffprobeStatic.path);
 
   async getDurationMs(filePath: string): Promise<number | null> {
     const ffprobeBinary = this.ffprobeBinary;
