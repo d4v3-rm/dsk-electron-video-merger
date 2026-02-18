@@ -94,9 +94,12 @@
     "ant-design",
     "zustand",
     "nvenc",
-    "windows-portable",`r`n    "video-merger-desktop",`r`n    "dsk-electron-video-merger"
+    "windows-portable",
+    "video-merger-desktop",
+    "dsk-electron-video-merger"
   ],
-  "homepage": "https://d4v3-rm.github.io/dsk-electron-video-merger/",`n  "website": "https://d4v3-rm.github.io/dsk-electron-video-merger/",
+  "homepage": "https://d4v3-rm.github.io/dsk-electron-video-merger/",
+  "website": "https://d4v3-rm.github.io/dsk-electron-video-merger/",
   "repository": {
     "type": "git",
     "url": "https://github.com/d4v3-rm/dsk-electron-video-merger.git"
