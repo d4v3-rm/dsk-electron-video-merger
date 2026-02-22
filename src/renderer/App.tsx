@@ -59,7 +59,12 @@ function App() {
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <MergeOverview />
             <WorkspaceSwitcher />
-            {renderPanel()}
+            <div
+              key={activeWorkspacePanel}
+              className={`workspace-panel ${activeWorkspacePanel === 'history' ? 'workspace-panel-history' : ''}`}
+            >
+              {renderPanel()}
+            </div>
           </Space>
         </div>
       </Content>

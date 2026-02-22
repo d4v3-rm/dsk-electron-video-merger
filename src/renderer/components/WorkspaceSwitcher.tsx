@@ -14,7 +14,7 @@ export const WorkspaceSwitcher = () => {
   const { activeWorkspacePanel, setActiveWorkspacePanel } = useUiStore(useShallow(selectWorkspacePanelState));
 
   return (
-    <div className="workspace-switcher-shell">
+    <div className="workspace-switcher-shell" data-active-panel={activeWorkspacePanel}>
       <Segmented<WorkspacePanel>
         size="large"
         className="workspace-switcher"

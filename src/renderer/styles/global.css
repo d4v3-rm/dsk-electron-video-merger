@@ -87,6 +87,26 @@ body {
   width: 100%;
 }
 
+.workspace-panel {
+  animation: workspace-panel-enter 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top center;
+}
+
+.workspace-panel-history {
+  position: relative;
+}
+
+.workspace-panel-history::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 28px;
+  border: 1px solid rgba(79, 140, 255, 0.18);
+  background: radial-gradient(circle at top, rgba(79, 140, 255, 0.14), transparent 62%);
+  pointer-events: none;
+  animation: workspace-history-spotlight 720ms ease-out;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -475,6 +495,35 @@ body {
   border: 1px solid var(--app-border);
 }
 
+.queue-launch-toast.ant-notification-notice {
+  overflow: hidden;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(79, 140, 255, 0.14), transparent 42%),
+    linear-gradient(180deg, var(--app-surface) 0%, var(--app-surface-alt) 100%);
+  box-shadow: 0 24px 64px rgba(3, 8, 17, 0.38);
+}
+
+.queue-launch-toast .ant-notification-notice-message {
+  color: var(--app-text) !important;
+  font-weight: 600;
+}
+
+.queue-launch-toast .ant-notification-notice-description {
+  color: var(--app-text-secondary) !important;
+}
+
+.queue-launch-toast .ant-notification-notice-close,
+.queue-launch-toast .ant-notification-notice-close .anticon {
+  color: var(--app-text-secondary);
+}
+
+.queue-launch-toast .ant-notification-notice-close:hover,
+.queue-launch-toast .ant-notification-notice-close:hover .anticon {
+  color: var(--app-text);
+}
+
 .app-footer {
   text-align: center;
   background: transparent;
@@ -555,6 +604,10 @@ body {
   border-radius: 999px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .workspace-switcher .ant-segmented-group {
@@ -572,4 +625,38 @@ body {
   justify-content: center;
   padding-inline: 18px;
   font-weight: 600;
+}
+
+.workspace-switcher-shell[data-active-panel='history'] .workspace-switcher {
+  border-color: var(--app-border-strong);
+  box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+@keyframes workspace-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes workspace-history-spotlight {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.992);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
 }

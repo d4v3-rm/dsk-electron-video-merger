@@ -44,7 +44,7 @@ export interface JobsSlice {
   loading: boolean;
   loaded: boolean;
   refreshJobs: () => Promise<void>;
-  createJob: () => Promise<void>;
+  createJob: () => Promise<Job | null>;
   upsertJobProgress: (payload: JobProgressPayload) => void;
 }
 

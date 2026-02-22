@@ -20,7 +20,7 @@ export const createJobsSlice: AppStoreSlice<JobsSlice> = (set, get) => ({
   createJob: async () => {
     const { jobMode, selectedFiles, settings, outputDirectory, loading } = get();
     if (selectedFiles.length === 0 || loading) {
-      return;
+      return null;
     }
 
     set({ loading: true });
@@ -40,8 +40,11 @@ export const createJobsSlice: AppStoreSlice<JobsSlice> = (set, get) => ({
         selectedFiles: [],
         loading: false,
       }));
+
+      return job;
     } catch {
       set({ loading: false });
+      return null;
     }
   },
 

@@ -1,4 +1,5 @@
-import { Card, Col, Descriptions, Flex, Row, Space, Tag, Typography } from 'antd';
+import { OrderedListOutlined } from '@ant-design/icons';
+import { App as AntdApp, Card, Col, Descriptions, Flex, Row, Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -13,6 +14,7 @@ import {
 } from '@renderer/components/job-composer';
 import { selectJobComposerState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
+import { useUiStore } from '@renderer/store/use-ui-store';
 import {
   getCompressionPresetTechnicalLabel,
   getEncoderModeDescription,
@@ -24,6 +26,7 @@ const { Text, Title } = Typography;
 
 export const JobComposer = () => {
   const { t } = useTranslation();
+  const { notification } = AntdApp.useApp();
   const {
     jobMode,
     selectedFiles,
@@ -43,6 +46,7 @@ export const JobComposer = () => {
     moveSelectedFile,
     createJob,
   } = useAppStore(useShallow(selectJobComposerState));
+  const setActiveWorkspacePanel = useUiStore((state) => state.setActiveWorkspacePanel);
 
   const isMergeMode = jobMode === 'merge';
   const nvidiaAvailable = hardwareAccelerationProfile.nvidia.available;
@@ -123,6 +127,34 @@ export const JobComposer = () => {
       children: modeCopy.deliveryValue,
     },
   ];
+
+  const handleCreateJob = async (): Promise<void> => {
+    const job = await createJob();
+    if (!job) {
+      return;
+    }
+
+    notification.success({
+      placement: 'topRight',
+      duration: 3.8,
+      className: 'queue-launch-toast',
+      message:
+        job.mode === 'merge' ? t('composer.queueToast.mergeTitle') : t('composer.queueToast.compressTitle'),
+      description:
+        job.mode === 'merge'
+          ? t('composer.queueToast.mergeDescription', {
+              count: job.files.length,
+              suffix: job.files.length === 1 ? '' : 's',
+            })
+          : t('composer.queueToast.compressDescription', {
+              count: job.files.length,
+              suffix: job.files.length === 1 ? '' : 's',
+            }),
+      icon: <OrderedListOutlined style={{ color: 'var(--app-accent)' }} />,
+    });
+
+    setActiveWorkspacePanel('history');
+  };
 
   return (
     <Card
@@ -232,7 +264,7 @@ export const JobComposer = () => {
                 startButtonLabel={modeCopy.startButtonLabel}
                 selectVideoFiles={selectVideoFiles}
                 clearSelectedFiles={clearSelectedFiles}
-                createJob={createJob}
+                createJob={handleCreateJob}
               />
             </Flex>
 

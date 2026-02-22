@@ -74,6 +74,12 @@ const composerEn = {
     selectDestination: 'Choose folder',
     useDefaultDestination: 'Use default',
   },
+  queueToast: {
+    mergeTitle: 'Merge queued',
+    compressTitle: 'Compression queued',
+    mergeDescription: '{{count}} clip{{suffix}} added to the queue. Opening Job history.',
+    compressDescription: '{{count}} video{{suffix}} added to the queue. Opening Job history.',
+  },
   empty: {
     mergeTitle: 'No clips in queue',
     mergeDescription: 'Add the videos you want to concatenate. You can reorder them before export.',

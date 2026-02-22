@@ -1,4 +1,4 @@
-import { ConfigProvider } from 'antd';
+import { App as AntdApp, ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import { type PropsWithChildren, useEffect, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -28,7 +28,7 @@ export const AppThemeProvider = ({ children }: PropsWithChildren) => {
       modal={{ centered: true }}
       pagination={{ showSizeChanger: false }}
     >
-      {children}
+      <AntdApp>{children}</AntdApp>
     </ConfigProvider>
   );
 };
