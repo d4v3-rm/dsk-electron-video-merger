@@ -1,5 +1,10 @@
 import type { JobCreationPayload, JobMode, ResolvedEncoderBackend } from '@shared/types';
 
+const buildTimingSuffix = (settings: JobCreationPayload['settings']): string =>
+  settings.videoTimingMode === 'cfr'
+    ? ` Output will be normalized to ${settings.targetFrameRate} fps.`
+    : ' Source timing will be preserved whenever possible.';
+
 export const buildQueuedMessage = (mode: JobMode, filesCount: number): string => {
   if (mode === 'compress') {
     return `Queued ${filesCount} video${filesCount === 1 ? '' : 's'} for compression.`;
@@ -10,22 +15,23 @@ export const buildQueuedMessage = (mode: JobMode, filesCount: number): string =>
 
 export const buildStartMessage = (
   mode: JobMode,
-  requestedBackend: JobCreationPayload['settings']['encoderBackend'],
+  settings: JobCreationPayload['settings'],
   resolvedBackend: ResolvedEncoderBackend,
 ): string => {
   const operationLabel = mode === 'merge' ? 'merge' : 'compression';
+  const timingSuffix = buildTimingSuffix(settings);
 
-  if (requestedBackend === 'nvidia' && resolvedBackend === 'cpu') {
-    return `NVIDIA NVENC is unavailable. Falling back to CPU ${operationLabel}.`;
+  if (settings.encoderBackend === 'nvidia' && resolvedBackend === 'cpu') {
+    return `NVIDIA NVENC is unavailable. Falling back to CPU ${operationLabel}.${timingSuffix}`;
   }
 
   if (resolvedBackend === 'nvidia') {
-    return requestedBackend === 'auto'
-      ? `Starting ${operationLabel} with automatic NVIDIA NVENC selection.`
-      : `Starting ${operationLabel} with NVIDIA NVENC.`;
+    return settings.encoderBackend === 'auto'
+      ? `Starting ${operationLabel} with automatic NVIDIA NVENC selection.${timingSuffix}`
+      : `Starting ${operationLabel} with NVIDIA NVENC.${timingSuffix}`;
   }
 
-  return `Starting ${operationLabel} with CPU encoding.`;
+  return `Starting ${operationLabel} with CPU encoding.${timingSuffix}`;
 };
 
 export const buildCompletionMessage = (mode: JobMode, outputCount: number): string => {

@@ -22,6 +22,8 @@ import {
   getCompressionPresetTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
+  getTargetFrameRateLabel,
+  getVideoTimingModeLabel,
 } from '@renderer/utils/encoder-presentation';
 import { getFileName } from '@renderer/utils/file-utils';
 import {
@@ -147,6 +149,20 @@ export const JobDetailsDrawer = ({ job, open, onClose }: JobDetailsDrawerProps) 
                         ? getResolvedEncoderBackendLabel(job.resolvedEncoderBackend)
                         : t('common.pending'),
                     },
+                    {
+                      key: 'frameTiming',
+                      label: t('details.labels.frameTiming'),
+                      children: getVideoTimingModeLabel(job.settings.videoTimingMode),
+                    },
+                    ...(job.settings.videoTimingMode === 'cfr'
+                      ? [
+                          {
+                            key: 'targetFrameRate',
+                            label: t('details.labels.targetFrameRate'),
+                            children: getTargetFrameRateLabel(job.settings.targetFrameRate),
+                          },
+                        ]
+                      : []),
                     {
                       key: 'clips',
                       label: t('details.labels.inputVideos'),

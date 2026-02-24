@@ -2,11 +2,11 @@ import { app, BrowserWindow, type Input } from 'electron';
 import path from 'node:path';
 import { electronAppConfig } from '@main/config/electron-app-config';
 import { initializeIpc } from '@main/ipc/ipc-routes';
-import { MainProcessServices } from '@main/services/main-process-services';
+import { getMainProcessServices } from '@main/services/main-process-services';
 
 let mainWindow: BrowserWindow | null = null;
 
-const services = MainProcessServices.getInstance();
+const services = getMainProcessServices();
 
 const getDevServerUrl = (): string =>
   process.env.VITE_DEV_SERVER_URL ?? electronAppConfig.runtime.defaultDevServerUrl;

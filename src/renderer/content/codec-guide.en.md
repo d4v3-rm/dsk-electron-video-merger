@@ -80,6 +80,15 @@ The UI exposes three technical presets. The exact mapping is:
 
 Lower `CRF` / `CQ` values preserve more quality but produce larger files. Higher values reduce bitrate and file size more aggressively.
 
+## Frame timing
+
+The app now exposes two timing strategies:
+
+- **Preserve source timing** keeps the incoming timestamps and avoids intentional frame drops or duplication
+- **Constant frame rate** normalizes the output to the selected fps and may duplicate or drop frames by design
+
+Use **Preserve source timing** unless your delivery target explicitly requires a fixed frame rate.
+
 ## Practical recommendations
 
 - Choose **MP4 + Auto** for the safest general-purpose export

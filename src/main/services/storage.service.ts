@@ -3,38 +3,40 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { AppPaths, JobFolders } from '@main/services/storage.types';
 
-export class StorageService {
-  get paths(): AppPaths {
+export interface StorageService {
+  readonly paths: AppPaths;
+  ensurePaths: () => Promise<void>;
+  buildJobFolders: (jobId: string, outputDirectory?: string) => Promise<JobFolders>;
+}
+
+export const createStorageService = (): StorageService => {
+  const getPaths = (): AppPaths => {
     const root = path.join(app.getPath('userData'), 'video-merger');
     return {
       root,
       output: path.join(root, 'outputs'),
-      temp: path.join(root, 'temp'),
     };
-  }
+  };
 
-  async ensurePaths(): Promise<void> {
-    const paths = this.paths;
+  const ensurePaths = async (): Promise<void> => {
+    const paths = getPaths();
     await fs.mkdir(paths.root, { recursive: true });
     await fs.mkdir(paths.output, { recursive: true });
-    await fs.mkdir(paths.temp, { recursive: true });
-  }
+  };
 
-  async buildJobFolders(jobId: string, outputDirectory?: string): Promise<JobFolders> {
-    await this.ensurePaths();
-    const { temp, output } = this.paths;
+  const buildJobFolders = async (jobId: string, outputDirectory?: string): Promise<JobFolders> => {
+    await ensurePaths();
+    const { output } = getPaths();
     const outputDir = outputDirectory ?? path.join(output, jobId);
-    const tempDir = path.join(temp, jobId);
     await fs.mkdir(outputDir, { recursive: true });
-    await fs.mkdir(tempDir, { recursive: true });
-    return { outputDir, tempDir };
-  }
+    return { outputDir };
+  };
 
-  async cleanTempFolder(tempDir: string): Promise<void> {
-    try {
-      await fs.rm(tempDir, { recursive: true, force: true });
-    } catch {
-      // best effort cleanup
-    }
-  }
-}
+  return {
+    get paths() {
+      return getPaths();
+    },
+    ensurePaths,
+    buildJobFolders,
+  };
+};

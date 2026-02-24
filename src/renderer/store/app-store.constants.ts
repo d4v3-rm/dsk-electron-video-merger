@@ -24,4 +24,6 @@ export const DEFAULT_CONVERSION_SETTINGS: ConversionSettings = {
   outputFormat: 'mp4',
   compression: 'balanced',
   encoderBackend: 'auto',
+  videoTimingMode: 'preserve',
+  targetFrameRate: 30,
 };

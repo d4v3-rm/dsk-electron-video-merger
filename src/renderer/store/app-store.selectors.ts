@@ -16,6 +16,8 @@ export const selectJobComposerState = (state: AppStoreState) => ({
   loading: state.loading,
   setCompression: state.setCompression,
   setEncoderBackend: state.setEncoderBackend,
+  setVideoTimingMode: state.setVideoTimingMode,
+  setTargetFrameRate: state.setTargetFrameRate,
   setOutputFormat: state.setOutputFormat,
   selectVideoFiles: state.selectVideoFiles,
   selectOutputDirectory: state.selectOutputDirectory,

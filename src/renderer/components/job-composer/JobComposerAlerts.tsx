@@ -9,6 +9,7 @@ export const JobComposerAlerts = ({
   hardwareAlertType,
   hardwareDetectingLabel,
   encoderModeDescription,
+  timingModeDescription,
 }: JobComposerAlertsProps) => (
   <>
     <Alert type={orderAlertType} showIcon message={orderInfo} />
@@ -20,5 +21,6 @@ export const JobComposerAlerts = ({
       }
       description={encoderModeDescription}
     />
+    <Alert type="info" showIcon message={timingModeDescription} />
   </>
 );

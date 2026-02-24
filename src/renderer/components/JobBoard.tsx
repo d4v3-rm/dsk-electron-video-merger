@@ -16,6 +16,8 @@ import {
   getCompressionPresetTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
+  getTargetFrameRateLabel,
+  getVideoTimingModeLabel,
 } from '@renderer/utils/encoder-presentation';
 import { getFileName } from '@renderer/utils/file-utils';
 import {
@@ -129,6 +131,12 @@ export const JobBoard = () => {
             {getRequestedEncoderBackendLabel(job.settings.encoderBackend)}
             {job.resolvedEncoderBackend
               ? ` -> ${getResolvedEncoderBackendLabel(job.resolvedEncoderBackend)}`
+              : ''}
+          </Text>
+          <Text type="secondary">
+            {getVideoTimingModeLabel(job.settings.videoTimingMode)}
+            {job.settings.videoTimingMode === 'cfr'
+              ? ` -> ${getTargetFrameRateLabel(job.settings.targetFrameRate)}`
               : ''}
           </Text>
         </Space>

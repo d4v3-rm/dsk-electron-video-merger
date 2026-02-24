@@ -1,4 +1,11 @@
-import type { ConversionSettings, HardwareAccelerationProfile, InputFileDTO } from '@shared/types';
+import type {
+  ConversionSettings,
+  HardwareAccelerationProfile,
+  InputFileDTO,
+  TargetFrameRate,
+  VideoTimingMode,
+} from '@shared/types';
+import type { ReactNode } from 'react';
 
 export interface JobComposerModeCopy {
   cardTitle: string;
@@ -13,6 +20,15 @@ export interface JobComposerModeCopy {
   startButtonLabel: string;
   emptyTitle: string;
   emptyDescription: string;
+  queueTitle: string;
+  queueHint: string;
+  deliveryValue: string;
+}
+
+export interface JobComposerSummaryItem {
+  key: string;
+  label: string;
+  children: ReactNode;
 }
 
 export interface JobComposerHeaderProps {
@@ -30,6 +46,7 @@ export interface JobComposerAlertsProps {
   hardwareAlertType: 'success' | 'info' | 'warning';
   hardwareDetectingLabel: string;
   encoderModeDescription: string;
+  timingModeDescription: string;
 }
 
 export interface JobComposerStatsProps {
@@ -51,12 +68,16 @@ export interface JobComposerSettingsFormProps {
   outputFormatLabel: string;
   compressionLabel: string;
   backendLabel: string;
+  frameTimingLabel: string;
+  targetFrameRateLabel: string;
   destinationFolderLabel: string;
   selectDestinationLabel: string;
   useDefaultDestinationLabel: string;
   setOutputFormat: (outputFormat: ConversionSettings['outputFormat']) => void;
   setCompression: (compression: ConversionSettings['compression']) => void;
   setEncoderBackend: (encoderBackend: ConversionSettings['encoderBackend']) => void;
+  setVideoTimingMode: (videoTimingMode: VideoTimingMode) => void;
+  setTargetFrameRate: (targetFrameRate: TargetFrameRate) => void;
   selectOutputDirectory: () => Promise<void>;
   clearOutputDirectory: () => void;
 }
@@ -96,4 +117,48 @@ export interface CompressionSelectionListProps extends FileSelectionListSharedPr
 export interface JobComposerEmptyStateProps {
   title: string;
   description: string;
+}
+
+export interface JobComposerExecutionNotesProps {
+  title: string;
+  orderInfo: string;
+  orderAlertType: 'info' | 'warning';
+  hardwareAccelerationLoaded: boolean;
+  hardwareAccelerationProfile: HardwareAccelerationProfile;
+  hardwareAlertType: 'success' | 'info' | 'warning';
+  hardwareDetectingLabel: string;
+  encoderModeDescription: string;
+  timingModeDescription: string;
+  setupSummary: JobComposerSummaryItem[];
+  backendSelectedLabel: string;
+  backendCopy: string;
+  destinationCopy: string;
+}
+
+export interface JobComposerQueuePanelProps {
+  title: string;
+  queueHint: string;
+  selectedFilesCount: number;
+  loading: boolean;
+  addButtonLabel: string;
+  clearButtonLabel: string;
+  startButtonLabel: string;
+  emptyTitle: string;
+  emptyDescription: string;
+  isMergeMode: boolean;
+  selectedFiles: InputFileDTO[];
+  selectVideoFiles: () => Promise<void>;
+  clearSelectedFiles: () => void;
+  createJob: () => Promise<void>;
+  removeSelectedFile: (id: string) => void;
+  moveSelectedFile: (id: string, direction: 'up' | 'down') => void;
+  moveUpTooltipLabel: string;
+  moveDownTooltipLabel: string;
+  removeTooltipLabel: string;
+  startTagLabel: string;
+  endTagLabel: string;
+  startRoleLabel: string;
+  endRoleLabel: string;
+  middleRoleLabel: string;
+  sourceRoleLabel: string;
 }

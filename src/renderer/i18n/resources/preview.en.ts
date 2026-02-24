@@ -33,6 +33,8 @@ const previewEn = {
     compression: 'Compression',
     requestedBackend: 'Requested backend',
     activeBackend: 'Effective backend',
+    frameTiming: 'Frame timing',
+    targetFrameRate: 'Target frame rate',
     stagingSize: 'Staging size',
     delivery: 'Delivery',
     destinationFolder: 'Destination folder',

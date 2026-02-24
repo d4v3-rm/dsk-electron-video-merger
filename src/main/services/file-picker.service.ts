@@ -3,8 +3,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { InputFileDTO } from '@shared/types';
 
-export class FilePickerService {
-  async pickVideos(): Promise<InputFileDTO[]> {
+export interface FilePickerService {
+  pickVideos: () => Promise<InputFileDTO[]>;
+  pickOutputDirectory: () => Promise<string | null>;
+}
+
+export const createFilePickerService = (): FilePickerService => {
+  const pickVideos = async (): Promise<InputFileDTO[]> => {
     const result = await dialog.showOpenDialog({
       title: 'Select one or more videos',
       properties: ['openFile', 'multiSelections'],
@@ -32,9 +37,9 @@ export class FilePickerService {
     }
 
     return files;
-  }
+  };
 
-  async pickOutputDirectory(): Promise<string | null> {
+  const pickOutputDirectory = async (): Promise<string | null> => {
     const result = await dialog.showOpenDialog({
       title: 'Select the destination folder for merged output',
       properties: ['openDirectory'],
@@ -45,5 +50,10 @@ export class FilePickerService {
     }
 
     return result.filePaths[0] ?? null;
-  }
-}
+  };
+
+  return {
+    pickVideos,
+    pickOutputDirectory,
+  };
+};

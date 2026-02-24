@@ -9,6 +9,8 @@ import type {
   JobMode,
   JobProgressPayload,
   OutputFormat,
+  TargetFrameRate,
+  VideoTimingMode,
 } from '@shared/types';
 
 export type SelectedFileMoveDirection = 'up' | 'down';
@@ -31,6 +33,8 @@ export interface SettingsSlice {
   setOutputFormat: (outputFormat: OutputFormat) => void;
   setCompression: (compression: CompressionPreset) => void;
   setEncoderBackend: (encoderBackend: EncoderBackend) => void;
+  setVideoTimingMode: (videoTimingMode: VideoTimingMode) => void;
+  setTargetFrameRate: (targetFrameRate: TargetFrameRate) => void;
 }
 
 export interface HardwareSlice {

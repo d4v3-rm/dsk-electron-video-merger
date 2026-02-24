@@ -17,6 +17,8 @@ const detailsEn = {
     compression: 'Compression',
     requestedBackend: 'Requested backend',
     activeBackend: 'Effective backend',
+    frameTiming: 'Frame timing',
+    targetFrameRate: 'Target frame rate',
     inputVideos: 'Input videos',
     destinationFolder: 'Destination folder',
     createdAt: 'Created',

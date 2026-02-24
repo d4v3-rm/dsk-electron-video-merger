@@ -4,6 +4,8 @@ import type {
   JobTelemetry,
   OutputFormat,
   ResolvedEncoderBackend,
+  TargetFrameRate,
+  VideoTimingMode,
 } from '@shared/types';
 
 export interface JobProgressUpdate {
@@ -33,7 +35,8 @@ export interface ProcessSingleMergeOptions {
   format: OutputFormat;
   compression: CompressionPreset;
   resolvedEncoderBackend: ResolvedEncoderBackend;
-  tempDir: string;
+  videoTimingMode: VideoTimingMode;
+  targetFrameRate: TargetFrameRate;
   onProgress: JobProgressCallback;
 }
 
@@ -43,5 +46,7 @@ export interface ProcessSingleCompressionOptions {
   format: OutputFormat;
   compression: CompressionPreset;
   resolvedEncoderBackend: ResolvedEncoderBackend;
+  videoTimingMode: VideoTimingMode;
+  targetFrameRate: TargetFrameRate;
   onProgress: JobProgressCallback;
 }

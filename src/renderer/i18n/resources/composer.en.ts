@@ -43,6 +43,8 @@ const composerEn = {
     outputFormat: 'Output format',
     compression: 'Compression profile',
     backend: 'Encoding backend',
+    frameTiming: 'Frame timing',
+    targetFrameRate: 'Target frame rate',
     destinationFolder: 'Destination folder',
     delivery: 'Delivery',
   },
@@ -61,6 +63,10 @@ const composerEn = {
   encoderNvencFallback: 'NVIDIA NVENC is unavailable. The job will fall back to CPU automatically.',
   encoderAutoGpu: 'Auto will choose NVIDIA NVENC for MP4, MOV, and MKV. Otherwise it falls back to CPU.',
   encoderAutoCpu: 'Auto will remain on CPU until NVIDIA NVENC becomes available.',
+  timingPreserveHelp:
+    'Preserve source timestamps and cadence. This mode avoids intentional frame drops or duplication.',
+  timingCfrHelp:
+    'Convert the output to {{frameRate}}. Use this only when a constant-frame-rate deliverable is required, because FFmpeg may duplicate or drop frames.',
   destinationDefault: 'App-managed output folder',
   destinationSelected: 'The next job will write the generated output into the selected folder.',
   destinationAuto: 'No custom folder selected. The app will use its default local output folder.',

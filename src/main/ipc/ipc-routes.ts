@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '@shared/ipc';
 import type { JobCreationPayload } from '@shared/types';
-import { FilePickerService } from '@main/services/file-picker.service';
-import { JobService } from '@main/services/job.service';
+import type { FilePickerService } from '@main/services/file-picker.service';
+import type { JobService } from '@main/services/job.service';
 
 const resetHandlers = (): void => {
   ipcMain.removeHandler(IPC_CHANNELS.filesPick);

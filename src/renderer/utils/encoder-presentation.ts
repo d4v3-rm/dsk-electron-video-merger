@@ -4,6 +4,8 @@ import type {
   HardwareAccelerationProfile,
   OutputFormat,
   ResolvedEncoderBackend,
+  TargetFrameRate,
+  VideoTimingMode,
 } from '@shared/types';
 import i18n from '@renderer/i18n';
 
@@ -59,6 +61,30 @@ export const getCompressionPresetTechnicalLabel = (preset: CompressionPreset): s
 
   return `${getCompressionPresetLabel(preset)} | H.264 CRF ${parameters.x264} / NVENC CQ ${parameters.nvenc} / VP9 CRF ${parameters.vp9}`;
 };
+
+export const TARGET_FRAME_RATE_OPTIONS: TargetFrameRate[] = [24, 25, 30, 50, 60];
+
+export const getVideoTimingModeLabel = (videoTimingMode: VideoTimingMode): string => {
+  switch (videoTimingMode) {
+    case 'preserve':
+      return i18n.t('common.preserveTiming');
+    case 'cfr':
+      return i18n.t('common.constantFrameRate');
+    default:
+      return videoTimingMode;
+  }
+};
+
+export const getTargetFrameRateLabel = (targetFrameRate: TargetFrameRate): string =>
+  `${targetFrameRate} fps`;
+
+export const getVideoTimingDescription = (
+  videoTimingMode: VideoTimingMode,
+  targetFrameRate: TargetFrameRate,
+): string =>
+  videoTimingMode === 'preserve'
+    ? i18n.t('composer.timingPreserveHelp')
+    : i18n.t('composer.timingCfrHelp', { frameRate: getTargetFrameRateLabel(targetFrameRate) });
 
 export const isNvidiaSupportedOutputFormat = (outputFormat: OutputFormat): boolean => outputFormat !== 'webm';
 

@@ -2,8 +2,11 @@ import { FolderOpenOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Space } from 'antd';
 import type { JobComposerSettingsFormProps } from '@renderer/components/job-composer/job-composer.types';
 import {
+  TARGET_FRAME_RATE_OPTIONS,
   getCompressionPresetTechnicalLabel,
+  getTargetFrameRateLabel,
   getRequestedEncoderBackendLabel,
+  getVideoTimingModeLabel,
 } from '@renderer/utils/encoder-presentation';
 
 export const JobComposerSettingsForm = ({
@@ -17,12 +20,16 @@ export const JobComposerSettingsForm = ({
   outputFormatLabel,
   compressionLabel,
   backendLabel,
+  frameTimingLabel,
+  targetFrameRateLabel,
   destinationFolderLabel,
   selectDestinationLabel,
   useDefaultDestinationLabel,
   setOutputFormat,
   setCompression,
   setEncoderBackend,
+  setVideoTimingMode,
+  setTargetFrameRate,
   selectOutputDirectory,
   clearOutputDirectory,
 }: JobComposerSettingsFormProps) => (
@@ -70,6 +77,30 @@ export const JobComposerSettingsForm = ({
         ]}
       />
     </Form.Item>
+
+    <Form.Item label={frameTimingLabel}>
+      <Select
+        value={settings.videoTimingMode}
+        onChange={setVideoTimingMode}
+        options={(['preserve', 'cfr'] as const).map((value) => ({
+          value,
+          label: getVideoTimingModeLabel(value),
+        }))}
+      />
+    </Form.Item>
+
+    {settings.videoTimingMode === 'cfr' ? (
+      <Form.Item label={targetFrameRateLabel}>
+        <Select
+          value={settings.targetFrameRate}
+          onChange={setTargetFrameRate}
+          options={TARGET_FRAME_RATE_OPTIONS.map((value) => ({
+            value,
+            label: getTargetFrameRateLabel(value),
+          }))}
+        />
+      </Form.Item>
+    ) : null}
 
     <Form.Item label={destinationFolderLabel}>
       <Space.Compact style={{ width: '100%' }}>

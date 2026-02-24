@@ -14,6 +14,8 @@ import {
   getCompressionPresetTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
+  getTargetFrameRateLabel,
+  getVideoTimingModeLabel,
 } from '@renderer/utils/encoder-presentation';
 import { buildOutputPreviewName, formatBytes } from '@renderer/utils/file-utils';
 import {
@@ -166,6 +168,20 @@ export const MergePreviewCard = () => {
                           ? getResolvedEncoderBackendLabel(latestCompletedJob.resolvedEncoderBackend)
                           : t('preview.pendingResolution'),
                     },
+                    {
+                      key: 'frameTiming',
+                      label: t('preview.labels.frameTiming'),
+                      children: getVideoTimingModeLabel(previewSettings.videoTimingMode),
+                    },
+                    ...(previewSettings.videoTimingMode === 'cfr'
+                      ? [
+                          {
+                            key: 'targetFrameRate',
+                            label: t('preview.labels.targetFrameRate'),
+                            children: getTargetFrameRateLabel(previewSettings.targetFrameRate),
+                          },
+                        ]
+                      : []),
                     {
                       key: 'size',
                       label: t('preview.labels.stagingSize'),

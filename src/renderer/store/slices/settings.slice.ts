@@ -31,4 +31,20 @@ export const createSettingsSlice: AppStoreSlice<SettingsSlice> = (set) => ({
         encoderBackend,
       },
     })),
+
+  setVideoTimingMode: (videoTimingMode) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        videoTimingMode,
+      },
+    })),
+
+  setTargetFrameRate: (targetFrameRate) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        targetFrameRate,
+      },
+    })),
 });

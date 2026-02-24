@@ -1,53 +1,47 @@
 import type { JobProgressUpdate } from '@main/services/ffmpeg.types';
-import { FfmpegService } from '@main/services/ffmpeg.service';
-import { JobOutputPathService } from '@main/services/job/job-output-path.service';
+import type { FfmpegService } from '@main/services/ffmpeg.service';
+import { createMergeOutputPath } from '@main/services/job/job-output-path.service';
 import type { MergeJobRunnerOptions } from '@main/services/job/job-runner.types';
 
-export class MergeJobRunnerService {
-  constructor(
-    private readonly ffmpegService: FfmpegService,
-    private readonly outputPathService: JobOutputPathService,
-  ) {}
+export const runMergeJob = async ({
+  job,
+  outputDir,
+  resolvedEncoderBackend,
+  publishJobEvent,
+  createLogEntry,
+  ffmpegService,
+}: MergeJobRunnerOptions & { ffmpegService: FfmpegService }): Promise<string[]> => {
+  const outputPath = createMergeOutputPath(outputDir, job.settings.outputFormat);
 
-  async run({
-    job,
-    outputDir,
-    tempDir,
+  publishJobEvent(job, {
+    progress: job.progress,
+    message: job.message,
+    outputPath,
     resolvedEncoderBackend,
-    publishJobEvent,
-    createLogEntry,
-  }: MergeJobRunnerOptions): Promise<string[]> {
-    const outputPath = this.outputPathService.createMergeOutputPath(outputDir, job.settings.outputFormat);
+    telemetry: job.telemetry,
+    logEntry: createLogEntry('prepare', 'info', `Output target resolved: ${outputPath}`),
+  });
 
-    publishJobEvent(job, {
-      progress: job.progress,
-      message: job.message,
-      outputPath,
-      resolvedEncoderBackend,
-      telemetry: job.telemetry,
-      logEntry: createLogEntry('prepare', 'info', `Output target resolved: ${outputPath}`),
-    });
+  const output = await ffmpegService.processSingleMerge({
+    inputPaths: job.sourcePaths,
+    outputPath,
+    format: job.settings.outputFormat,
+    compression: job.settings.compression,
+    resolvedEncoderBackend,
+    videoTimingMode: job.settings.videoTimingMode,
+    targetFrameRate: job.settings.targetFrameRate,
+    onProgress: (update: JobProgressUpdate) =>
+      publishJobEvent(job, {
+        progress: update.progress,
+        message: update.message,
+        outputPath,
+        telemetry: update.telemetry,
+        resolvedEncoderBackend,
+        logEntry: update.logMessage
+          ? createLogEntry(update.stage, 'info', update.logMessage, update.progress)
+          : undefined,
+      }),
+  });
 
-    const output = await this.ffmpegService.processSingleMerge({
-      inputPaths: job.sourcePaths,
-      outputPath,
-      format: job.settings.outputFormat,
-      compression: job.settings.compression,
-      resolvedEncoderBackend,
-      tempDir,
-      onProgress: (update: JobProgressUpdate) =>
-        publishJobEvent(job, {
-          progress: update.progress,
-          message: update.message,
-          outputPath,
-          telemetry: update.telemetry,
-          resolvedEncoderBackend,
-          logEntry: update.logMessage
-            ? createLogEntry(update.stage, 'info', update.logMessage, update.progress)
-            : undefined,
-        }),
-    });
-
-    return [output];
-  }
-}
+  return [output];
+};
