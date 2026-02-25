@@ -18,10 +18,7 @@ import {
   processMergedInputs,
   processSingleInputTranscode,
 } from '@main/services/ffmpeg/ffmpeg-transcode.utils';
-import type {
-  ProcessSingleCompressionOptions,
-  ProcessSingleMergeOptions,
-} from '@main/services/ffmpeg.types';
+import type { ProcessSingleCompressionOptions, ProcessSingleMergeOptions } from '@main/services/ffmpeg.types';
 
 export interface FfmpegService {
   getHardwareAccelerationProfile: () => Promise<HardwareAccelerationProfile>;

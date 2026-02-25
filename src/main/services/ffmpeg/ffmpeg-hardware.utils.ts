@@ -84,6 +84,8 @@ export const detectHardwareAccelerationProfileSafely = async (
       },
     };
   } catch (error) {
-    return createDefaultHardwareAccelerationProfile(`Hardware detection failed: ${toProbeErrorMessage(error)}`);
+    return createDefaultHardwareAccelerationProfile(
+      `Hardware detection failed: ${toProbeErrorMessage(error)}`,
+    );
   }
 };

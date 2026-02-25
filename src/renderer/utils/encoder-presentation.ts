@@ -75,8 +75,7 @@ export const getVideoTimingModeLabel = (videoTimingMode: VideoTimingMode): strin
   }
 };
 
-export const getTargetFrameRateLabel = (targetFrameRate: TargetFrameRate): string =>
-  `${targetFrameRate} fps`;
+export const getTargetFrameRateLabel = (targetFrameRate: TargetFrameRate): string => `${targetFrameRate} fps`;
 
 export const getVideoTimingDescription = (
   videoTimingMode: VideoTimingMode,

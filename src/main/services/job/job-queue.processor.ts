@@ -1,6 +1,10 @@
 import type { JobLogEntry, JobLogLevel, JobLogStage, ResolvedEncoderBackend } from '@shared/types';
 import type { FfmpegService } from '@main/services/ffmpeg.service';
-import { buildCompletionMessage, buildStartMessage, buildSuccessLogMessage } from '@main/services/job/job-message.utils';
+import {
+  buildCompletionMessage,
+  buildStartMessage,
+  buildSuccessLogMessage,
+} from '@main/services/job/job-message.utils';
 import { runCompressionJob } from '@main/services/job/compression-job-runner.service';
 import { runMergeJob } from '@main/services/job/merge-job-runner.service';
 import type { PublishJobEventOptions, QueueJob } from '@main/services/job.types';
@@ -23,12 +27,7 @@ interface CreateJobQueueProcessorOptions {
     telemetry?: QueueJob['telemetry'],
     logEntry?: JobLogEntry,
   ) => Promise<void>;
-  createLogEntry: (
-    stage: JobLogStage,
-    level: JobLogLevel,
-    message: string,
-    progress?: number,
-  ) => JobLogEntry;
+  createLogEntry: (stage: JobLogStage, level: JobLogLevel, message: string, progress?: number) => JobLogEntry;
 }
 
 const processSingleQueuedJob = async (
@@ -75,9 +74,7 @@ const processSingleQueuedJob = async (
       createLogEntry,
     };
     const outputPaths =
-      job.mode === 'compress'
-        ? await runCompressionJob(runnerOptions)
-        : await runMergeJob(runnerOptions);
+      job.mode === 'compress' ? await runCompressionJob(runnerOptions) : await runMergeJob(runnerOptions);
 
     await updateStatus(
       job,

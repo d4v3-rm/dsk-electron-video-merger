@@ -1,10 +1,7 @@
 import type { TFunction } from 'i18next';
 import type { JobComposerModeCopy } from '@renderer/components/job-composer/job-composer.types';
 
-export const getJobComposerModeCopy = (
-  t: TFunction,
-  isMergeMode: boolean,
-): JobComposerModeCopy =>
+export const getJobComposerModeCopy = (t: TFunction, isMergeMode: boolean): JobComposerModeCopy =>
   isMergeMode
     ? {
         cardTitle: t('composer.cardTitle.merge'),

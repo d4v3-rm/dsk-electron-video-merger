@@ -1,9 +1,4 @@
-import type {
-  OutputFormat,
-  ResolvedEncoderBackend,
-  TargetFrameRate,
-  VideoTimingMode,
-} from '@shared/types';
+import type { OutputFormat, ResolvedEncoderBackend, TargetFrameRate, VideoTimingMode } from '@shared/types';
 import type { MediaProbeService } from '@main/services/media-probe.service';
 import type {
   JobProgressCallback,
@@ -127,7 +122,10 @@ export const processMergedInputs = async ({
   }
 
   const inputArgs = inputPaths.flatMap((inputPath) => ['-fflags', '+genpts', '-i', inputPath]);
-  const totalDurationMs = filesInfo.reduce((total, fileInfo) => total + resolveSegmentDurationMs(fileInfo), 0);
+  const totalDurationMs = filesInfo.reduce(
+    (total, fileInfo) => total + resolveSegmentDurationMs(fileInfo),
+    0,
+  );
   const mergeFilter = buildMergeFilterGraph(filesInfo, videoTimingMode, targetFrameRate);
   const encoder = buildEncoderArgs(format, compression, resolvedEncoderBackend, mergeFilter.hasAudio);
   const commandArgs = [

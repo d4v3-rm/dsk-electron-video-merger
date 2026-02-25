@@ -1,9 +1,5 @@
 import type { BrowserWindow } from 'electron';
-import type {
-  HardwareAccelerationProfile,
-  Job,
-  JobCreationPayload,
-} from '@shared/types';
+import type { HardwareAccelerationProfile, Job, JobCreationPayload } from '@shared/types';
 import type { FfmpegService } from '@main/services/ffmpeg.service';
 import { createJobLogEntry } from '@main/services/job/job-log.utils';
 import { createJobQueueProcessor } from '@main/services/job/job-queue.processor';

@@ -36,7 +36,12 @@ export const stripInternalJob = (job: QueueJob): Job => ({
 
 export const createQueuedJob = (
   payload: JobCreationPayload,
-  createLogEntry: (stage: QueueJob['logs'][number]['stage'], level: QueueJob['logs'][number]['level'], message: string, progress?: number) => QueueJob['logs'][number],
+  createLogEntry: (
+    stage: QueueJob['logs'][number]['stage'],
+    level: QueueJob['logs'][number]['level'],
+    message: string,
+    progress?: number,
+  ) => QueueJob['logs'][number],
 ): QueueJob => {
   const sourcePaths = [...new Set(payload.filePaths)];
   const now = Date.now();
@@ -64,74 +69,73 @@ export const createQueuedJob = (
   };
 };
 
-export const createJobPublisher = (
-  getMainWindow: () => BrowserWindow | null,
-) => (job: QueueJob, options: PublishJobEventOptions): void => {
-  const payload: JobProgressPayload = {
-    jobId: job.id,
-    status: job.status,
-    progress: options.progress,
-    message: options.message,
-    outputPath: options.outputPath,
-    telemetry: options.telemetry,
-    logEntry: options.logEntry,
-    resolvedEncoderBackend: options.resolvedEncoderBackend,
-    error: options.error,
+export const createJobPublisher =
+  (getMainWindow: () => BrowserWindow | null) =>
+  (job: QueueJob, options: PublishJobEventOptions): void => {
+    const payload: JobProgressPayload = {
+      jobId: job.id,
+      status: job.status,
+      progress: options.progress,
+      message: options.message,
+      outputPath: options.outputPath,
+      telemetry: options.telemetry,
+      logEntry: options.logEntry,
+      resolvedEncoderBackend: options.resolvedEncoderBackend,
+      error: options.error,
+    };
+
+    job.progress = options.progress;
+    job.message = options.message;
+    job.updatedAt = Date.now();
+    job.telemetry = options.telemetry;
+    job.resolvedEncoderBackend = options.resolvedEncoderBackend;
+
+    if (options.outputPath && !job.outputPaths.includes(options.outputPath)) {
+      job.outputPaths = [...job.outputPaths, options.outputPath];
+    }
+
+    if (options.error) {
+      job.error = options.error;
+    }
+
+    if (options.logEntry) {
+      job.logs = appendJobLog(job.logs, options.logEntry, MAX_JOB_LOG_ENTRIES);
+    }
+
+    getMainWindow()?.webContents.send(IPC_CHANNELS.jobsProgress, payload);
   };
 
-  job.progress = options.progress;
-  job.message = options.message;
-  job.updatedAt = Date.now();
-  job.telemetry = options.telemetry;
-  job.resolvedEncoderBackend = options.resolvedEncoderBackend;
+export const createJobStatusUpdater =
+  (jobs: Map<string, QueueJob>, publishJobEvent: (job: QueueJob, options: PublishJobEventOptions) => void) =>
+  async (
+    job: QueueJob,
+    status: JobStatus,
+    progress: number,
+    message: string,
+    outputPaths: string[] = job.outputPaths,
+    error?: string,
+    resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
+    telemetry: JobTelemetry | undefined = job.telemetry,
+    logEntry?: QueueJob['logs'][number],
+  ): Promise<void> => {
+    job.status = status;
+    job.progress = progress;
+    job.message = message;
+    job.outputPaths = outputPaths;
+    job.error = error;
+    job.telemetry = telemetry;
+    job.resolvedEncoderBackend = resolvedEncoderBackend;
+    job.updatedAt = Date.now();
 
-  if (options.outputPath && !job.outputPaths.includes(options.outputPath)) {
-    job.outputPaths = [...job.outputPaths, options.outputPath];
-  }
+    publishJobEvent(job, {
+      progress,
+      message,
+      outputPath: outputPaths.at(-1),
+      telemetry,
+      error,
+      resolvedEncoderBackend,
+      logEntry,
+    });
 
-  if (options.error) {
-    job.error = options.error;
-  }
-
-  if (options.logEntry) {
-    job.logs = appendJobLog(job.logs, options.logEntry, MAX_JOB_LOG_ENTRIES);
-  }
-
-  getMainWindow()?.webContents.send(IPC_CHANNELS.jobsProgress, payload);
-};
-
-export const createJobStatusUpdater = (
-  jobs: Map<string, QueueJob>,
-  publishJobEvent: (job: QueueJob, options: PublishJobEventOptions) => void,
-) => async (
-  job: QueueJob,
-  status: JobStatus,
-  progress: number,
-  message: string,
-  outputPaths: string[] = job.outputPaths,
-  error?: string,
-  resolvedEncoderBackend: ResolvedEncoderBackend | undefined = job.resolvedEncoderBackend,
-  telemetry: JobTelemetry | undefined = job.telemetry,
-  logEntry?: QueueJob['logs'][number],
-): Promise<void> => {
-  job.status = status;
-  job.progress = progress;
-  job.message = message;
-  job.outputPaths = outputPaths;
-  job.error = error;
-  job.telemetry = telemetry;
-  job.resolvedEncoderBackend = resolvedEncoderBackend;
-  job.updatedAt = Date.now();
-
-  publishJobEvent(job, {
-    progress,
-    message,
-    outputPath: outputPaths.at(-1),
-    telemetry,
-    error,
-    resolvedEncoderBackend,
-    logEntry,
-  });
-
-  jobs.set(job.id, job);
-};
+    jobs.set(job.id, job);
+  };

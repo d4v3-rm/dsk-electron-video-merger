@@ -64,9 +64,7 @@ export const buildEncoderArgs = (
 
   return {
     args: [
-      ...cpuEncoder.args.filter((arg) =>
-        hasAudio ? true : !['-c:a', 'aac', '-b:a', '160k'].includes(arg),
-      ),
+      ...cpuEncoder.args.filter((arg) => (hasAudio ? true : !['-c:a', 'aac', '-b:a', '160k'].includes(arg))),
       ...(hasAudio ? [] : ['-an']),
       '-crf',
       CPU_CRF_BY_PRESET[compression],

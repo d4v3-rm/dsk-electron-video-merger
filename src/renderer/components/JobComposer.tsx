@@ -57,10 +57,7 @@ export const JobComposer = () => {
     settings.encoderBackend,
     hardwareAccelerationProfile,
   );
-  const timingModeDescription = getVideoTimingDescription(
-    settings.videoTimingMode,
-    settings.targetFrameRate,
-  );
+  const timingModeDescription = getVideoTimingDescription(settings.videoTimingMode, settings.targetFrameRate);
   const hardwareAlertType = !hardwareAccelerationLoaded
     ? 'info'
     : nvidiaAvailable && nvidiaSupportedForFormat

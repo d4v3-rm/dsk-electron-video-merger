@@ -39,11 +39,7 @@ const parseRational = (value?: string): number | undefined => {
   const [numerator, denominator] = value.split('/');
   const parsedNumerator = Number.parseFloat(numerator);
   const parsedDenominator = Number.parseFloat(denominator);
-  if (
-    !Number.isFinite(parsedNumerator) ||
-    !Number.isFinite(parsedDenominator) ||
-    parsedDenominator === 0
-  ) {
+  if (!Number.isFinite(parsedNumerator) || !Number.isFinite(parsedDenominator) || parsedDenominator === 0) {
     return undefined;
   }
 

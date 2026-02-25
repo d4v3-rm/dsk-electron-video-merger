@@ -1,9 +1,6 @@
 import { spawn } from 'node:child_process';
 import type { JobProgressCallback, ProgressState } from '@main/services/ffmpeg.types';
-import {
-  PROGRESS_LOG_BUCKET_SIZE,
-  PROGRESS_SEGMENT_SEPARATOR,
-} from '@main/services/ffmpeg/ffmpeg.constants';
+import { PROGRESS_LOG_BUCKET_SIZE, PROGRESS_SEGMENT_SEPARATOR } from '@main/services/ffmpeg/ffmpeg.constants';
 import {
   buildTelemetry,
   clampProgress,
