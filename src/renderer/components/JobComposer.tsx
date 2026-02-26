@@ -16,6 +16,7 @@ import { useAppStore } from '@renderer/store/use-app-store';
 import { useUiStore } from '@renderer/store/use-ui-store';
 import {
   getEncoderModeDescription,
+  getOutputFormatLabel,
   getRequestedEncoderBackendLabel,
   getVideoTimingDescription,
   isNvidiaSupportedOutputFormat,
@@ -62,7 +63,7 @@ export const JobComposer = () => {
     ? 'info'
     : nvidiaAvailable && nvidiaSupportedForFormat
       ? 'success'
-      : settings.outputFormat === 'webm'
+      : !nvidiaSupportedForFormat
         ? 'warning'
         : 'info';
   const modeCopy = getJobComposerModeCopy(t, isMergeMode);
@@ -73,12 +74,13 @@ export const JobComposer = () => {
     deliveryValue: modeCopy.deliveryValue,
     destinationDefaultLabel: t('composer.destinationDefault'),
   });
-  const backendCopy =
-    settings.outputFormat === 'webm'
-      ? t('composer.backendWebm')
-      : nvidiaAvailable
-        ? t('composer.backendNvenc')
-        : t('composer.backendCpu');
+  const backendCopy = !nvidiaSupportedForFormat
+    ? t('composer.backendCpuOnlyFormat', {
+        format: getOutputFormatLabel(settings.outputFormat),
+      })
+    : nvidiaAvailable
+      ? t('composer.backendNvenc')
+      : t('composer.backendCpu');
   const destinationCopy = outputDirectory ? t('composer.destinationSelected') : t('composer.destinationAuto');
 
   const handleCreateJob = async (): Promise<void> => {
@@ -139,24 +141,13 @@ export const JobComposer = () => {
         />
 
         <Row gutter={[16, 16]}>
-          <Col xs={24} xl={14}>
+          <Col xs={24} xl={15}>
             <Card size="small" className="panel-section-card" title={t('composer.sections.exportProfile')}>
               <JobComposerSettingsForm
                 outputDirectory={outputDirectory}
                 settings={settings}
                 nvidiaAvailable={nvidiaAvailable}
                 nvidiaSupportedForFormat={nvidiaSupportedForFormat}
-                destinationDefaultLabel={t('composer.destinationDefault')}
-                autoPrefersNvidiaLabel={t('composer.autoPrefersNvidia')}
-                autoStaysCpuLabel={t('composer.autoStaysCpu')}
-                outputFormatLabel={t('composer.fields.outputFormat')}
-                compressionLabel={t('composer.fields.compression')}
-                backendLabel={t('composer.fields.backend')}
-                frameTimingLabel={t('composer.fields.frameTiming')}
-                targetFrameRateLabel={t('composer.fields.targetFrameRate')}
-                destinationFolderLabel={t('composer.fields.destinationFolder')}
-                selectDestinationLabel={t('composer.buttons.selectDestination')}
-                useDefaultDestinationLabel={t('composer.buttons.useDefaultDestination')}
                 setOutputFormat={setOutputFormat}
                 setCompression={setCompression}
                 setEncoderBackend={setEncoderBackend}
@@ -168,7 +159,7 @@ export const JobComposer = () => {
             </Card>
           </Col>
 
-          <Col xs={24} xl={10}>
+          <Col xs={24} xl={9}>
             <JobComposerExecutionNotes
               title={t('composer.sections.executionNotes')}
               orderInfo={modeCopy.orderInfo}

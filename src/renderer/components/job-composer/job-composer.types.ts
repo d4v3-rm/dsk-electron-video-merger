@@ -2,6 +2,7 @@ import type {
   ConversionSettings,
   HardwareAccelerationProfile,
   InputFileDTO,
+  OutputFormat,
   TargetFrameRate,
   VideoTimingMode,
 } from '@shared/types';
@@ -62,17 +63,6 @@ export interface JobComposerSettingsFormProps {
   settings: ConversionSettings;
   nvidiaAvailable: boolean;
   nvidiaSupportedForFormat: boolean;
-  destinationDefaultLabel: string;
-  autoPrefersNvidiaLabel: string;
-  autoStaysCpuLabel: string;
-  outputFormatLabel: string;
-  compressionLabel: string;
-  backendLabel: string;
-  frameTimingLabel: string;
-  targetFrameRateLabel: string;
-  destinationFolderLabel: string;
-  selectDestinationLabel: string;
-  useDefaultDestinationLabel: string;
   setOutputFormat: (outputFormat: ConversionSettings['outputFormat']) => void;
   setCompression: (compression: ConversionSettings['compression']) => void;
   setEncoderBackend: (encoderBackend: ConversionSettings['encoderBackend']) => void;
@@ -80,6 +70,38 @@ export interface JobComposerSettingsFormProps {
   setTargetFrameRate: (targetFrameRate: TargetFrameRate) => void;
   selectOutputDirectory: () => Promise<void>;
   clearOutputDirectory: () => void;
+}
+
+export interface JobComposerSelectableOption<TValue extends string | number> {
+  value: TValue;
+  title: string;
+  description: string;
+  badges: string[];
+  meta?: string;
+  disabled?: boolean;
+}
+
+export interface JobComposerOptionCardProps {
+  title: string;
+  description: string;
+  badges: string[];
+  selected: boolean;
+  onClick: () => void;
+  meta?: string;
+  disabled?: boolean;
+}
+
+export interface BuildCompressionOptionsParams {
+  selectedOutputFormat: OutputFormat;
+}
+
+export interface BuildBackendOptionsParams {
+  nvidiaAvailable: boolean;
+  nvidiaSupportedForFormat: boolean;
+}
+
+export interface BuildTimingOptionsParams {
+  selectedTimingMode: VideoTimingMode;
 }
 
 export interface JobComposerActionBarProps {

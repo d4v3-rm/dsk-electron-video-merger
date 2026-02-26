@@ -8,6 +8,7 @@ import {
 } from '@renderer/components/job-history/job-history.utils';
 import {
   getCompressionPresetTechnicalLabel,
+  getOutputFormatLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -53,8 +54,8 @@ export const buildJobBoardColumns = (t: TFunction): ColumnsType<Job> => [
     render: (_, job) => (
       <Space direction="vertical" size={0}>
         <Text>
-          {job.settings.outputFormat.toUpperCase()} -{' '}
-          {getCompressionPresetTechnicalLabel(job.settings.compression)}
+          {getOutputFormatLabel(job.settings.outputFormat)} -{' '}
+          {getCompressionPresetTechnicalLabel(job.settings.compression, job.settings.outputFormat)}
         </Text>
         <Text type="secondary">
           {getRequestedEncoderBackendLabel(job.settings.encoderBackend)}
@@ -70,7 +71,7 @@ export const buildJobBoardColumns = (t: TFunction): ColumnsType<Job> => [
         </Text>
       </Space>
     ),
-    width: 320,
+    width: 360,
   },
   {
     title: t('history.columns.status'),

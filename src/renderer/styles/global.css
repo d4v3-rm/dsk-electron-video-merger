@@ -379,6 +379,138 @@ body {
   border-bottom: 1px solid var(--app-border) !important;
 }
 
+.composer-settings-form {
+  margin-top: 4px;
+}
+
+.composer-settings-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.composer-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.composer-settings-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.composer-options-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.composer-format-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.composer-compression-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.composer-option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-height: 166px;
+  padding: 16px;
+  font: inherit;
+  border-radius: 18px;
+  border: 1px solid var(--app-border);
+  background: linear-gradient(180deg, rgba(22, 33, 51, 0.94) 0%, rgba(15, 23, 36, 0.94) 100%);
+  color: var(--app-text);
+  text-align: left;
+  appearance: none;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+  cursor: pointer;
+}
+
+.composer-option-card:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--app-border-strong);
+  box-shadow: 0 16px 38px rgba(3, 8, 17, 0.22);
+}
+
+.composer-option-card:focus-visible {
+  outline: none;
+  border-color: rgba(79, 140, 255, 0.88);
+  box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.18);
+}
+
+.composer-option-card:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+}
+
+.composer-option-card-selected {
+  border-color: rgba(79, 140, 255, 0.88);
+  background:
+    radial-gradient(circle at top right, rgba(79, 140, 255, 0.16), transparent 48%),
+    linear-gradient(180deg, rgba(22, 39, 68, 0.96) 0%, rgba(16, 27, 42, 0.96) 100%);
+  box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.18);
+}
+
+.composer-option-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.composer-option-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.composer-option-card-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--app-border-strong);
+  background: rgba(79, 140, 255, 0.08);
+  color: var(--app-text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.composer-option-card-meta {
+  margin-top: auto;
+}
+
+.composer-processing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.composer-control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.composer-control-panel .ant-segmented {
+  background: var(--app-surface-muted);
+  border: 1px solid var(--app-border);
+}
+
 .queue-item .ant-list-item-meta {
   align-items: flex-start;
 }
@@ -569,6 +701,9 @@ body {
   }
 
   .queue-stats,
+  .composer-format-grid,
+  .composer-compression-grid,
+  .composer-processing-grid,
   .preview-summary-grid,
   .history-summary-grid {
     grid-template-columns: 1fr;

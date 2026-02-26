@@ -9,6 +9,7 @@ import type { AppStoreState } from '@renderer/store/app-store.types';
 import type { PreviewMetric, PreviewModel } from '@renderer/components/preview/preview.types';
 import { buildOutputPreviewName } from '@renderer/utils/file-utils';
 import {
+  getOutputFormatLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
 } from '@renderer/utils/encoder-presentation';
@@ -71,7 +72,7 @@ export const buildPreviewMetrics = (previewModel: PreviewModel, t: TFunction): P
   {
     key: 'format',
     title: t('preview.metrics.format'),
-    value: previewModel.previewSettings.outputFormat.toUpperCase(),
+    value: getOutputFormatLabel(previewModel.previewSettings.outputFormat),
     prefix: <DeploymentUnitOutlined />,
   },
   {

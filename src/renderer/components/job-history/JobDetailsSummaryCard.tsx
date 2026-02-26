@@ -5,6 +5,7 @@ import { HistoryPathText } from '@renderer/components/job-history/HistoryPathTex
 import { historyDateFormatter } from '@renderer/components/job-history/job-history.utils';
 import {
   getCompressionPresetTechnicalLabel,
+  getOutputFormatTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -33,12 +34,12 @@ export const JobDetailsSummaryCard = ({ job }: JobDetailsSummaryCardProps) => {
           {
             key: 'format',
             label: t('details.labels.format'),
-            children: job.settings.outputFormat.toUpperCase(),
+            children: getOutputFormatTechnicalLabel(job.settings.outputFormat),
           },
           {
             key: 'compression',
             label: t('details.labels.compression'),
-            children: getCompressionPresetTechnicalLabel(job.settings.compression),
+            children: getCompressionPresetTechnicalLabel(job.settings.compression, job.settings.outputFormat),
           },
           {
             key: 'backendRequested',

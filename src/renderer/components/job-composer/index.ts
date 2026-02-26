@@ -4,6 +4,7 @@ export { JobComposerAlerts } from '@renderer/components/job-composer/JobComposer
 export { JobComposerEmptyState } from '@renderer/components/job-composer/JobComposerEmptyState';
 export { JobComposerExecutionNotes } from '@renderer/components/job-composer/JobComposerExecutionNotes';
 export { JobComposerHeader } from '@renderer/components/job-composer/JobComposerHeader';
+export { JobComposerOptionCard } from '@renderer/components/job-composer/JobComposerOptionCard';
 export { JobComposerQueuePanel } from '@renderer/components/job-composer/JobComposerQueuePanel';
 export { JobComposerSettingsForm } from '@renderer/components/job-composer/JobComposerSettingsForm';
 export { JobComposerStats } from '@renderer/components/job-composer/JobComposerStats';

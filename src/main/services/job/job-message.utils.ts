@@ -5,6 +5,9 @@ const buildTimingSuffix = (settings: JobCreationPayload['settings']): string =>
     ? ` Output will be normalized to ${settings.targetFrameRate} fps.`
     : ' Source timing will be preserved whenever possible.';
 
+const buildProfileSuffix = (settings: JobCreationPayload['settings']): string =>
+  ` Deliverable: ${settings.outputFormat.toUpperCase()} with the ${settings.compression} profile.`;
+
 export const buildQueuedMessage = (mode: JobMode, filesCount: number): string => {
   if (mode === 'compress') {
     return `Queued ${filesCount} video${filesCount === 1 ? '' : 's'} for compression.`;
@@ -20,18 +23,19 @@ export const buildStartMessage = (
 ): string => {
   const operationLabel = mode === 'merge' ? 'merge' : 'compression';
   const timingSuffix = buildTimingSuffix(settings);
+  const profileSuffix = buildProfileSuffix(settings);
 
   if (settings.encoderBackend === 'nvidia' && resolvedBackend === 'cpu') {
-    return `NVIDIA NVENC is unavailable. Falling back to CPU ${operationLabel}.${timingSuffix}`;
+    return `NVIDIA NVENC is unavailable. Falling back to CPU ${operationLabel}.${profileSuffix}${timingSuffix}`;
   }
 
   if (resolvedBackend === 'nvidia') {
     return settings.encoderBackend === 'auto'
-      ? `Starting ${operationLabel} with automatic NVIDIA NVENC selection.${timingSuffix}`
-      : `Starting ${operationLabel} with NVIDIA NVENC.${timingSuffix}`;
+      ? `Starting ${operationLabel} with automatic NVIDIA NVENC selection.${profileSuffix}${timingSuffix}`
+      : `Starting ${operationLabel} with NVIDIA NVENC.${profileSuffix}${timingSuffix}`;
   }
 
-  return `Starting ${operationLabel} with CPU encoding.${timingSuffix}`;
+  return `Starting ${operationLabel} with CPU encoding.${profileSuffix}${timingSuffix}`;
 };
 
 export const buildCompletionMessage = (mode: JobMode, outputCount: number): string => {

@@ -3,6 +3,7 @@ import type { ConversionSettings } from '@shared/types';
 import type { JobComposerSummaryItem } from '@renderer/components/job-composer/job-composer.types';
 import {
   getCompressionPresetTechnicalLabel,
+  getOutputFormatTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getTargetFrameRateLabel,
   getVideoTimingModeLabel,
@@ -26,12 +27,12 @@ export const buildJobComposerSetupSummary = ({
   {
     key: 'format',
     label: t('composer.fields.outputFormat'),
-    children: settings.outputFormat.toUpperCase(),
+    children: getOutputFormatTechnicalLabel(settings.outputFormat),
   },
   {
     key: 'compression',
     label: t('composer.fields.compression'),
-    children: getCompressionPresetTechnicalLabel(settings.compression),
+    children: getCompressionPresetTechnicalLabel(settings.compression, settings.outputFormat),
   },
   {
     key: 'backend',

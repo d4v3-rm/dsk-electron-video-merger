@@ -4,6 +4,7 @@ import type { InputFileDTO } from '@shared/types';
 import type { PreviewModel } from '@renderer/components/preview/preview.types';
 import {
   getCompressionPresetTechnicalLabel,
+  getOutputFormatTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -50,12 +51,15 @@ export const PreviewPacketCard = ({ previewModel, selectedFiles }: PreviewPacket
           {
             key: 'format',
             label: t('preview.labels.format'),
-            children: previewModel.previewSettings.outputFormat.toUpperCase(),
+            children: getOutputFormatTechnicalLabel(previewModel.previewSettings.outputFormat),
           },
           {
             key: 'compression',
             label: t('preview.labels.compression'),
-            children: getCompressionPresetTechnicalLabel(previewModel.previewSettings.compression),
+            children: getCompressionPresetTechnicalLabel(
+              previewModel.previewSettings.compression,
+              previewModel.previewSettings.outputFormat,
+            ),
           },
           {
             key: 'backendRequested',

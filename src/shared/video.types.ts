@@ -1,9 +1,17 @@
-export type OutputFormat = 'mp4' | 'mov' | 'mkv' | 'webm';
-export type CompressionPreset = 'light' | 'balanced' | 'strong';
-export type EncoderBackend = 'auto' | 'cpu' | 'nvidia';
+import {
+  COMPRESSION_PRESETS,
+  ENCODER_BACKENDS,
+  OUTPUT_FORMATS,
+  TARGET_FRAME_RATES,
+  VIDEO_TIMING_MODES,
+} from './video.constants';
+
+export type OutputFormat = (typeof OUTPUT_FORMATS)[number];
+export type CompressionPreset = (typeof COMPRESSION_PRESETS)[number];
+export type EncoderBackend = (typeof ENCODER_BACKENDS)[number];
 export type ResolvedEncoderBackend = 'cpu' | 'nvidia';
-export type VideoTimingMode = 'preserve' | 'cfr';
-export type TargetFrameRate = 24 | 25 | 30 | 50 | 60;
+export type VideoTimingMode = (typeof VIDEO_TIMING_MODES)[number];
+export type TargetFrameRate = (typeof TARGET_FRAME_RATES)[number];
 
 export interface InputFileDTO {
   id: string;

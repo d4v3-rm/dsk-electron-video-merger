@@ -1,21 +1,22 @@
-import type {
-  CompressionPreset,
-  OutputFormat,
-  ResolvedEncoderBackend,
-  TargetFrameRate,
-  VideoTimingMode,
+import {
+  type CompressionPreset,
+  NVENC_CQ_BY_PRESET,
+  NVENC_PRESET_BY_PRESET,
+  type OutputFormat,
+  type ResolvedEncoderBackend,
+  type TargetFrameRate,
+  type VideoTimingMode,
 } from '@shared/types';
 import type { EncoderArgs } from '@main/services/ffmpeg.types';
 import {
-  CPU_CRF_BY_PRESET,
   CPU_ENCODER_BY_FORMAT,
+  NVIDIA_ENCODER_BY_FORMAT,
   NVIDIA_SUPPORTED_FORMATS,
-  NVENC_CQ_BY_PRESET,
-  NVENC_PRESET_BY_PRESET,
-  VP9_CRF_BY_PRESET,
 } from '@main/services/ffmpeg/ffmpeg.constants';
 
 export const resolveFrameRateLabel = (targetFrameRate: TargetFrameRate): string => `${targetFrameRate}`;
+
+const buildAudioArgs = (hasAudio: boolean, audioArgs: string[]): string[] => (hasAudio ? audioArgs : ['-an']);
 
 export const buildEncoderArgs = (
   format: OutputFormat,
@@ -24,50 +25,36 @@ export const buildEncoderArgs = (
   hasAudio: boolean,
 ): EncoderArgs => {
   if (resolvedEncoderBackend === 'nvidia' && NVIDIA_SUPPORTED_FORMATS.includes(format)) {
-    const baseArgs = [
-      '-c:v',
-      'h264_nvenc',
-      '-preset:v',
-      NVENC_PRESET_BY_PRESET[compression],
-      '-rc:v',
-      'vbr',
-      '-cq:v',
-      NVENC_CQ_BY_PRESET[compression],
-      '-b:v',
-      '0',
-      '-pix_fmt',
-      'yuv420p',
-    ];
-
-    if (hasAudio) {
-      baseArgs.push('-c:a', 'aac', '-b:a', '160k');
-    } else {
-      baseArgs.push('-an');
+    const nvidiaProfile = NVIDIA_ENCODER_BY_FORMAT[format];
+    if (!nvidiaProfile) {
+      throw new Error(`NVIDIA encoder profile is missing for ${format}.`);
     }
 
     return {
-      args: format === 'mp4' || format === 'mov' ? [...baseArgs, '-movflags', '+faststart'] : baseArgs,
-    };
-  }
-
-  const cpuEncoder = CPU_ENCODER_BY_FORMAT[format];
-  if (format === 'webm') {
-    return {
       args: [
-        ...cpuEncoder.args.filter((arg) => (hasAudio ? true : !['-c:a', 'libopus'].includes(arg))),
-        ...(hasAudio ? [] : ['-an']),
-        '-crf',
-        VP9_CRF_BY_PRESET[compression],
+        ...nvidiaProfile.videoArgs,
+        '-preset:v',
+        NVENC_PRESET_BY_PRESET[compression],
+        '-rc:v',
+        'vbr',
+        '-cq:v',
+        NVENC_CQ_BY_PRESET[compression],
+        '-b:v',
+        '0',
+        ...buildAudioArgs(hasAudio, nvidiaProfile.audioArgs),
+        ...(nvidiaProfile.muxArgs ?? []),
       ],
     };
   }
 
+  const cpuEncoder = CPU_ENCODER_BY_FORMAT[format];
   return {
     args: [
-      ...cpuEncoder.args.filter((arg) => (hasAudio ? true : !['-c:a', 'aac', '-b:a', '160k'].includes(arg))),
-      ...(hasAudio ? [] : ['-an']),
-      '-crf',
-      CPU_CRF_BY_PRESET[compression],
+      ...cpuEncoder.videoArgs,
+      ...buildAudioArgs(hasAudio, cpuEncoder.audioArgs),
+      cpuEncoder.qualityFlag,
+      cpuEncoder.qualityByPreset[compression],
+      ...(cpuEncoder.muxArgs ?? []),
     ],
   };
 };

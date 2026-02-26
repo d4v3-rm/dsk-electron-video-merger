@@ -1,30 +1,23 @@
 import { FolderOpenOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Select, Space } from 'antd';
-import type { JobComposerSettingsFormProps } from '@renderer/components/job-composer/job-composer.types';
+import { Button, Form, Input, Segmented, Select, Space, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { JobComposerOptionCard } from '@renderer/components/job-composer/JobComposerOptionCard';
 import {
-  TARGET_FRAME_RATE_OPTIONS,
-  getCompressionPresetTechnicalLabel,
-  getTargetFrameRateLabel,
-  getRequestedEncoderBackendLabel,
-  getVideoTimingModeLabel,
-} from '@renderer/utils/encoder-presentation';
+  buildBackendOptions,
+  buildCompressionOptions,
+  buildOutputFormatOptions,
+  buildTargetFrameRateOptions,
+  buildTimingOptions,
+} from '@renderer/components/job-composer/job-composer-options';
+import type { JobComposerSettingsFormProps } from '@renderer/components/job-composer/job-composer.types';
+
+const { Text } = Typography;
 
 export const JobComposerSettingsForm = ({
   outputDirectory,
   settings,
   nvidiaAvailable,
   nvidiaSupportedForFormat,
-  destinationDefaultLabel,
-  autoPrefersNvidiaLabel,
-  autoStaysCpuLabel,
-  outputFormatLabel,
-  compressionLabel,
-  backendLabel,
-  frameTimingLabel,
-  targetFrameRateLabel,
-  destinationFolderLabel,
-  selectDestinationLabel,
-  useDefaultDestinationLabel,
   setOutputFormat,
   setCompression,
   setEncoderBackend,
@@ -32,86 +25,143 @@ export const JobComposerSettingsForm = ({
   setTargetFrameRate,
   selectOutputDirectory,
   clearOutputDirectory,
-}: JobComposerSettingsFormProps) => (
-  <Form layout="vertical">
-    <Form.Item label={outputFormatLabel}>
-      <Select
-        value={settings.outputFormat}
-        onChange={setOutputFormat}
-        options={['mp4', 'mov', 'mkv', 'webm'].map((value) => ({
-          value,
-          label: value.toUpperCase(),
-        }))}
-      />
-    </Form.Item>
+}: JobComposerSettingsFormProps) => {
+  const { t } = useTranslation();
 
-    <Form.Item label={compressionLabel}>
-      <Select
-        value={settings.compression}
-        onChange={setCompression}
-        options={(['light', 'balanced', 'strong'] as const).map((preset) => ({
-          value: preset,
-          label: getCompressionPresetTechnicalLabel(preset),
-        }))}
-      />
-    </Form.Item>
+  const formatOptions = buildOutputFormatOptions();
+  const compressionOptions = buildCompressionOptions({
+    selectedOutputFormat: settings.outputFormat,
+  });
+  const backendOptions = buildBackendOptions({
+    nvidiaAvailable,
+    nvidiaSupportedForFormat,
+  });
+  const timingOptions = buildTimingOptions({
+    selectedTimingMode: settings.videoTimingMode,
+  });
+  const targetFrameRateOptions = buildTargetFrameRateOptions();
+  const activeBackendOption = backendOptions.find((option) => option.value === settings.encoderBackend);
+  const activeTimingOption = timingOptions.find((option) => option.value === settings.videoTimingMode);
 
-    <Form.Item label={backendLabel}>
-      <Select
-        value={settings.encoderBackend}
-        onChange={setEncoderBackend}
-        options={[
-          {
-            value: 'auto',
-            label: `${getRequestedEncoderBackendLabel('auto')} (${nvidiaAvailable ? autoPrefersNvidiaLabel : autoStaysCpuLabel})`,
-          },
-          {
-            value: 'cpu',
-            label: getRequestedEncoderBackendLabel('cpu'),
-          },
-          {
-            value: 'nvidia',
-            label: getRequestedEncoderBackendLabel('nvidia'),
-            disabled: !nvidiaAvailable || !nvidiaSupportedForFormat,
-          },
-        ]}
-      />
-    </Form.Item>
+  return (
+    <Form layout="vertical" className="composer-settings-form">
+      <div className="composer-settings-shell">
+        <section className="composer-settings-section">
+          <div className="composer-settings-copy">
+            <Text strong>{t('composer.sections.outputContainer')}</Text>
+            <Text type="secondary">{t('composer.formatSectionHelp')}</Text>
+          </div>
 
-    <Form.Item label={frameTimingLabel}>
-      <Select
-        value={settings.videoTimingMode}
-        onChange={setVideoTimingMode}
-        options={(['preserve', 'cfr'] as const).map((value) => ({
-          value,
-          label: getVideoTimingModeLabel(value),
-        }))}
-      />
-    </Form.Item>
+          <div className="composer-options-grid composer-format-grid">
+            {formatOptions.map((option) => (
+              <JobComposerOptionCard
+                key={option.value}
+                title={option.title}
+                description={option.description}
+                badges={option.badges}
+                meta={option.meta}
+                selected={settings.outputFormat === option.value}
+                onClick={() => setOutputFormat(option.value)}
+              />
+            ))}
+          </div>
+        </section>
 
-    {settings.videoTimingMode === 'cfr' ? (
-      <Form.Item label={targetFrameRateLabel}>
-        <Select
-          value={settings.targetFrameRate}
-          onChange={setTargetFrameRate}
-          options={TARGET_FRAME_RATE_OPTIONS.map((value) => ({
-            value,
-            label: getTargetFrameRateLabel(value),
-          }))}
-        />
-      </Form.Item>
-    ) : null}
+        <section className="composer-settings-section">
+          <div className="composer-settings-copy">
+            <Text strong>{t('composer.sections.qualityProfile')}</Text>
+            <Text type="secondary">{t('composer.compressionSectionHelp')}</Text>
+          </div>
 
-    <Form.Item label={destinationFolderLabel}>
-      <Space.Compact style={{ width: '100%' }}>
-        <Input readOnly value={outputDirectory ?? destinationDefaultLabel} />
-        <Button icon={<FolderOpenOutlined />} onClick={selectOutputDirectory}>
-          {selectDestinationLabel}
-        </Button>
-        <Button onClick={clearOutputDirectory} disabled={!outputDirectory}>
-          {useDefaultDestinationLabel}
-        </Button>
-      </Space.Compact>
-    </Form.Item>
-  </Form>
-);
+          <div className="composer-options-grid composer-compression-grid">
+            {compressionOptions.map((option) => (
+              <JobComposerOptionCard
+                key={option.value}
+                title={option.title}
+                description={option.description}
+                badges={option.badges}
+                meta={option.meta}
+                selected={settings.compression === option.value}
+                onClick={() => setCompression(option.value)}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="composer-settings-section">
+          <div className="composer-settings-copy">
+            <Text strong>{t('composer.sections.processingRules')}</Text>
+            <Text type="secondary">{t('composer.processingSectionHelp')}</Text>
+          </div>
+
+          <div className="composer-processing-grid">
+            <div className="composer-control-panel">
+              <Text strong>{t('composer.fields.backend')}</Text>
+              <Segmented
+                block
+                value={settings.encoderBackend}
+                onChange={(value) =>
+                  setEncoderBackend(value as JobComposerSettingsFormProps['settings']['encoderBackend'])
+                }
+                options={backendOptions.map((option) => ({
+                  value: option.value,
+                  label: option.title,
+                  disabled: option.disabled,
+                }))}
+              />
+              <Text type="secondary">{activeBackendOption?.description}</Text>
+            </div>
+
+            <div className="composer-control-panel">
+              <Text strong>{t('composer.fields.frameTiming')}</Text>
+              <Segmented
+                block
+                value={settings.videoTimingMode}
+                onChange={(value) =>
+                  setVideoTimingMode(value as JobComposerSettingsFormProps['settings']['videoTimingMode'])
+                }
+                options={timingOptions.map((option) => ({
+                  value: option.value,
+                  label: option.title,
+                }))}
+              />
+              <Text type="secondary">{activeTimingOption?.description}</Text>
+            </div>
+          </div>
+
+          {settings.videoTimingMode === 'cfr' ? (
+            <Form.Item label={t('composer.fields.targetFrameRate')} style={{ marginBottom: 0 }}>
+              <Select
+                value={settings.targetFrameRate}
+                onChange={setTargetFrameRate}
+                options={targetFrameRateOptions.map((option) => ({
+                  value: option.value,
+                  label: option.title,
+                }))}
+              />
+            </Form.Item>
+          ) : null}
+        </section>
+
+        <section className="composer-settings-section">
+          <div className="composer-settings-copy">
+            <Text strong>{t('composer.sections.deliveryControls')}</Text>
+            <Text type="secondary">{t('composer.destinationSectionHelp')}</Text>
+          </div>
+
+          <Form.Item label={t('composer.fields.destinationFolder')} style={{ marginBottom: 0 }}>
+            <Space.Compact style={{ width: '100%' }}>
+              <Input readOnly value={outputDirectory ?? t('composer.destinationDefault')} />
+              <Button icon={<FolderOpenOutlined />} onClick={selectOutputDirectory}>
+                {t('composer.buttons.selectDestination')}
+              </Button>
+              <Button onClick={clearOutputDirectory} disabled={!outputDirectory}>
+                {t('composer.buttons.useDefaultDestination')}
+              </Button>
+            </Space.Compact>
+          </Form.Item>
+        </section>
+      </div>
+    </Form>
+  );
+};

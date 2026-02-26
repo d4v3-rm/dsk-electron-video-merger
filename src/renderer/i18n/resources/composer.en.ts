@@ -19,6 +19,10 @@ const composerEn = {
   },
   sections: {
     exportProfile: 'Export profile',
+    outputContainer: 'Container and codec',
+    qualityProfile: 'Compression profile',
+    processingRules: 'Processing rules',
+    deliveryControls: 'Delivery controls',
     executionNotes: 'Execution notes',
     queueMerge: 'Timeline queue',
     queueCompress: 'Source selection',
@@ -53,20 +57,29 @@ const composerEn = {
     compress: 'One output per source',
   },
   backendSelected: 'Selected backend: {{backend}}.',
-  backendWebm: 'WebM always uses the CPU path.',
-  backendNvenc: 'MP4, MOV, and MKV can use NVIDIA NVENC when available.',
+  backendCpuOnlyFormat: '{{format}} stays on the CPU path in this build.',
+  backendNvenc: 'MP4, MOV, MKV, and FLV can use NVIDIA NVENC when available.',
   backendCpu: 'NVIDIA was not detected, so the job stays on CPU.',
   autoPrefersNvidia: 'prefers NVIDIA',
   autoStaysCpu: 'stays on CPU',
   encoderSoftwareOnly: 'Software encoding only via CPU.',
   encoderNvencActive: 'NVIDIA NVENC will be used for the final transcode.',
+  encoderNvencRequest: 'Requests direct GPU encoding on the supported H.264 containers.',
   encoderNvencFallback: 'NVIDIA NVENC is unavailable. The job will fall back to CPU automatically.',
-  encoderAutoGpu: 'Auto will choose NVIDIA NVENC for MP4, MOV, and MKV. Otherwise it falls back to CPU.',
+  encoderAutoGpu: 'Auto will choose NVIDIA NVENC for MP4, MOV, MKV, and FLV. Otherwise it falls back to CPU.',
   encoderAutoCpu: 'Auto will remain on CPU until NVIDIA NVENC becomes available.',
   timingPreserveHelp:
     'Preserve source timestamps and cadence. This mode avoids intentional frame drops or duplication.',
   timingCfrHelp:
     'Convert the output to {{frameRate}}. Use this only when a constant-frame-rate deliverable is required, because FFmpeg may duplicate or drop frames.',
+  formatSectionHelp:
+    'Choose the output container first. The app will align codecs and hardware support around it.',
+  compressionSectionHelp:
+    'Profiles adjust encoder intensity, not the logical frame flow. Frame cadence is controlled separately.',
+  processingSectionHelp:
+    'Hardware and frame timing are split so you can keep cadence decisions independent from compression.',
+  destinationSectionHelp:
+    'Choose where the next job should write its outputs. Leaving this empty uses the app-managed folder.',
   destinationDefault: 'App-managed output folder',
   destinationSelected: 'The next job will write the generated output into the selected folder.',
   destinationAuto: 'No custom folder selected. The app will use its default local output folder.',

@@ -45,20 +45,16 @@ export const getMergeProcessingLabel = (
   resolvedEncoderBackend: ResolvedEncoderBackend,
 ): string =>
   resolvedEncoderBackend === 'nvidia'
-    ? 'Encoding merged output with NVIDIA NVENC'
-    : format === 'webm'
-      ? 'Encoding merged VP9 output on CPU'
-      : 'Encoding merged output on CPU';
+    ? `Encoding merged ${format.toUpperCase()} output with NVIDIA NVENC`
+    : `Encoding merged ${format.toUpperCase()} output on CPU`;
 
 export const getCompressionProcessingLabel = (
   format: OutputFormat,
   resolvedEncoderBackend: ResolvedEncoderBackend,
 ): string =>
   resolvedEncoderBackend === 'nvidia'
-    ? 'Compressing with NVIDIA NVENC'
-    : format === 'webm'
-      ? 'Compressing VP9 output on CPU'
-      : 'Compressing on CPU';
+    ? `Compressing to ${format.toUpperCase()} with NVIDIA NVENC`
+    : `Compressing to ${format.toUpperCase()} on CPU`;
 
 export const processSingleInputTranscode = async ({
   ffmpegBinary,

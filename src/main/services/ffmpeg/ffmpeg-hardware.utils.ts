@@ -10,7 +10,7 @@ const toProbeErrorMessage = (error: unknown): string => {
 };
 
 export const createDefaultHardwareAccelerationProfile = (
-  reason = 'NVIDIA NVENC was not detected in the bundled FFmpeg binary.',
+  reason = 'NVIDIA NVENC was not detected in the bundled FFmpeg binary for the supported H.264 outputs.',
 ): HardwareAccelerationProfile => ({
   nvidia: {
     available: false,
@@ -72,6 +72,8 @@ export const detectHardwareAccelerationProfileSafely = async (
       return createDefaultHardwareAccelerationProfile();
     }
 
+    const supportedFormatsLabel = supportedFormats.map((format) => format.toUpperCase()).join(', ');
+
     return {
       nvidia: {
         available: true,
@@ -79,7 +81,7 @@ export const detectHardwareAccelerationProfileSafely = async (
         hardwareAccel: hasCudaAcceleration ? 'cuda' : null,
         supportedOutputFormats: [...supportedFormats],
         reason: hasCudaAcceleration
-          ? 'NVIDIA NVENC is available for MP4, MOV, and MKV outputs.'
+          ? `NVIDIA NVENC is available for ${supportedFormatsLabel} outputs.`
           : 'NVIDIA NVENC encode is available, but CUDA decode was not detected.',
       },
     };

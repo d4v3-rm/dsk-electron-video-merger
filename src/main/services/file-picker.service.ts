@@ -16,7 +16,7 @@ export const createFilePickerService = (): FilePickerService => {
       filters: [
         {
           name: 'Video',
-          extensions: ['mp4', 'mov', 'webm', 'avi', 'mkv', 'm4v'],
+          extensions: ['mp4', 'mov', 'webm', 'avi', 'mkv', 'm4v', 'flv', 'ogv', 'mpg', 'mpeg'],
         },
       ],
     });

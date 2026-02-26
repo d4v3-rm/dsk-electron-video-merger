@@ -1,31 +1,28 @@
-import type {
-  CompressionPreset,
-  EncoderBackend,
-  HardwareAccelerationProfile,
-  OutputFormat,
-  ResolvedEncoderBackend,
-  TargetFrameRate,
-  VideoTimingMode,
+import {
+  COMPRESSION_PRESETS,
+  type CompressionPreset,
+  type EncoderBackend,
+  type HardwareAccelerationProfile,
+  MPEG2_QUALITY_BY_PRESET,
+  MPEG4_QUALITY_BY_PRESET,
+  NVIDIA_SUPPORTED_OUTPUT_FORMATS,
+  NVENC_CQ_BY_PRESET,
+  type OutputFormat,
+  type ResolvedEncoderBackend,
+  THEORA_QUALITY_BY_PRESET,
+  type TargetFrameRate,
+  type VideoTimingMode,
+  VP9_CRF_BY_PRESET,
+  X264_CRF_BY_PRESET,
 } from '@shared/types';
 import i18n from '@renderer/i18n';
 
-const COMPRESSION_PARAMETERS: Record<CompressionPreset, { x264: number; nvenc: number; vp9: number }> = {
-  light: {
-    x264: 18,
-    nvenc: 18,
-    vp9: 28,
-  },
-  balanced: {
-    x264: 23,
-    nvenc: 22,
-    vp9: 32,
-  },
-  strong: {
-    x264: 28,
-    nvenc: 28,
-    vp9: 36,
-  },
-};
+interface CompressionParameters {
+  primaryLabel: string;
+  fallbackLabel?: string;
+}
+
+const NVIDIA_SUPPORTED_OUTPUTS: OutputFormat[] = [...NVIDIA_SUPPORTED_OUTPUT_FORMATS];
 
 export const getRequestedEncoderBackendLabel = (backend: EncoderBackend): string => {
   switch (backend) {
@@ -51,18 +48,84 @@ export const getResolvedEncoderBackendLabel = (backend: ResolvedEncoderBackend):
   }
 };
 
+export const getOutputFormatLabel = (outputFormat: OutputFormat): string =>
+  i18n.t(`formats.${outputFormat}.label`);
+
+export const getOutputFormatCategoryLabel = (outputFormat: OutputFormat): string =>
+  i18n.t(`formats.${outputFormat}.category`);
+
+export const getOutputFormatDescription = (outputFormat: OutputFormat): string =>
+  i18n.t(`formats.${outputFormat}.description`);
+
+export const getOutputFormatCodecSummary = (outputFormat: OutputFormat): string =>
+  i18n.t(`formats.${outputFormat}.codecs`);
+
+export const getOutputFormatBackendSummary = (outputFormat: OutputFormat): string =>
+  i18n.t(`formats.${outputFormat}.backend`);
+
+export const getOutputFormatTechnicalLabel = (outputFormat: OutputFormat): string =>
+  `${getOutputFormatLabel(outputFormat)} | ${getOutputFormatCodecSummary(outputFormat)}`;
+
 export const getCompressionPresetLabel = (preset: CompressionPreset): string =>
-  i18n.t(`compression.${preset}`);
+  i18n.t(`compression.${preset}.label`);
 
-export const getCompressionPresetParameters = (preset: CompressionPreset) => COMPRESSION_PARAMETERS[preset];
+export const getCompressionPresetDescription = (preset: CompressionPreset): string =>
+  i18n.t(`compression.${preset}.description`);
 
-export const getCompressionPresetTechnicalLabel = (preset: CompressionPreset): string => {
-  const parameters = COMPRESSION_PARAMETERS[preset];
-
-  return `${getCompressionPresetLabel(preset)} | H.264 CRF ${parameters.x264} / NVENC CQ ${parameters.nvenc} / VP9 CRF ${parameters.vp9}`;
+const getCompressionPresetParameters = (
+  preset: CompressionPreset,
+  outputFormat: OutputFormat,
+): CompressionParameters => {
+  switch (outputFormat) {
+    case 'webm':
+      return {
+        primaryLabel: `VP9 CRF ${VP9_CRF_BY_PRESET[preset]}`,
+      };
+    case 'avi':
+      return {
+        primaryLabel: `MPEG-4 q:v ${MPEG4_QUALITY_BY_PRESET[preset]}`,
+      };
+    case 'ogv':
+      return {
+        primaryLabel: `Theora q:v ${THEORA_QUALITY_BY_PRESET[preset]}`,
+      };
+    case 'mpg':
+      return {
+        primaryLabel: `MPEG-2 q:v ${MPEG2_QUALITY_BY_PRESET[preset]}`,
+      };
+    default:
+      return {
+        primaryLabel: `x264 CRF ${X264_CRF_BY_PRESET[preset]}`,
+        fallbackLabel: isNvidiaSupportedOutputFormat(outputFormat)
+          ? `NVENC CQ ${NVENC_CQ_BY_PRESET[preset]}`
+          : undefined,
+      };
+  }
 };
 
-export const TARGET_FRAME_RATE_OPTIONS: TargetFrameRate[] = [24, 25, 30, 50, 60];
+export const getCompressionPresetTechnicalLabel = (
+  preset: CompressionPreset,
+  outputFormat: OutputFormat,
+): string => {
+  const parameters = getCompressionPresetParameters(preset, outputFormat);
+  const detail = parameters.fallbackLabel
+    ? `${parameters.primaryLabel} / ${parameters.fallbackLabel}`
+    : parameters.primaryLabel;
+
+  return `${getCompressionPresetLabel(preset)} | ${detail}`;
+};
+
+export const getCompressionPresetBadges = (
+  preset: CompressionPreset,
+  outputFormat: OutputFormat,
+): string[] => {
+  const parameters = getCompressionPresetParameters(preset, outputFormat);
+  return [parameters.primaryLabel, parameters.fallbackLabel].filter((value): value is string =>
+    Boolean(value),
+  );
+};
+
+export const getAvailableCompressionPresets = (): CompressionPreset[] => [...COMPRESSION_PRESETS];
 
 export const getVideoTimingModeLabel = (videoTimingMode: VideoTimingMode): string => {
   switch (videoTimingMode) {
@@ -85,7 +148,14 @@ export const getVideoTimingDescription = (
     ? i18n.t('composer.timingPreserveHelp')
     : i18n.t('composer.timingCfrHelp', { frameRate: getTargetFrameRateLabel(targetFrameRate) });
 
-export const isNvidiaSupportedOutputFormat = (outputFormat: OutputFormat): boolean => outputFormat !== 'webm';
+export const isNvidiaSupportedOutputFormat = (outputFormat: OutputFormat): boolean =>
+  NVIDIA_SUPPORTED_OUTPUTS.includes(outputFormat);
+
+export const getOutputFormatBadges = (outputFormat: OutputFormat): string[] => [
+  getOutputFormatCategoryLabel(outputFormat),
+  getOutputFormatCodecSummary(outputFormat),
+  isNvidiaSupportedOutputFormat(outputFormat) ? i18n.t('common.nvencReady') : i18n.t('common.cpuOnly'),
+];
 
 export const getEncoderModeDescription = (
   outputFormat: OutputFormat,
@@ -93,7 +163,9 @@ export const getEncoderModeDescription = (
   hardwareAccelerationProfile: HardwareAccelerationProfile,
 ): string => {
   if (!isNvidiaSupportedOutputFormat(outputFormat)) {
-    return i18n.t('composer.backendWebm');
+    return i18n.t('composer.backendCpuOnlyFormat', {
+      format: getOutputFormatLabel(outputFormat),
+    });
   }
 
   if (requestedEncoderBackend === 'cpu') {

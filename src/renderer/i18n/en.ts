@@ -4,6 +4,7 @@ import common from '@renderer/i18n/resources/common.en';
 import compression from '@renderer/i18n/resources/compression.en';
 import composer from '@renderer/i18n/resources/composer.en';
 import details from '@renderer/i18n/resources/details.en';
+import formats from '@renderer/i18n/resources/formats.en';
 import history from '@renderer/i18n/resources/history.en';
 import logs from '@renderer/i18n/resources/logs.en';
 import modes from '@renderer/i18n/resources/modes.en';
@@ -19,6 +20,7 @@ const en = {
   theme,
   overview,
   composer,
+  formats,
   preview,
   history,
   details,
