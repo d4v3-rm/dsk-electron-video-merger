@@ -6,7 +6,7 @@
 - Stack principale: Electron + Vite + React + TypeScript + Ant Design + Zustand + FFmpeg/FFprobe statici.
 - Struttura: una desktop app locale (`src/main` + `src/renderer` + `src/shared`) e un sito marketing separato (`website/`).
 - Packaging: build Windows portable tramite Electron Builder.
-- Stato di verifica locale: `node_modules` non e presente; `npm.cmd run typecheck` e `npm.cmd run lint` falliscono per assenza di `tsc` ed `eslint`, quindi non e stato possibile validare il codice eseguendolo.
+- Stato di verifica locale al momento di questo aggiornamento: dipendenze presenti e validazione statica eseguibile; `npm.cmd run lint` e `npm.cmd run typecheck` risultano verdi.
 
 ## Lettura architetturale
 
@@ -15,7 +15,7 @@
 3. L'IPC del main process inoltra le richieste a servizi dedicati.
 4. `JobService` costruisce i job, li mette in coda ed esegue un solo job per volta.
 5. `FfmpegService` decide backend CPU/NVIDIA, prepara gli argomenti FFmpeg, legge il progresso da `-progress pipe:2` e produce telemetria/log.
-6. `StorageService` crea cartelle output/temp sotto `app.getPath('userData')` oppure usa una cartella scelta dall'utente.
+6. `StorageService` crea cartelle output sotto `app.getPath('userData')` oppure usa una cartella scelta dall'utente.
 7. Il sito `website/` e indipendente dall'app: stesso repository, toolchain separata, finalita solo promozionale.
 
 ## Osservazioni trasversali
@@ -88,14 +88,14 @@
 
 ### Main services generali
 
-- `src/main/services/main-process-services.ts`: singleton che istanzia `StorageService`, `FfmpegService`, `FilePickerService` e `JobService`. E il mini-container di dependency injection del main process.
+- `src/main/services/main-process-services.ts`: factory memoizzata che istanzia `StorageService`, `FfmpegService`, `FilePickerService` e `JobService`. E il mini-container di dependency injection del main process.
 - `src/main/services/binary-path.utils.ts`: corregge i path dei binari dentro `app.asar` verso `app.asar.unpacked` e verifica l'esistenza del file. Risolve un problema classico di packaging Electron.
 - `src/main/services/ffmpeg.types.ts`: tipi di supporto per FFmpeg, inclusi update di progresso, argomenti encoder e opzioni merge/compression. Tiene pulito `ffmpeg.service.ts`.
-- `src/main/services/ffmpeg.service.ts`: cuore della pipeline video. Decide i parametri CPU/NVENC/VP9, crea file concat per merge, sonda capacita hardware, esegue FFmpeg, interpreta `stderr` progressivo e trasforma telemetria tecnica in update UI leggibili.
+- `src/main/services/ffmpeg.service.ts`: cuore della pipeline video. Decide i parametri CPU/NVENC/VP9, sonda capacita hardware, delega la costruzione dei comandi a utility funzionali e trasforma il progresso FFmpeg in update UI leggibili. Il merge usa `filter_complex`, non piu concat demuxer basato su file temporaneo.
 - `src/main/services/file-picker.service.ts`: apre dialog nativi per scegliere video o cartella di output e restituisce DTO con nome/path/size. E il punto di ingresso fisico dei file locali.
 - `src/main/services/storage.types.ts`: tipi per path globali e cartelle job-specifiche. Serve quasi solo a documentare `StorageService`.
-- `src/main/services/storage.service.ts`: gestisce root/output/temp sotto `userData/video-merger`, crea cartelle per job e pulisce il temp a fine esecuzione. Non persiste metadata dei job, solo filesystem operativo.
-- `src/main/services/media-probe.service.ts`: usa `ffprobe-static` per ottenere la durata dei file e la durata totale della timeline. In caso di errore restituisce `null`, favorendo un fallback UI e non un crash.
+- `src/main/services/storage.service.ts`: gestisce root/output sotto `userData/video-merger` e crea cartelle per job. Non persiste metadata dei job, solo filesystem operativo.
+- `src/main/services/media-probe.service.ts`: usa `ffprobe-static` per ottenere durata e metadati di stream video/audio (codec, frame rate, dimensioni, sample rate, canali). In caso di errore restituisce `null`, favorendo un fallback UI e non un crash.
 - `src/main/services/job.types.ts`: arricchisce `Job` con campi interni (`sourcePaths`) e definisce il payload interno di pubblicazione eventi. Separa contratto pubblico da stato di orchestrazione.
 - `src/main/services/job.service.ts`: orchestra coda, stato, pubblicazione eventi e transizione `queued -> running -> completed/error`. E seriale, non persistente, senza cancel/retry; ottimo per semplicità, limitato per un carico professionale piu alto.
 
