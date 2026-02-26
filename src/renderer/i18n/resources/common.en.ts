@@ -4,6 +4,7 @@ const commonEn = {
   nvidiaNvenc: 'NVIDIA NVENC',
   cpuOnly: 'CPU only',
   nvencReady: 'NVENC ready',
+  close: 'Close',
   preserveTiming: 'Preserve source timing',
   constantFrameRate: 'Constant frame rate',
   dark: 'Dark',

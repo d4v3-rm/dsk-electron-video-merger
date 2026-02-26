@@ -1,5 +1,5 @@
 const codecGuideEn = {
-  title: 'Codec guide',
+  title: 'Codec and container guide',
 };
 
 export default codecGuideEn;

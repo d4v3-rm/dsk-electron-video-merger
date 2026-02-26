@@ -96,17 +96,6 @@ body {
   position: relative;
 }
 
-.workspace-panel-history::before {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: 28px;
-  border: 1px solid rgba(79, 140, 255, 0.18);
-  background: radial-gradient(circle at top, rgba(79, 140, 255, 0.14), transparent 62%);
-  pointer-events: none;
-  animation: workspace-history-spotlight 720ms ease-out;
-}
-
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -383,6 +372,19 @@ body {
   margin-top: 4px;
 }
 
+.composer-settings-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.composer-settings-summary .ant-descriptions {
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
 .composer-settings-shell {
   display: flex;
   flex-direction: column;
@@ -424,28 +426,23 @@ body {
   font: inherit;
   border-radius: 18px;
   border: 1px solid var(--app-border);
-  background: linear-gradient(180deg, rgba(22, 33, 51, 0.94) 0%, rgba(15, 23, 36, 0.94) 100%);
+  background: var(--app-surface);
   color: var(--app-text);
   text-align: left;
   appearance: none;
   transition:
-    transform 160ms ease,
     border-color 160ms ease,
-    box-shadow 160ms ease,
     background-color 160ms ease;
   cursor: pointer;
 }
 
 .composer-option-card:hover:not(:disabled) {
-  transform: translateY(-1px);
   border-color: var(--app-border-strong);
-  box-shadow: 0 16px 38px rgba(3, 8, 17, 0.22);
 }
 
 .composer-option-card:focus-visible {
   outline: none;
   border-color: rgba(79, 140, 255, 0.88);
-  box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.18);
 }
 
 .composer-option-card:disabled {
@@ -455,10 +452,7 @@ body {
 
 .composer-option-card-selected {
   border-color: rgba(79, 140, 255, 0.88);
-  background:
-    radial-gradient(circle at top right, rgba(79, 140, 255, 0.16), transparent 48%),
-    linear-gradient(180deg, rgba(22, 39, 68, 0.96) 0%, rgba(16, 27, 42, 0.96) 100%);
-  box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.18);
+  background: var(--app-surface-alt);
 }
 
 .composer-option-card-header {
@@ -631,10 +625,7 @@ body {
   overflow: hidden;
   border: 1px solid var(--app-border-strong);
   border-radius: 22px;
-  background:
-    radial-gradient(circle at top right, rgba(79, 140, 255, 0.14), transparent 42%),
-    linear-gradient(180deg, var(--app-surface) 0%, var(--app-surface-alt) 100%);
-  box-shadow: 0 24px 64px rgba(3, 8, 17, 0.38);
+  background: var(--app-surface) !important;
 }
 
 .queue-launch-toast .ant-notification-notice-message {
@@ -739,10 +730,7 @@ body {
   border-radius: 999px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
+  transition: border-color 180ms ease;
 }
 
 .workspace-switcher .ant-segmented-group {
@@ -764,8 +752,54 @@ body {
 
 .workspace-switcher-shell[data-active-panel='history'] .workspace-switcher {
   border-color: var(--app-border-strong);
-  box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.12);
-  transform: translateY(-1px);
+}
+
+.ant-card,
+.ant-modal-content,
+.ant-drawer-content-wrapper,
+.ant-drawer-content,
+.ant-select-dropdown,
+.ant-notification-notice,
+.ant-tooltip .ant-tooltip-inner {
+  box-shadow: none !important;
+}
+
+.app-flat-modal .ant-modal-content {
+  border: 1px solid var(--app-border);
+  border-radius: 20px;
+  background: var(--app-surface) !important;
+}
+
+.app-flat-modal .ant-modal-header,
+.app-flat-modal .ant-modal-footer {
+  background: var(--app-surface) !important;
+  border-color: var(--app-border);
+}
+
+.app-flat-modal .ant-modal-body {
+  padding-top: 8px;
+}
+
+.codec-guide-markdown table {
+  width: 100%;
+  margin-bottom: 18px;
+  border-collapse: collapse;
+}
+
+.codec-guide-markdown th,
+.codec-guide-markdown td {
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  vertical-align: top;
+}
+
+.codec-guide-markdown th {
+  text-align: left;
+  background: var(--app-surface-alt);
+}
+
+.codec-guide-markdown tbody tr:nth-child(even) td {
+  background: var(--app-surface);
 }
 
 @keyframes workspace-panel-enter {
@@ -776,22 +810,6 @@ body {
 
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes workspace-history-spotlight {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.992);
-  }
-
-  35% {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
     transform: translateY(0) scale(1);
   }
 }

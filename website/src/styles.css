@@ -8,8 +8,8 @@
   --site-text-secondary: #97a6bb;
   --site-accent: #7fa8ff;
   --site-accent-soft: rgba(127, 168, 255, 0.12);
-  --site-surface: rgba(11, 18, 32, 0.9);
-  --site-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+  --site-surface: #0b1220;
+  --site-shadow: none;
 }
 
 * {
@@ -28,10 +28,7 @@ body {
   overflow-x: hidden;
   color: var(--site-text);
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(127, 168, 255, 0.14), transparent 22%),
-    radial-gradient(circle at 82% 12%, rgba(92, 225, 230, 0.06), transparent 18%),
-    linear-gradient(180deg, #04070d 0%, #060a12 44%, #04070d 100%);
+  background: var(--site-bg);
 }
 
 figure {

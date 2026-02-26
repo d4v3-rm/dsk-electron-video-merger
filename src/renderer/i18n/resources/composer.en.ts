@@ -80,6 +80,9 @@ const composerEn = {
     'Hardware and frame timing are split so you can keep cadence decisions independent from compression.',
   destinationSectionHelp:
     'Choose where the next job should write its outputs. Leaving this empty uses the app-managed folder.',
+  modalTitle: 'Export profile editor',
+  modalSubtitle:
+    'Review container, compression, backend, frame timing, and destination in one scrollable panel.',
   destinationDefault: 'App-managed output folder',
   destinationSelected: 'The next job will write the generated output into the selected folder.',
   destinationAuto: 'No custom folder selected. The app will use its default local output folder.',
@@ -92,6 +95,7 @@ const composerEn = {
     startCompression: 'Start compression',
     selectDestination: 'Choose folder',
     useDefaultDestination: 'Use default',
+    configureProfile: 'Configure profile',
   },
   queueToast: {
     mergeTitle: 'Merge queued',
