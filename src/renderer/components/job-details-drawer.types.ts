@@ -1,7 +1,1 @@
-import type { Job } from '@shared/types';
-
-export interface JobDetailsDrawerProps {
-  job: Job | null;
-  open: boolean;
-  onClose: () => void;
-}
+export type { JobDetailsDrawerProps } from '@renderer/components/job-history/job-details-drawer.types';
