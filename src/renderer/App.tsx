@@ -12,6 +12,13 @@ import { selectAppBootstrapState } from '@renderer/store/app-store.selectors';
 import { selectWorkspacePanelState } from '@renderer/store/ui-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
 import { useUiStore } from '@renderer/store/use-ui-store';
+import {
+  appContentStyle,
+  appShellStyle,
+  dashboardContainerStyle,
+  footerStyle,
+  loadingCardStyle,
+} from '@renderer/theme/component-styles';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -36,7 +43,7 @@ function App() {
 
     if (!loaded) {
       return (
-        <div className="loading-card">
+        <div style={loadingCardStyle}>
           <Space direction="vertical" size="middle" align="center">
             <Spin size="large" />
             <Text type="secondary">{t('app.loadingWorkspace')}</Text>
@@ -53,23 +60,18 @@ function App() {
   };
 
   return (
-    <Layout className="app-shell">
-      <Content className="app-content">
-        <div className="dashboard-container">
+    <Layout style={appShellStyle}>
+      <Content style={appContentStyle}>
+        <div style={dashboardContainerStyle}>
           <Space direction="vertical" size="large" style={{ width: '100%' }}>
             <MergeOverview />
             <WorkspaceSwitcher />
-            <div
-              key={activeWorkspacePanel}
-              className={`workspace-panel ${activeWorkspacePanel === 'history' ? 'workspace-panel-history' : ''}`}
-            >
-              {renderPanel()}
-            </div>
+            <div key={activeWorkspacePanel}>{renderPanel()}</div>
           </Space>
         </div>
       </Content>
 
-      <Footer className="app-footer">
+      <Footer style={footerStyle}>
         <Text type="secondary">{t('app.footer')}</Text>
       </Footer>
     </Layout>

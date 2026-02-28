@@ -4,6 +4,12 @@ import { JobComposerActionBar } from '@renderer/components/job-composer/JobCompo
 import { JobComposerEmptyState } from '@renderer/components/job-composer/JobComposerEmptyState';
 import { MergeSelectionList } from '@renderer/components/job-composer/MergeSelectionList';
 import type { JobComposerQueuePanelProps } from '@renderer/components/job-composer/job-composer.types';
+import {
+  actionBarStyle,
+  actionCopyStyle,
+  sectionCardStyle,
+  sectionCardStyles,
+} from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -36,13 +42,14 @@ export const JobComposerQueuePanel = ({
 }: JobComposerQueuePanelProps) => (
   <Card
     size="small"
-    className="panel-list-card"
     title={title}
     extra={<Tag color="processing">{selectedFilesCount}</Tag>}
+    style={sectionCardStyle}
+    styles={sectionCardStyles}
   >
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Flex className="panel-action-bar" align="center" justify="space-between" gap={16} wrap>
-        <Text type="secondary" className="panel-action-copy">
+      <Flex align="center" justify="space-between" gap={16} wrap style={actionBarStyle}>
+        <Text type="secondary" style={actionCopyStyle}>
           {queueHint}
         </Text>
         <JobComposerActionBar

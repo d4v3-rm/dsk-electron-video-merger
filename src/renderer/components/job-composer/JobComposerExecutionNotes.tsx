@@ -1,6 +1,7 @@
 import { Card, Descriptions, Space, Typography } from 'antd';
 import type { JobComposerExecutionNotesProps } from '@renderer/components/job-composer/job-composer.types';
 import { JobComposerAlerts } from '@renderer/components/job-composer/JobComposerAlerts';
+import { sectionCardStyle, sectionCardStyles } from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -19,7 +20,7 @@ export const JobComposerExecutionNotes = ({
   backendCopy,
   destinationCopy,
 }: JobComposerExecutionNotesProps) => (
-  <Card size="small" className="panel-section-card" title={title}>
+  <Card size="small" title={title} style={sectionCardStyle} styles={sectionCardStyles}>
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <JobComposerAlerts
         orderInfo={orderInfo}

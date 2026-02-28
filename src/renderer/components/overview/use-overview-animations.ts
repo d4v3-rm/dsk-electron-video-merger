@@ -75,7 +75,7 @@ export const useOverviewAnimations = ({
 
     const direction = previousModeRef.current === jobMode ? 0 : jobMode === 'compress' ? 1 : -1;
     const ctx = gsap.context(() => {
-      const targets = shell.querySelectorAll('.overview-mode-animate');
+      const targets = shell.querySelectorAll('[data-overview-animate="true"]');
       gsap.killTweensOf(targets);
       gsap.fromTo(
         targets,

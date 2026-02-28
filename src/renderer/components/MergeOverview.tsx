@@ -15,6 +15,7 @@ import {
 import { useOverviewAnimations } from '@renderer/components/overview/use-overview-animations';
 import { selectOverviewState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
+import { overviewCardStyle, overviewCardStyles, overviewShellStyle } from '@renderer/theme/component-styles';
 
 export const MergeOverview = () => {
   const { t } = useTranslation();
@@ -47,10 +48,8 @@ export const MergeOverview = () => {
   useOverviewAnimations({ shellRef, detailsRef, previousModeRef, isExpanded, jobMode });
 
   return (
-    <Card
-      className={`modern-card overview-card ${isExpanded ? 'overview-card-expanded' : 'overview-card-collapsed'}`}
-    >
-      <div ref={shellRef} className="overview-shell">
+    <Card style={overviewCardStyle} styles={overviewCardStyles}>
+      <div ref={shellRef} style={overviewShellStyle}>
         <OverviewHeader
           isExpanded={isExpanded}
           jobMode={jobMode}
@@ -64,7 +63,7 @@ export const MergeOverview = () => {
 
         <OverviewMetrics metrics={metrics} />
 
-        <div ref={detailsRef} className="overview-details">
+        <div ref={detailsRef}>
           <OverviewDetails
             body={modeCopy.body}
             chips={modeCopy.chips}

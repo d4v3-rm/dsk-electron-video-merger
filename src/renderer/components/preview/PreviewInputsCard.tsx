@@ -1,6 +1,7 @@
 import { Card, List, Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import type { InputFileDTO, JobMode } from '@shared/types';
+import { listContainerStyle, sectionCardStyle, sectionCardStyles } from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -13,13 +14,18 @@ export const PreviewInputsCard = ({ selectedFiles, previewMode }: PreviewInputsC
   const { t } = useTranslation();
 
   return (
-    <Card size="small" className="panel-list-card" title={t('preview.sections.inputs')}>
+    <Card
+      size="small"
+      title={t('preview.sections.inputs')}
+      style={sectionCardStyle}
+      styles={sectionCardStyles}
+    >
       <Space direction="vertical" size="small" style={{ width: '100%' }}>
         <Text type="secondary">
           {previewMode === 'merge' ? t('preview.currentOrder') : t('preview.selectedVideos')}
         </Text>
         <List
-          className="preview-list"
+          style={listContainerStyle}
           size="small"
           dataSource={selectedFiles.slice(0, 4)}
           renderItem={(file, index) => (

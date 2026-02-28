@@ -1,5 +1,6 @@
 import { LinkOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
+import { listPathTextStyle } from '@renderer/theme/component-styles';
 
 const { Paragraph } = Typography;
 
@@ -8,7 +9,7 @@ interface PreviewPathTextProps {
 }
 
 export const PreviewPathText = ({ path }: PreviewPathTextProps) => (
-  <Paragraph className="preview-path" copyable={{ text: path }} ellipsis={{ tooltip: path }}>
+  <Paragraph style={listPathTextStyle} copyable={{ text: path }} ellipsis={{ tooltip: path }}>
     <LinkOutlined /> {path}
   </Paragraph>
 );

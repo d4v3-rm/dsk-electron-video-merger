@@ -5,6 +5,12 @@ import { useAppStore } from '@renderer/store/use-app-store';
 import { selectWorkspacePanelState } from '@renderer/store/ui-store.selectors';
 import { useUiStore } from '@renderer/store/use-ui-store';
 import type { WorkspacePanel } from '@renderer/store/ui-store.types';
+import {
+  workspaceSwitcherHistoryStyle,
+  workspaceSwitcherSegmentedStyle,
+  workspaceSwitcherShellStyle,
+  workspaceSwitcherStyle,
+} from '@renderer/theme/component-styles';
 
 const WORKSPACE_PANELS: WorkspacePanel[] = ['setup', 'output', 'history'];
 
@@ -14,10 +20,18 @@ export const WorkspaceSwitcher = () => {
   const { activeWorkspacePanel, setActiveWorkspacePanel } = useUiStore(useShallow(selectWorkspacePanelState));
 
   return (
-    <div className="workspace-switcher-shell" data-active-panel={activeWorkspacePanel}>
+    <div style={workspaceSwitcherShellStyle}>
       <Segmented<WorkspacePanel>
         size="large"
-        className="workspace-switcher"
+        style={
+          activeWorkspacePanel === 'history'
+            ? {
+                ...workspaceSwitcherSegmentedStyle,
+                ...workspaceSwitcherHistoryStyle,
+                ...workspaceSwitcherStyle,
+              }
+            : { ...workspaceSwitcherSegmentedStyle, ...workspaceSwitcherStyle }
+        }
         value={activeWorkspacePanel}
         onChange={(value) => setActiveWorkspacePanel(value)}
         options={WORKSPACE_PANELS.map((panel) => ({

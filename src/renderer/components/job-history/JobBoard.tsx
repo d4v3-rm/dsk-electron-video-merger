@@ -14,6 +14,7 @@ import { JobDetailsDrawer } from '@renderer/components/job-history/JobDetailsDra
 import { buildJobBoardColumns } from '@renderer/components/job-history/job-board.columns';
 import type { JobHistoryMetric } from '@renderer/components/job-history/job-history.types';
 import { useAppStore } from '@renderer/store/use-app-store';
+import { fullHeightCardStyle } from '@renderer/theme/component-styles';
 
 export const JobBoard = () => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ export const JobBoard = () => {
   return (
     <>
       <Card
-        className="modern-card history-card"
+        style={fullHeightCardStyle}
         title={t('history.cardTitle')}
         extra={
           <Space>
@@ -84,7 +85,6 @@ export const JobBoard = () => {
             pagination={{ pageSize: 8, showSizeChanger: false, position: ['bottomRight'] }}
             locale={{ emptyText: t('history.emptyText') }}
             scroll={{ x: 1440 }}
-            rowClassName="history-row"
             onRow={(job) => ({
               onClick: () => setSelectedJobId(job.id),
             })}

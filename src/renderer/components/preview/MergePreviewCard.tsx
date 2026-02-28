@@ -9,6 +9,7 @@ import { PreviewSummary } from '@renderer/components/preview/PreviewSummary';
 import { buildPreviewMetrics, buildPreviewModel } from '@renderer/components/preview/preview.utils';
 import { selectPreviewState } from '@renderer/store/app-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
+import { fullHeightCardStyle } from '@renderer/theme/component-styles';
 import { getJobModeLabel } from '@renderer/utils/job-presentation';
 
 export const MergePreviewCard = () => {
@@ -19,7 +20,7 @@ export const MergePreviewCard = () => {
 
   return (
     <Card
-      className="modern-card preview-card"
+      style={fullHeightCardStyle}
       title={t('preview.cardTitle')}
       extra={
         <Space size="small" wrap>

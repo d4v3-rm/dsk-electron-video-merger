@@ -6,6 +6,7 @@ import { EditorialHighlights } from '@website/components/EditorialHighlights';
 import { LandingHero } from '@website/components/LandingHero';
 import { ProductShowcase } from '@website/components/ProductShowcase';
 import { SiteFooter } from '@website/components/SiteFooter';
+import { siteContentStyle, siteShellStyle } from '@website/theme/site-styles';
 
 const { Content } = Layout;
 
@@ -22,7 +23,7 @@ function App() {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.site-animate',
+        '[data-site-animate="true"]',
         { autoAlpha: 0, y: 28 },
         {
           autoAlpha: 1,
@@ -33,7 +34,7 @@ function App() {
         },
       );
 
-      gsap.utils.toArray<HTMLElement>('.site-shot-panel').forEach((panel) => {
+      gsap.utils.toArray<HTMLElement>('[data-site-panel="true"]').forEach((panel) => {
         const speed = Number(panel.dataset.speed ?? '1');
 
         gsap.fromTo(
@@ -53,7 +54,7 @@ function App() {
           yPercent: -4 * speed,
           ease: 'none',
           scrollTrigger: {
-            trigger: '.site-hero',
+            trigger: '[data-site-hero="true"]',
             start: 'top top',
             end: 'bottom top',
             scrub: true,
@@ -61,7 +62,7 @@ function App() {
         });
       });
 
-      gsap.utils.toArray<HTMLElement>('.site-reveal').forEach((element) => {
+      gsap.utils.toArray<HTMLElement>('[data-site-reveal="true"]').forEach((element) => {
         gsap.fromTo(
           element,
           { autoAlpha: 0, y: 40 },
@@ -87,8 +88,8 @@ function App() {
   }, []);
 
   return (
-    <Layout className="site-shell">
-      <Content className="site-content" ref={rootRef}>
+    <Layout style={siteShellStyle}>
+      <Content ref={rootRef} style={siteContentStyle}>
         <LandingHero />
         <ProductShowcase />
         <EditorialHighlights />

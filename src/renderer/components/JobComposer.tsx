@@ -21,6 +21,12 @@ import {
   getVideoTimingDescription,
   isNvidiaSupportedOutputFormat,
 } from '@renderer/utils/encoder-presentation';
+import {
+  flatNotificationStyle,
+  fullHeightCardStyle,
+  sectionCardStyle,
+  sectionCardStyles,
+} from '@renderer/theme/component-styles';
 
 const { Text, Title } = Typography;
 
@@ -92,7 +98,7 @@ export const JobComposer = () => {
     notification.success({
       placement: 'topRight',
       duration: 3.8,
-      className: 'queue-launch-toast',
+      style: flatNotificationStyle,
       message:
         job.mode === 'merge' ? t('composer.queueToast.mergeTitle') : t('composer.queueToast.compressTitle'),
       description:
@@ -114,7 +120,7 @@ export const JobComposer = () => {
   return (
     <Card
       title={modeCopy.cardTitle}
-      className="modern-card queue-card"
+      style={fullHeightCardStyle}
       extra={
         <JobComposerHeader
           queueTag={modeCopy.queueTag}
@@ -126,7 +132,7 @@ export const JobComposer = () => {
     >
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <div>
-          <Title level={4} className="section-title">
+          <Title level={4} style={{ marginBottom: 4 }}>
             {modeCopy.title}
           </Title>
           <Text type="secondary">{modeCopy.subtitle}</Text>
@@ -140,7 +146,12 @@ export const JobComposer = () => {
           deliveryValue={modeCopy.deliveryValue}
         />
 
-        <Card size="small" className="panel-section-card" title={t('composer.sections.exportProfile')}>
+        <Card
+          size="small"
+          title={t('composer.sections.exportProfile')}
+          style={sectionCardStyle}
+          styles={sectionCardStyles}
+        >
           <JobComposerSettingsForm
             outputDirectory={outputDirectory}
             settings={settings}
