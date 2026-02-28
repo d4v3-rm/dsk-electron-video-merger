@@ -1,5 +1,5 @@
 import { OrderedListOutlined } from '@ant-design/icons';
-import { App as AntdApp, Card, Col, Row, Space, Typography } from 'antd';
+import { App as AntdApp, Card, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -140,45 +140,39 @@ export const JobComposer = () => {
           deliveryValue={modeCopy.deliveryValue}
         />
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} xl={15}>
-            <Card size="small" className="panel-section-card" title={t('composer.sections.exportProfile')}>
-              <JobComposerSettingsForm
-                outputDirectory={outputDirectory}
-                settings={settings}
-                nvidiaAvailable={nvidiaAvailable}
-                nvidiaSupportedForFormat={nvidiaSupportedForFormat}
-                setOutputFormat={setOutputFormat}
-                setCompression={setCompression}
-                setEncoderBackend={setEncoderBackend}
-                setVideoTimingMode={setVideoTimingMode}
-                setTargetFrameRate={setTargetFrameRate}
-                selectOutputDirectory={selectOutputDirectory}
-                clearOutputDirectory={clearOutputDirectory}
-              />
-            </Card>
-          </Col>
+        <Card size="small" className="panel-section-card" title={t('composer.sections.exportProfile')}>
+          <JobComposerSettingsForm
+            outputDirectory={outputDirectory}
+            settings={settings}
+            nvidiaAvailable={nvidiaAvailable}
+            nvidiaSupportedForFormat={nvidiaSupportedForFormat}
+            setOutputFormat={setOutputFormat}
+            setCompression={setCompression}
+            setEncoderBackend={setEncoderBackend}
+            setVideoTimingMode={setVideoTimingMode}
+            setTargetFrameRate={setTargetFrameRate}
+            selectOutputDirectory={selectOutputDirectory}
+            clearOutputDirectory={clearOutputDirectory}
+          />
+        </Card>
 
-          <Col xs={24} xl={9}>
-            <JobComposerExecutionNotes
-              title={t('composer.sections.executionNotes')}
-              orderInfo={modeCopy.orderInfo}
-              orderAlertType={modeCopy.orderAlertType}
-              hardwareAccelerationLoaded={hardwareAccelerationLoaded}
-              hardwareAccelerationProfile={hardwareAccelerationProfile}
-              hardwareAlertType={hardwareAlertType}
-              hardwareDetectingLabel={t('composer.hardwareDetecting')}
-              encoderModeDescription={encoderModeDescription}
-              timingModeDescription={timingModeDescription}
-              setupSummary={setupSummary}
-              backendSelectedLabel={t('composer.backendSelected', {
-                backend: getRequestedEncoderBackendLabel(settings.encoderBackend),
-              })}
-              backendCopy={backendCopy}
-              destinationCopy={destinationCopy}
-            />
-          </Col>
-        </Row>
+        <JobComposerExecutionNotes
+          title={t('composer.sections.executionNotes')}
+          orderInfo={modeCopy.orderInfo}
+          orderAlertType={modeCopy.orderAlertType}
+          hardwareAccelerationLoaded={hardwareAccelerationLoaded}
+          hardwareAccelerationProfile={hardwareAccelerationProfile}
+          hardwareAlertType={hardwareAlertType}
+          hardwareDetectingLabel={t('composer.hardwareDetecting')}
+          encoderModeDescription={encoderModeDescription}
+          timingModeDescription={timingModeDescription}
+          setupSummary={setupSummary}
+          backendSelectedLabel={t('composer.backendSelected', {
+            backend: getRequestedEncoderBackendLabel(settings.encoderBackend),
+          })}
+          backendCopy={backendCopy}
+          destinationCopy={destinationCopy}
+        />
 
         <JobComposerQueuePanel
           title={modeCopy.queueTitle}
