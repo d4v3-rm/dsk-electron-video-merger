@@ -1,10 +1,12 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Modal, Tooltip, Typography } from 'antd';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useShallow } from 'zustand/react/shallow';
 import codecGuideMarkdown from '@renderer/content/codec-guide.en.md?raw';
+import { selectCodecGuideModalState } from '@renderer/store/ui-store.selectors';
+import { useUiStore } from '@renderer/store/use-ui-store';
 import {
   APP_MODAL_BODY_STYLE,
   APP_MODAL_TOP_OFFSET,
@@ -23,7 +25,7 @@ const { Paragraph, Text, Title } = Typography;
 
 export const CodecGuideModal = () => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const { codecGuideModalOpen, setCodecGuideModalOpen } = useUiStore(useShallow(selectCodecGuideModalState));
 
   return (
     <>
@@ -31,7 +33,7 @@ export const CodecGuideModal = () => {
         <Button
           aria-label={t('composer.tooltips.codecGuide')}
           icon={<QuestionCircleOutlined />}
-          onClick={() => setOpen(true)}
+          onClick={() => setCodecGuideModalOpen(true)}
           size="small"
           type="text"
         />
@@ -40,8 +42,8 @@ export const CodecGuideModal = () => {
       <Modal
         destroyOnHidden
         footer={null}
-        onCancel={() => setOpen(false)}
-        open={open}
+        onCancel={() => setCodecGuideModalOpen(false)}
+        open={codecGuideModalOpen}
         style={{ top: APP_MODAL_TOP_OFFSET }}
         styles={{
           body: { ...APP_MODAL_BODY_STYLE, ...modalBodyInsetStyle },

@@ -30,6 +30,10 @@ const applyThemeToDom = (themeMode: AppThemeMode): void => {
 export const useUiStore = create<UiStoreState>((set) => ({
   themeMode: DEFAULT_THEME_MODE,
   activeWorkspacePanel: 'setup',
+  overviewExpanded: false,
+  exportProfileModalOpen: false,
+  codecGuideModalOpen: false,
+  selectedHistoryJobId: null,
 
   setThemeMode: (themeMode) => {
     if (typeof window !== 'undefined') {
@@ -54,7 +58,32 @@ export const useUiStore = create<UiStoreState>((set) => ({
   },
 
   setActiveWorkspacePanel: (activeWorkspacePanel) => {
-    set({ activeWorkspacePanel });
+    set((state) => ({
+      activeWorkspacePanel,
+      exportProfileModalOpen: activeWorkspacePanel === 'setup' ? state.exportProfileModalOpen : false,
+      codecGuideModalOpen: activeWorkspacePanel === 'setup' ? state.codecGuideModalOpen : false,
+      selectedHistoryJobId: activeWorkspacePanel === 'history' ? state.selectedHistoryJobId : null,
+    }));
+  },
+
+  setOverviewExpanded: (overviewExpanded) => {
+    set({ overviewExpanded });
+  },
+
+  toggleOverviewExpanded: () => {
+    set((state) => ({ overviewExpanded: !state.overviewExpanded }));
+  },
+
+  setExportProfileModalOpen: (open) => {
+    set({ exportProfileModalOpen: open });
+  },
+
+  setCodecGuideModalOpen: (open) => {
+    set({ codecGuideModalOpen: open });
+  },
+
+  setSelectedHistoryJobId: (selectedHistoryJobId) => {
+    set({ selectedHistoryJobId });
   },
 
   syncThemeFromStorage: () => {

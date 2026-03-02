@@ -6,24 +6,27 @@ import {
   WarningOutlined,
 } from '@ant-design/icons';
 import { Card, Space, Table, Tag } from 'antd';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import type { Job } from '@shared/types';
 import { JobBoardSummary } from '@renderer/components/job-history/JobBoardSummary';
 import { JobDetailsDrawer } from '@renderer/components/job-history/JobDetailsDrawer';
 import { buildJobBoardColumns } from '@renderer/components/job-history/job-board.columns';
 import type { JobHistoryMetric } from '@renderer/components/job-history/job-history.types';
+import { selectHistoryDrawerState } from '@renderer/store/ui-store.selectors';
 import { useAppStore } from '@renderer/store/use-app-store';
+import { useUiStore } from '@renderer/store/use-ui-store';
 import { fullHeightCardStyle } from '@renderer/theme/component-styles';
 
 export const JobBoard = () => {
   const { t } = useTranslation();
   const jobs = useAppStore((state) => state.jobs);
-  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const { selectedHistoryJobId, setSelectedHistoryJobId } = useUiStore(useShallow(selectHistoryDrawerState));
 
   const selectedJob = useMemo(
-    () => jobs.find((job) => job.id === selectedJobId) ?? null,
-    [jobs, selectedJobId],
+    () => jobs.find((job) => job.id === selectedHistoryJobId) ?? null,
+    [jobs, selectedHistoryJobId],
   );
   const columns = useMemo(() => buildJobBoardColumns(t), [t]);
 
@@ -86,7 +89,7 @@ export const JobBoard = () => {
             locale={{ emptyText: t('history.emptyText') }}
             scroll={{ x: 1440 }}
             onRow={(job) => ({
-              onClick: () => setSelectedJobId(job.id),
+              onClick: () => setSelectedHistoryJobId(job.id),
             })}
           />
         </Space>
@@ -95,7 +98,7 @@ export const JobBoard = () => {
       <JobDetailsDrawer
         job={selectedJob}
         open={Boolean(selectedJob)}
-        onClose={() => setSelectedJobId(null)}
+        onClose={() => setSelectedHistoryJobId(null)}
       />
     </>
   );

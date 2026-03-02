@@ -14,3 +14,23 @@ export const selectWorkspacePanelState = (state: UiStoreState) => ({
   activeWorkspacePanel: state.activeWorkspacePanel,
   setActiveWorkspacePanel: state.setActiveWorkspacePanel,
 });
+
+export const selectOverviewUiState = (state: UiStoreState) => ({
+  overviewExpanded: state.overviewExpanded,
+  toggleOverviewExpanded: state.toggleOverviewExpanded,
+});
+
+export const selectExportProfileModalState = (state: UiStoreState) => ({
+  exportProfileModalOpen: state.exportProfileModalOpen,
+  setExportProfileModalOpen: state.setExportProfileModalOpen,
+});
+
+export const selectCodecGuideModalState = (state: UiStoreState) => ({
+  codecGuideModalOpen: state.codecGuideModalOpen,
+  setCodecGuideModalOpen: state.setCodecGuideModalOpen,
+});
+
+export const selectHistoryDrawerState = (state: UiStoreState) => ({
+  selectedHistoryJobId: state.selectedHistoryJobId,
+  setSelectedHistoryJobId: state.setSelectedHistoryJobId,
+});

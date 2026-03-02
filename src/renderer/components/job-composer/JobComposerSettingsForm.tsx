@@ -1,7 +1,7 @@
 import { EditOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Form, Input, Modal, Segmented, Select, Space, Typography } from 'antd';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { JobComposerOptionCard } from '@renderer/components/job-composer/JobComposerOptionCard';
 import {
   buildBackendOptions,
@@ -11,6 +11,8 @@ import {
   buildTimingOptions,
 } from '@renderer/components/job-composer/job-composer-options';
 import type { JobComposerSettingsFormProps } from '@renderer/components/job-composer/job-composer.types';
+import { selectExportProfileModalState } from '@renderer/store/ui-store.selectors';
+import { useUiStore } from '@renderer/store/use-ui-store';
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatTechnicalLabel,
@@ -51,7 +53,9 @@ export const JobComposerSettingsForm = ({
   clearOutputDirectory,
 }: JobComposerSettingsFormProps) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const { exportProfileModalOpen, setExportProfileModalOpen } = useUiStore(
+    useShallow(selectExportProfileModalState),
+  );
 
   const formatOptions = buildOutputFormatOptions();
   const compressionOptions = buildCompressionOptions({
@@ -112,7 +116,7 @@ export const JobComposerSettingsForm = ({
           ]}
         />
 
-        <Button icon={<EditOutlined />} onClick={() => setOpen(true)}>
+        <Button icon={<EditOutlined />} onClick={() => setExportProfileModalOpen(true)}>
           {t('composer.buttons.configureProfile')}
         </Button>
       </div>
@@ -120,8 +124,8 @@ export const JobComposerSettingsForm = ({
       <Modal
         destroyOnHidden
         footer={null}
-        onCancel={() => setOpen(false)}
-        open={open}
+        onCancel={() => setExportProfileModalOpen(false)}
+        open={exportProfileModalOpen}
         style={{ top: APP_MODAL_TOP_OFFSET }}
         styles={{
           body: { ...APP_MODAL_BODY_STYLE, ...modalBodyInsetStyle },
