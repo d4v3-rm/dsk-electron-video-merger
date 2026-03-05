@@ -33,6 +33,7 @@ export const useUiStore = create<UiStoreState>((set) => ({
   overviewExpanded: false,
   exportProfileModalOpen: false,
   codecGuideModalOpen: false,
+  executionNotesModalOpen: false,
   selectedHistoryJobId: null,
 
   setThemeMode: (themeMode) => {
@@ -62,6 +63,7 @@ export const useUiStore = create<UiStoreState>((set) => ({
       activeWorkspacePanel,
       exportProfileModalOpen: activeWorkspacePanel === 'setup' ? state.exportProfileModalOpen : false,
       codecGuideModalOpen: activeWorkspacePanel === 'setup' ? state.codecGuideModalOpen : false,
+      executionNotesModalOpen: activeWorkspacePanel === 'setup' ? state.executionNotesModalOpen : false,
       selectedHistoryJobId: activeWorkspacePanel === 'history' ? state.selectedHistoryJobId : null,
     }));
   },
@@ -80,6 +82,10 @@ export const useUiStore = create<UiStoreState>((set) => ({
 
   setCodecGuideModalOpen: (open) => {
     set({ codecGuideModalOpen: open });
+  },
+
+  setExecutionNotesModalOpen: (open) => {
+    set({ executionNotesModalOpen: open });
   },
 
   setSelectedHistoryJobId: (selectedHistoryJobId) => {

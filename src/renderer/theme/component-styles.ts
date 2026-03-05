@@ -63,6 +63,7 @@ export const statisticTileBodyStyles = {
 } as const;
 
 export const actionBarStyle: CSSProperties = {
+  display: 'flex',
   width: '100%',
   alignItems: 'center',
   justifyContent: 'space-between',

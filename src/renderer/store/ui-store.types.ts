@@ -7,6 +7,7 @@ export interface UiStoreState {
   overviewExpanded: boolean;
   exportProfileModalOpen: boolean;
   codecGuideModalOpen: boolean;
+  executionNotesModalOpen: boolean;
   selectedHistoryJobId: string | null;
   setThemeMode: (themeMode: AppThemeMode) => void;
   toggleThemeMode: () => void;
@@ -15,6 +16,7 @@ export interface UiStoreState {
   toggleOverviewExpanded: () => void;
   setExportProfileModalOpen: (open: boolean) => void;
   setCodecGuideModalOpen: (open: boolean) => void;
+  setExecutionNotesModalOpen: (open: boolean) => void;
   setSelectedHistoryJobId: (jobId: string | null) => void;
   syncThemeFromStorage: () => void;
 }

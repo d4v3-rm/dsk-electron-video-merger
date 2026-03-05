@@ -83,6 +83,10 @@ const composerEn = {
   modalTitle: 'Export profile editor',
   modalSubtitle:
     'Review container, compression, backend, frame timing, and destination in one scrollable panel.',
+  executionNotesPreview:
+    'Review ordering, encoder behavior, frame timing, and destination notes in a separate panel.',
+  executionNotesModalSubtitle:
+    'Check the launch-sensitive notes for the next job without expanding the main composer surface.',
   destinationDefault: 'App-managed output folder',
   destinationSelected: 'The next job will write the generated output into the selected folder.',
   destinationAuto: 'No custom folder selected. The app will use its default local output folder.',
@@ -96,6 +100,7 @@ const composerEn = {
     selectDestination: 'Choose folder',
     useDefaultDestination: 'Use default',
     configureProfile: 'Configure profile',
+    openExecutionNotes: 'Open execution notes',
   },
   queueToast: {
     mergeTitle: 'Merge queued',

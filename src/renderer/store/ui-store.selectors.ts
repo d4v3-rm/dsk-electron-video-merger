@@ -30,6 +30,11 @@ export const selectCodecGuideModalState = (state: UiStoreState) => ({
   setCodecGuideModalOpen: state.setCodecGuideModalOpen,
 });
 
+export const selectExecutionNotesModalState = (state: UiStoreState) => ({
+  executionNotesModalOpen: state.executionNotesModalOpen,
+  setExecutionNotesModalOpen: state.setExecutionNotesModalOpen,
+});
+
 export const selectHistoryDrawerState = (state: UiStoreState) => ({
   selectedHistoryJobId: state.selectedHistoryJobId,
   setSelectedHistoryJobId: state.setSelectedHistoryJobId,
