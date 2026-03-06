@@ -21,31 +21,32 @@ export const WorkspaceSwitcher = () => {
 
   return (
     <div style={workspaceSwitcherShellStyle}>
-      <Segmented<WorkspacePanel>
-        size="large"
-        style={
-          activeWorkspacePanel === 'history'
-            ? {
-                ...workspaceSwitcherSegmentedStyle,
-                ...workspaceSwitcherHistoryStyle,
-                ...workspaceSwitcherStyle,
-              }
-            : { ...workspaceSwitcherSegmentedStyle, ...workspaceSwitcherStyle }
-        }
-        value={activeWorkspacePanel}
-        onChange={(value) => setActiveWorkspacePanel(value)}
-        options={WORKSPACE_PANELS.map((panel) => ({
-          value: panel,
-          label:
-            panel === 'setup'
-              ? jobMode === 'merge'
-                ? t('composer.cardTitle.merge')
-                : t('composer.cardTitle.compress')
-              : panel === 'output'
-                ? t('preview.cardTitle')
-                : t('history.cardTitle'),
-        }))}
-      />
+      <div style={workspaceSwitcherStyle}>
+        <Segmented<WorkspacePanel>
+          size="large"
+          style={
+            activeWorkspacePanel === 'history'
+              ? {
+                  ...workspaceSwitcherSegmentedStyle,
+                  ...workspaceSwitcherHistoryStyle,
+                }
+              : workspaceSwitcherSegmentedStyle
+          }
+          value={activeWorkspacePanel}
+          onChange={(value) => setActiveWorkspacePanel(value)}
+          options={WORKSPACE_PANELS.map((panel) => ({
+            value: panel,
+            label:
+              panel === 'setup'
+                ? jobMode === 'merge'
+                  ? t('composer.cardTitle.merge')
+                  : t('composer.cardTitle.compress')
+                : panel === 'output'
+                  ? t('preview.cardTitle')
+                  : t('history.cardTitle'),
+          }))}
+        />
+      </div>
     </div>
   );
 };

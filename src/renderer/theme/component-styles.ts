@@ -124,14 +124,18 @@ export const workspaceSwitcherShellStyle: CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   width: '100%',
+  paddingInline: 8,
+  overflowX: 'auto',
 };
 
 export const workspaceSwitcherStyle: CSSProperties = {
-  width: 'min(100%, 780px)',
+  width: 'fit-content',
+  maxWidth: '100%',
 };
 
 export const workspaceSwitcherSegmentedStyle: CSSProperties = {
-  width: '100%',
+  display: 'inline-flex',
+  maxWidth: '100%',
   padding: 6,
   borderRadius: 999,
   background: 'var(--app-surface)',
@@ -169,18 +173,22 @@ export const overviewTopbarStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'space-between',
-  gap: 20,
+  gap: 24,
   flexWrap: 'wrap',
 };
 
 export const overviewBrandStyle: CSSProperties = {
   alignItems: 'flex-start',
   minWidth: 0,
-  flex: 1,
+  maxWidth: 'min(100%, 640px)',
 };
 
 export const overviewBrandCopyStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
   minWidth: 0,
+  maxWidth: 'min(100%, 540px)',
 };
 
 export const overviewTagStyle: CSSProperties = {
@@ -209,7 +217,6 @@ export const statusBadgeStyle: CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   width: 'fit-content',
-  marginTop: 12,
   padding: '6px 12px',
   borderRadius: 999,
   border: '1px solid var(--app-status-border)',
@@ -222,7 +229,9 @@ export const overviewControlsStyle: CSSProperties = {
   flexDirection: 'column',
   alignItems: 'stretch',
   gap: 12,
-  minWidth: 340,
+  width: 'min(100%, 508px)',
+  minWidth: 320,
+  marginLeft: 'auto',
 };
 
 export const overviewToolbarStyle: CSSProperties = {
