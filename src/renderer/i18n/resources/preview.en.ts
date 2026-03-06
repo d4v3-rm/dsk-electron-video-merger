@@ -30,6 +30,7 @@ const previewEn = {
     mode: 'Mode',
     inputVideos: 'Input videos',
     format: 'Format',
+    outputResolution: 'Output resolution',
     compression: 'Compression',
     requestedBackend: 'Requested backend',
     activeBackend: 'Effective backend',

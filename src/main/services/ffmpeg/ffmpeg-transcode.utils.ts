@@ -1,11 +1,20 @@
-import type { OutputFormat, ResolvedEncoderBackend, TargetFrameRate, VideoTimingMode } from '@shared/types';
+import type {
+  OutputFormat,
+  OutputResolution,
+  ResolvedEncoderBackend,
+  TargetFrameRate,
+  VideoTimingMode,
+} from '@shared/types';
 import type { MediaProbeService } from '@main/services/media-probe.service';
 import type {
   JobProgressCallback,
   ProcessSingleCompressionOptions,
   ProcessSingleMergeOptions,
 } from '@main/services/ffmpeg.types';
-import { buildEncoderArgs, buildTimingArgs } from '@main/services/ffmpeg/ffmpeg-command.utils';
+import {
+  buildEncoderArgs,
+  buildSingleInputVideoTransformArgs,
+} from '@main/services/ffmpeg/ffmpeg-command.utils';
 import {
   buildMergeFilterGraph,
   resolveSegmentDurationMs,
@@ -18,6 +27,7 @@ interface ProcessSingleInputTranscodeOptions {
   inputPath: string;
   outputPath: string;
   format: OutputFormat;
+  outputResolution: OutputResolution;
   compression: ProcessSingleCompressionOptions['compression'];
   resolvedEncoderBackend: ResolvedEncoderBackend;
   videoTimingMode: VideoTimingMode;
@@ -32,6 +42,7 @@ interface ProcessMergedInputsOptions {
   inputPaths: string[];
   outputPath: string;
   format: ProcessSingleMergeOptions['format'];
+  outputResolution: OutputResolution;
   compression: ProcessSingleMergeOptions['compression'];
   resolvedEncoderBackend: ResolvedEncoderBackend;
   videoTimingMode: VideoTimingMode;
@@ -62,6 +73,7 @@ export const processSingleInputTranscode = async ({
   inputPath,
   outputPath,
   format,
+  outputResolution,
   compression,
   resolvedEncoderBackend,
   videoTimingMode,
@@ -75,7 +87,13 @@ export const processSingleInputTranscode = async ({
   }
 
   const encoder = buildEncoderArgs(format, compression, resolvedEncoderBackend, Boolean(fileInfo.audio));
-  const timingArgs = buildTimingArgs(videoTimingMode, targetFrameRate);
+  const videoTransformArgs = buildSingleInputVideoTransformArgs(
+    fileInfo.video.width,
+    fileInfo.video.height,
+    outputResolution,
+    videoTimingMode,
+    targetFrameRate,
+  );
   const commandArgs = [
     '-y',
     '-fflags',
@@ -88,8 +106,9 @@ export const processSingleInputTranscode = async ({
     '0:a?',
     '-sn',
     '-dn',
-    ...timingArgs,
+    ...videoTransformArgs.filterArgs,
     ...encoder.args,
+    ...videoTransformArgs.fpsArgs,
     '-avoid_negative_ts',
     'make_zero',
     outputPath,
@@ -105,6 +124,7 @@ export const processMergedInputs = async ({
   inputPaths,
   outputPath,
   format,
+  outputResolution,
   compression,
   resolvedEncoderBackend,
   videoTimingMode,
@@ -122,7 +142,7 @@ export const processMergedInputs = async ({
     (total, fileInfo) => total + resolveSegmentDurationMs(fileInfo),
     0,
   );
-  const mergeFilter = buildMergeFilterGraph(filesInfo, videoTimingMode, targetFrameRate);
+  const mergeFilter = buildMergeFilterGraph(filesInfo, outputResolution, videoTimingMode, targetFrameRate);
   const encoder = buildEncoderArgs(format, compression, resolvedEncoderBackend, mergeFilter.hasAudio);
   const commandArgs = [
     '-y',

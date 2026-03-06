@@ -6,6 +6,7 @@ import { historyDateFormatter } from '@renderer/components/job-history/job-histo
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatTechnicalLabel,
+  getOutputResolutionTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -35,6 +36,11 @@ export const JobDetailsSummaryCard = ({ job }: JobDetailsSummaryCardProps) => {
             key: 'format',
             label: t('details.labels.format'),
             children: getOutputFormatTechnicalLabel(job.settings.outputFormat),
+          },
+          {
+            key: 'resolution',
+            label: t('details.labels.outputResolution'),
+            children: getOutputResolutionTechnicalLabel(job.settings.outputResolution),
           },
           {
             key: 'compression',

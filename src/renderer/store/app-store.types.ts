@@ -9,6 +9,7 @@ import type {
   JobMode,
   JobProgressPayload,
   OutputFormat,
+  OutputResolution,
   TargetFrameRate,
   VideoTimingMode,
 } from '@shared/types';
@@ -31,6 +32,7 @@ export interface WorkspaceSlice {
 export interface SettingsSlice {
   settings: ConversionSettings;
   setOutputFormat: (outputFormat: OutputFormat) => void;
+  setOutputResolution: (outputResolution: OutputResolution) => void;
   setCompression: (compression: CompressionPreset) => void;
   setEncoderBackend: (encoderBackend: EncoderBackend) => void;
   setVideoTimingMode: (videoTimingMode: VideoTimingMode) => void;

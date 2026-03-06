@@ -20,6 +20,14 @@ export const createSettingsSlice: AppStoreSlice<SettingsSlice> = (set) => ({
       },
     })),
 
+  setOutputResolution: (outputResolution) =>
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        outputResolution,
+      },
+    })),
+
   setCompression: (compression) =>
     set((state) => ({
       settings: {

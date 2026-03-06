@@ -8,12 +8,14 @@ import type {
   CompressionPreset,
   EncoderBackend,
   OutputFormat,
+  OutputResolution,
   TargetFrameRate,
   VideoTimingMode,
 } from '@shared/types';
 import { ENCODER_BACKENDS, OUTPUT_FORMATS, TARGET_FRAME_RATES } from '@shared/types';
 import {
   getAvailableCompressionPresets,
+  getAvailableOutputResolutions,
   getCompressionPresetBadges,
   getCompressionPresetDescription,
   getCompressionPresetLabel,
@@ -22,6 +24,10 @@ import {
   getOutputFormatBadges,
   getOutputFormatDescription,
   getOutputFormatLabel,
+  getOutputResolutionBadges,
+  getOutputResolutionDescription,
+  getOutputResolutionLabel,
+  getOutputResolutionTechnicalSummary,
   getRequestedEncoderBackendLabel,
   getTargetFrameRateLabel,
   getVideoTimingModeLabel,
@@ -35,6 +41,15 @@ export const buildOutputFormatOptions = (): JobComposerSelectableOption<OutputFo
     description: getOutputFormatDescription(value),
     badges: getOutputFormatBadges(value),
     meta: getOutputFormatBackendSummary(value),
+  }));
+
+export const buildResolutionOptions = (): JobComposerSelectableOption<OutputResolution>[] =>
+  getAvailableOutputResolutions().map((value) => ({
+    value,
+    title: getOutputResolutionLabel(value),
+    description: getOutputResolutionDescription(value),
+    badges: getOutputResolutionBadges(value),
+    meta: getOutputResolutionTechnicalSummary(value),
   }));
 
 export const buildCompressionOptions = ({ selectedOutputFormat }: BuildCompressionOptionsParams) =>

@@ -46,6 +46,7 @@ export const runCompressionJob = async ({
       inputPath,
       outputPath,
       format: job.settings.outputFormat,
+      outputResolution: job.settings.outputResolution,
       compression: job.settings.compression,
       resolvedEncoderBackend,
       videoTimingMode: job.settings.videoTimingMode,

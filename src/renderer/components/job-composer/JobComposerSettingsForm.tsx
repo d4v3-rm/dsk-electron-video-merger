@@ -7,6 +7,7 @@ import {
   buildBackendOptions,
   buildCompressionOptions,
   buildOutputFormatOptions,
+  buildResolutionOptions,
   buildTargetFrameRateOptions,
   buildTimingOptions,
 } from '@renderer/components/job-composer/job-composer-options';
@@ -16,6 +17,7 @@ import { useUiStore } from '@renderer/store/use-ui-store';
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatTechnicalLabel,
+  getOutputResolutionTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getTargetFrameRateLabel,
   getVideoTimingModeLabel,
@@ -34,6 +36,7 @@ export const JobComposerSettingsForm = ({
   nvidiaAvailable,
   nvidiaSupportedForFormat,
   setOutputFormat,
+  setOutputResolution,
   setCompression,
   setEncoderBackend,
   setVideoTimingMode,
@@ -47,6 +50,7 @@ export const JobComposerSettingsForm = ({
   );
 
   const formatOptions = buildOutputFormatOptions();
+  const resolutionOptions = buildResolutionOptions();
   const compressionOptions = buildCompressionOptions({
     selectedOutputFormat: settings.outputFormat,
   });
@@ -77,6 +81,11 @@ export const JobComposerSettingsForm = ({
               key: 'format',
               label: t('composer.fields.outputFormat'),
               children: getOutputFormatTechnicalLabel(settings.outputFormat),
+            },
+            {
+              key: 'resolution',
+              label: t('composer.fields.outputResolution'),
+              children: getOutputResolutionTechnicalLabel(settings.outputResolution),
             },
             {
               key: 'compression',
@@ -138,6 +147,27 @@ export const JobComposerSettingsForm = ({
                     meta={option.meta}
                     selected={settings.outputFormat === option.value}
                     onClick={() => setOutputFormat(option.value)}
+                  />
+                ))}
+              </div>
+            </section>
+
+            <section className="composer-settings-section">
+              <div className="composer-settings-copy">
+                <Text strong>{t('composer.sections.outputResolution')}</Text>
+                <Text type="secondary">{t('composer.resolutionSectionHelp')}</Text>
+              </div>
+
+              <div className="composer-options-grid composer-resolution-grid">
+                {resolutionOptions.map((option) => (
+                  <JobComposerOptionCard
+                    key={option.value}
+                    title={option.title}
+                    description={option.description}
+                    badges={option.badges}
+                    meta={option.meta}
+                    selected={settings.outputResolution === option.value}
+                    onClick={() => setOutputResolution(option.value)}
                   />
                 ))}
               </div>

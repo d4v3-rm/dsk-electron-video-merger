@@ -3,6 +3,7 @@ import type {
   HardwareAccelerationProfile,
   InputFileDTO,
   OutputFormat,
+  OutputResolution,
   TargetFrameRate,
   VideoTimingMode,
 } from '@shared/types';
@@ -64,6 +65,7 @@ export interface JobComposerSettingsFormProps {
   nvidiaAvailable: boolean;
   nvidiaSupportedForFormat: boolean;
   setOutputFormat: (outputFormat: ConversionSettings['outputFormat']) => void;
+  setOutputResolution: (outputResolution: OutputResolution) => void;
   setCompression: (compression: ConversionSettings['compression']) => void;
   setEncoderBackend: (encoderBackend: ConversionSettings['encoderBackend']) => void;
   setVideoTimingMode: (videoTimingMode: VideoTimingMode) => void;

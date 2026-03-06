@@ -5,8 +5,11 @@ const buildTimingSuffix = (settings: JobCreationPayload['settings']): string =>
     ? ` Output will be normalized to ${settings.targetFrameRate} fps.`
     : ' Source timing will be preserved whenever possible.';
 
+const buildResolutionLabel = (settings: JobCreationPayload['settings']): string =>
+  settings.outputResolution === 'source' ? 'source resolution' : settings.outputResolution;
+
 const buildProfileSuffix = (settings: JobCreationPayload['settings']): string =>
-  ` Deliverable: ${settings.outputFormat.toUpperCase()} with the ${settings.compression} profile.`;
+  ` Deliverable: ${settings.outputFormat.toUpperCase()} at ${buildResolutionLabel(settings)} with the ${settings.compression} profile.`;
 
 export const buildQueuedMessage = (mode: JobMode, filesCount: number): string => {
   if (mode === 'compress') {

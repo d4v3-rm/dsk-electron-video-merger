@@ -3,6 +3,7 @@ import type {
   JobLogStage,
   JobTelemetry,
   OutputFormat,
+  OutputResolution,
   ResolvedEncoderBackend,
   TargetFrameRate,
   VideoTimingMode,
@@ -33,6 +34,7 @@ export interface ProcessSingleMergeOptions {
   inputPaths: string[];
   outputPath: string;
   format: OutputFormat;
+  outputResolution: OutputResolution;
   compression: CompressionPreset;
   resolvedEncoderBackend: ResolvedEncoderBackend;
   videoTimingMode: VideoTimingMode;
@@ -44,6 +46,7 @@ export interface ProcessSingleCompressionOptions {
   inputPath: string;
   outputPath: string;
   format: OutputFormat;
+  outputResolution: OutputResolution;
   compression: CompressionPreset;
   resolvedEncoderBackend: ResolvedEncoderBackend;
   videoTimingMode: VideoTimingMode;

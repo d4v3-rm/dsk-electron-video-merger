@@ -1,5 +1,14 @@
 export const OUTPUT_FORMATS = ['mp4', 'mov', 'mkv', 'webm', 'flv', 'avi', 'ogv', 'mpg'] as const;
 
+export const OUTPUT_RESOLUTIONS = ['source', '720p', '1080p', '1440p', '2160p'] as const;
+
+export const OUTPUT_RESOLUTION_DIMENSIONS = {
+  '720p': { width: 1280, height: 720 },
+  '1080p': { width: 1920, height: 1080 },
+  '1440p': { width: 2560, height: 1440 },
+  '2160p': { width: 3840, height: 2160 },
+} as const;
+
 export const COMPRESSION_PRESETS = ['master', 'high', 'balanced', 'web', 'small'] as const;
 
 export const ENCODER_BACKENDS = ['auto', 'cpu', 'nvidia'] as const;
