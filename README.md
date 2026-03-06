@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.31.8-blue.svg" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.33.0-blue.svg" />
   <img alt="License" src="https://img.shields.io/badge/license-MIT-0f172a.svg" />
   <img alt="Electron" src="https://img.shields.io/badge/Electron-Desktop-47848F?logo=electron&logoColor=white" />
   <img alt="Vite" src="https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite&logoColor=white" />
