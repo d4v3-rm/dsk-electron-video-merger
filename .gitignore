@@ -1,4 +1,4 @@
-﻿node_modules
+node_modules
 .vite
 dist
 out
@@ -10,4 +10,10 @@ yarn-debug.log*
 .env
 .env.local
 *.log
-build
+build/*
+!build/icon-attribution.md
+!build/icon-source.svg
+!build/icon.svg
+!build/icon.png
+!build/icon.ico
+

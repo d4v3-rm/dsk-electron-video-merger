@@ -1,0 +1,30 @@
+export interface ThemePalette {
+  colorScheme: 'light' | 'dark';
+  appBg: string;
+  layoutBg: string;
+  surface: string;
+  surfaceAlt: string;
+  surfaceMuted: string;
+  elevated: string;
+  border: string;
+  borderStrong: string;
+  text: string;
+  textSecondary: string;
+  textMuted: string;
+  heading: string;
+  primary: string;
+  primaryHover: string;
+  primaryActive: string;
+  primarySoft: string;
+  primarySoftHover: string;
+  success: string;
+  warning: string;
+  error: string;
+  info: string;
+  icon: string;
+  iconHover: string;
+  spotlight: string;
+  scrollbarTrack: string;
+  scrollbarThumb: string;
+  scrollbarThumbHover: string;
+}

@@ -1,12 +1,9 @@
-﻿{
-  "compilerOptions": {
-    "strict": true,
-    "skipLibCheck": true,
-    "moduleDetection": "force",
-    "target": "ES2022",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
-  }
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.shared.json" },
+    { "path": "./tsconfig.main.json" },
+    { "path": "./tsconfig.renderer.json" },
+    { "path": "./tsconfig.website.json" }
+  ]
 }
