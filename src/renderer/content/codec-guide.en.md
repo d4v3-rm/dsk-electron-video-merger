@@ -2,14 +2,15 @@
 
 ## Reading the export editor
 
-The export editor is organized around four decisions:
+The export editor is organized around five decisions:
 
 1. **Container and codec family**
-2. **Compression profile**
-3. **Backend**
-4. **Frame timing**
+2. **Output resolution**
+3. **Compression profile**
+4. **Backend**
+5. **Frame timing**
 
-Container decides the actual codec path. Compression adjusts quality and size. Backend decides whether supported H.264 outputs run on CPU or NVENC. Frame timing controls whether cadence is preserved or normalized.
+Container decides the actual codec path. Resolution decides whether the output follows the source canvas or a fixed delivery frame. Compression adjusts quality and size. Backend decides whether supported H.264 outputs run on CPU or NVENC. Frame timing controls whether cadence is preserved or normalized.
 
 ## Format matrix
 
@@ -49,6 +50,19 @@ The five profiles always mean the same intent, even if the exact encoder paramet
 
 For H.264, VP9, AVI, and MPG, lower values usually preserve more detail. For Theora, higher `q:v` preserves more detail.
 
+## Resolution rules
+
+| Resolution | Behavior |
+| --- | --- |
+| `Source` | Keeps the native input resolution. In merge mode, the timeline inherits the first clip canvas. |
+| `480p` | Normalizes the output to `854 x 480` |
+| `720p` | Normalizes the output to `1280 x 720` |
+| `1080p` | Normalizes the output to `1920 x 1080` |
+| `1440p` | Normalizes the output to `2560 x 1440` |
+| `2160p` | Normalizes the output to `3840 x 2160` |
+
+Fixed resolutions use a 16:9 canvas. Inputs are scaled to fit and padded when aspect ratios do not match the selected frame.
+
 ## Backend rules
 
 | Backend | Behavior |
@@ -72,8 +86,8 @@ Use `Preserve source timing` unless the downstream target explicitly requires CF
 
 ## Practical recommendations
 
-- Use `MP4 + Auto + Balanced` for the safest general-purpose output.
-- Use `MOV + High` when the file is heading into an editing workflow.
-- Use `MKV + Master` for robust H.264 archive-style exports.
-- Use `WebM + Web` only when VP9 delivery is actually required.
+- Use `MP4 + Source + Auto + Balanced` for the safest general-purpose output.
+- Use `MOV + Source + High` when the file is heading into an editing workflow.
+- Use `MKV + 1080p + Master` for robust H.264 archive-style exports with a fixed delivery frame.
+- Use `WebM + 720p + Web` only when VP9 delivery is actually required.
 - Use `FLV`, `AVI`, `OGV`, or `MPG` only when the receiving system truly needs those containers.

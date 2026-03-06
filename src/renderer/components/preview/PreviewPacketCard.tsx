@@ -5,6 +5,7 @@ import type { PreviewModel } from '@renderer/components/preview/preview.types';
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatTechnicalLabel,
+  getOutputResolutionTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -52,6 +53,11 @@ export const PreviewPacketCard = ({ previewModel, selectedFiles }: PreviewPacket
             key: 'format',
             label: t('preview.labels.format'),
             children: getOutputFormatTechnicalLabel(previewModel.previewSettings.outputFormat),
+          },
+          {
+            key: 'resolution',
+            label: t('preview.labels.outputResolution'),
+            children: getOutputResolutionTechnicalLabel(previewModel.previewSettings.outputResolution),
           },
           {
             key: 'compression',

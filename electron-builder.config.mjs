@@ -15,6 +15,7 @@ export default {
   asar: electronAppConfig.builder.asar,
   win: {
     icon: electronAppConfig.builder.iconIco,
+    signAndEditExecutable: false,
     target: [
       {
         target: 'portable',

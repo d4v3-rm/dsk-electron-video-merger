@@ -26,6 +26,7 @@ export const runMergeJob = async ({
     inputPaths: job.sourcePaths,
     outputPath,
     format: job.settings.outputFormat,
+    outputResolution: job.settings.outputResolution,
     compression: job.settings.compression,
     resolvedEncoderBackend,
     videoTimingMode: job.settings.videoTimingMode,

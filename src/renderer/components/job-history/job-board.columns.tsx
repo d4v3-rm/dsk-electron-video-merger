@@ -9,6 +9,7 @@ import {
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatLabel,
+  getOutputResolutionTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getResolvedEncoderBackendLabel,
   getTargetFrameRateLabel,
@@ -57,6 +58,7 @@ export const buildJobBoardColumns = (t: TFunction): ColumnsType<Job> => [
           {getOutputFormatLabel(job.settings.outputFormat)} -{' '}
           {getCompressionPresetTechnicalLabel(job.settings.compression, job.settings.outputFormat)}
         </Text>
+        <Text type="secondary">{getOutputResolutionTechnicalLabel(job.settings.outputResolution)}</Text>
         <Text type="secondary">
           {getRequestedEncoderBackendLabel(job.settings.encoderBackend)}
           {job.resolvedEncoderBackend
@@ -71,7 +73,7 @@ export const buildJobBoardColumns = (t: TFunction): ColumnsType<Job> => [
         </Text>
       </Space>
     ),
-    width: 360,
+    width: 400,
   },
   {
     title: t('history.columns.status'),

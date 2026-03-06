@@ -37,6 +37,7 @@ export const JobComposer = () => {
     loading,
     setCompression,
     setEncoderBackend,
+    setOutputResolution,
     setTargetFrameRate,
     setVideoTimingMode,
     setOutputFormat,
@@ -147,6 +148,7 @@ export const JobComposer = () => {
             nvidiaAvailable={nvidiaAvailable}
             nvidiaSupportedForFormat={nvidiaSupportedForFormat}
             setOutputFormat={setOutputFormat}
+            setOutputResolution={setOutputResolution}
             setCompression={setCompression}
             setEncoderBackend={setEncoderBackend}
             setVideoTimingMode={setVideoTimingMode}

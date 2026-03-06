@@ -20,6 +20,7 @@ const composerEn = {
   sections: {
     exportProfile: 'Export profile',
     outputContainer: 'Container and codec',
+    outputResolution: 'Output resolution',
     qualityProfile: 'Compression profile',
     processingRules: 'Processing rules',
     deliveryControls: 'Delivery controls',
@@ -45,6 +46,7 @@ const composerEn = {
   },
   fields: {
     outputFormat: 'Output format',
+    outputResolution: 'Output resolution',
     compression: 'Compression profile',
     backend: 'Encoding backend',
     frameTiming: 'Frame timing',
@@ -74,6 +76,8 @@ const composerEn = {
     'Convert the output to {{frameRate}}. Use this only when a constant-frame-rate deliverable is required, because FFmpeg may duplicate or drop frames.',
   formatSectionHelp:
     'Choose the output container first. The app will align codecs and hardware support around it.',
+  resolutionSectionHelp:
+    'Choose whether the output should follow the source canvas or be normalized to a fixed 16:9 delivery frame.',
   compressionSectionHelp:
     'Profiles adjust encoder intensity, not the logical frame flow. Frame cadence is controlled separately.',
   processingSectionHelp:
@@ -82,9 +86,9 @@ const composerEn = {
     'Choose where the next job should write its outputs. Leaving this empty uses the app-managed folder.',
   modalTitle: 'Export profile editor',
   modalSubtitle:
-    'Review container, compression, backend, frame timing, and destination in one scrollable panel.',
+    'Review container, resolution, compression, backend, frame timing, and destination in one scrollable panel.',
   executionNotesPreview:
-    'Review ordering, encoder behavior, frame timing, and destination notes in a separate panel.',
+    'Review ordering, resolution, encoder behavior, frame timing, and destination notes in a separate panel.',
   executionNotesModalSubtitle:
     'Check the launch-sensitive notes for the next job without expanding the main composer surface.',
   destinationDefault: 'App-managed output folder',

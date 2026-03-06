@@ -8,6 +8,10 @@ import {
   NVIDIA_SUPPORTED_OUTPUT_FORMATS,
   NVENC_CQ_BY_PRESET,
   type OutputFormat,
+  OUTPUT_RESOLUTION_DIMENSIONS,
+  OUTPUT_RESOLUTIONS,
+  type OutputResolution,
+  type OutputResolutionPreset,
   type ResolvedEncoderBackend,
   THEORA_QUALITY_BY_PRESET,
   type TargetFrameRate,
@@ -23,6 +27,11 @@ interface CompressionParameters {
 }
 
 const NVIDIA_SUPPORTED_OUTPUTS: OutputFormat[] = [...NVIDIA_SUPPORTED_OUTPUT_FORMATS];
+const OUTPUT_RESOLUTION_OPTIONS: OutputResolution[] = [...OUTPUT_RESOLUTIONS];
+
+const isFixedOutputResolution = (
+  outputResolution: OutputResolution,
+): outputResolution is OutputResolutionPreset => outputResolution !== 'source';
 
 export const getRequestedEncoderBackendLabel = (backend: EncoderBackend): string => {
   switch (backend) {
@@ -65,6 +74,34 @@ export const getOutputFormatBackendSummary = (outputFormat: OutputFormat): strin
 
 export const getOutputFormatTechnicalLabel = (outputFormat: OutputFormat): string =>
   `${getOutputFormatLabel(outputFormat)} | ${getOutputFormatCodecSummary(outputFormat)}`;
+
+export const getOutputResolutionLabel = (outputResolution: OutputResolution): string =>
+  i18n.t(`resolutions.${outputResolution}.label`);
+
+export const getOutputResolutionDescription = (outputResolution: OutputResolution): string =>
+  i18n.t(`resolutions.${outputResolution}.description`);
+
+export const getOutputResolutionTechnicalSummary = (outputResolution: OutputResolution): string => {
+  if (!isFixedOutputResolution(outputResolution)) {
+    return i18n.t('resolutions.source.technical');
+  }
+
+  const { width, height } = OUTPUT_RESOLUTION_DIMENSIONS[outputResolution];
+  return `${width} x ${height}`;
+};
+
+export const getOutputResolutionTechnicalLabel = (outputResolution: OutputResolution): string =>
+  `${getOutputResolutionLabel(outputResolution)} | ${getOutputResolutionTechnicalSummary(outputResolution)}`;
+
+export const getOutputResolutionBadges = (outputResolution: OutputResolution): string[] => {
+  if (!isFixedOutputResolution(outputResolution)) {
+    return [i18n.t('resolutions.source.badge'), i18n.t('resolutions.source.behavior')];
+  }
+
+  return [getOutputResolutionTechnicalSummary(outputResolution), i18n.t('resolutions.fixedCanvasBadge')];
+};
+
+export const getAvailableOutputResolutions = (): OutputResolution[] => [...OUTPUT_RESOLUTION_OPTIONS];
 
 export const getCompressionPresetLabel = (preset: CompressionPreset): string =>
   i18n.t(`compression.${preset}.label`);

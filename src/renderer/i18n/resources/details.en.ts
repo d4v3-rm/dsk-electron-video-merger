@@ -14,6 +14,7 @@ const detailsEn = {
   labels: {
     mode: 'Mode',
     format: 'Output format',
+    outputResolution: 'Output resolution',
     compression: 'Compression',
     requestedBackend: 'Requested backend',
     activeBackend: 'Effective backend',

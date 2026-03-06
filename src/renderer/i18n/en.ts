@@ -10,6 +10,7 @@ import logs from '@renderer/i18n/resources/logs.en';
 import modes from '@renderer/i18n/resources/modes.en';
 import overview from '@renderer/i18n/resources/overview.en';
 import preview from '@renderer/i18n/resources/preview.en';
+import resolutions from '@renderer/i18n/resources/resolutions.en';
 import status from '@renderer/i18n/resources/status.en';
 import theme from '@renderer/i18n/resources/theme.en';
 
@@ -21,6 +22,7 @@ const en = {
   overview,
   composer,
   formats,
+  resolutions,
   preview,
   history,
   details,

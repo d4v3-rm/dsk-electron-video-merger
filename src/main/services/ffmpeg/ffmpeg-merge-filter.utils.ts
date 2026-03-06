@@ -1,15 +1,16 @@
-import type { TargetFrameRate, VideoTimingMode } from '@shared/types';
+import type { OutputResolution, TargetFrameRate, VideoTimingMode } from '@shared/types';
 import type { MediaFileInfo } from '@main/services/media-probe.types';
 import {
   DEFAULT_AUDIO_CHANNEL_LAYOUT,
   DEFAULT_AUDIO_SAMPLE_RATE,
 } from '@main/services/ffmpeg/ffmpeg.constants';
-import { resolveFrameRateLabel } from '@main/services/ffmpeg/ffmpeg-command.utils';
+import {
+  buildScalePadFilter,
+  resolveFrameRateLabel,
+  resolveOutputResolutionDimensions,
+} from '@main/services/ffmpeg/ffmpeg-command.utils';
 
 export const formatSeconds = (durationMs: number): string => (durationMs / 1000).toFixed(3);
-
-export const buildScalePadFilter = (targetWidth: number, targetHeight: number): string =>
-  `scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:black,setsar=1`;
 
 export const resolveSegmentDurationMs = (fileInfo: MediaFileInfo): number => {
   const durationMs = fileInfo.durationMs ?? fileInfo.video?.durationMs ?? fileInfo.audio?.durationMs ?? null;
@@ -22,6 +23,7 @@ export const resolveSegmentDurationMs = (fileInfo: MediaFileInfo): number => {
 
 export const buildMergeFilterGraph = (
   filesInfo: MediaFileInfo[],
+  outputResolution: OutputResolution,
   videoTimingMode: VideoTimingMode,
   targetFrameRate: TargetFrameRate,
 ): { filterComplex: string; hasAudio: boolean; videoOutputLabel: string; audioOutputLabel?: string } => {
@@ -30,8 +32,11 @@ export const buildMergeFilterGraph = (
     throw new Error('Unable to resolve the merge output video profile.');
   }
 
-  const targetWidth = firstVideoStream.width;
-  const targetHeight = firstVideoStream.height;
+  const { width: targetWidth, height: targetHeight } = resolveOutputResolutionDimensions(
+    outputResolution,
+    firstVideoStream.width,
+    firstVideoStream.height,
+  );
   const hasAudio = filesInfo.some((fileInfo) => Boolean(fileInfo.audio));
   const filterParts: string[] = [];
   const concatInputs: string[] = [];

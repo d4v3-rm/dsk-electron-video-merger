@@ -22,6 +22,7 @@ export const UNAVAILABLE_HARDWARE_ACCELERATION_PROFILE: HardwareAccelerationProf
 
 export const DEFAULT_CONVERSION_SETTINGS: ConversionSettings = {
   outputFormat: 'mp4',
+  outputResolution: 'source',
   compression: 'balanced',
   encoderBackend: 'auto',
   videoTimingMode: 'preserve',

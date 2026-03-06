@@ -4,6 +4,7 @@ import type { JobComposerSummaryItem } from '@renderer/components/job-composer/j
 import {
   getCompressionPresetTechnicalLabel,
   getOutputFormatTechnicalLabel,
+  getOutputResolutionTechnicalLabel,
   getRequestedEncoderBackendLabel,
   getTargetFrameRateLabel,
   getVideoTimingModeLabel,
@@ -28,6 +29,11 @@ export const buildJobComposerSetupSummary = ({
     key: 'format',
     label: t('composer.fields.outputFormat'),
     children: getOutputFormatTechnicalLabel(settings.outputFormat),
+  },
+  {
+    key: 'resolution',
+    label: t('composer.fields.outputResolution'),
+    children: getOutputResolutionTechnicalLabel(settings.outputResolution),
   },
   {
     key: 'compression',
