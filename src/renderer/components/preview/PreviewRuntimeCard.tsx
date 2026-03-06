@@ -9,13 +9,6 @@ import {
   toProgressStatus,
 } from '@renderer/utils/job-presentation';
 import { formatDurationMs, formatSpeed } from '@renderer/utils/runtime-presentation';
-import {
-  highlightCardStyle,
-  infoStackStyle,
-  runtimeBoxStyle,
-  sectionCardStyle,
-  sectionCardStyles,
-} from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -30,12 +23,11 @@ export const PreviewRuntimeCard = ({ activeJob, selectedFilesCount }: PreviewRun
   return (
     <Card
       size="small"
-      style={activeJob ? highlightCardStyle : sectionCardStyle}
-      styles={sectionCardStyles}
+      className={activeJob ? 'panel-highlight-card' : 'panel-section-card'}
       title={t('preview.sections.runtime')}
     >
       {activeJob ? (
-        <div style={runtimeBoxStyle}>
+        <div className="preview-runtime">
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <Space align="center" wrap>
               <Tag color={statusColor[activeJob.status]}>{getStatusLabel(activeJob.status)}</Tag>
@@ -56,7 +48,7 @@ export const PreviewRuntimeCard = ({ activeJob, selectedFilesCount }: PreviewRun
           </Space>
         </div>
       ) : (
-        <div style={infoStackStyle}>
+        <div className="preview-section-copy">
           <Text strong>
             {selectedFilesCount > 0 ? t('preview.runtime.readyTitle') : t('preview.runtime.idleTitle')}
           </Text>

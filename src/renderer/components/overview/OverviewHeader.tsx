@@ -10,18 +10,6 @@ import { useTranslation } from 'react-i18next';
 import type { JobMode } from '@shared/types';
 import { ThemeSwitcher } from '@renderer/components/ThemeSwitcher';
 import type { OverviewHeaderProps } from '@renderer/components/overview/overview.types';
-import {
-  overviewBrandCopyStyle,
-  overviewBrandStyle,
-  overviewControlsStyle,
-  overviewModeLabelStyle,
-  overviewModePanelStyle,
-  overviewTagStyle,
-  overviewTitleStyle,
-  overviewToolbarStyle,
-  overviewTopbarStyle,
-  statusBadgeStyle,
-} from '@renderer/theme/component-styles';
 
 const { Title, Text } = Typography;
 
@@ -38,33 +26,24 @@ export const OverviewHeader = ({
   const { t } = useTranslation();
 
   return (
-    <div style={overviewTopbarStyle}>
-      <Space size="middle" style={overviewBrandStyle}>
-        <Avatar
-          size={48}
-          shape="square"
-          icon={<DashboardOutlined />}
-          style={{
-            background: 'var(--app-avatar-bg)',
-            border: '1px solid var(--app-border-strong)',
-            color: 'var(--app-accent)',
-          }}
-        />
-        <div data-overview-animate="true" style={overviewBrandCopyStyle}>
-          <Space wrap size={[8, 8]}>
-            <Tag style={overviewTagStyle}>{studioTag}</Tag>
-            <Tag style={overviewTagStyle}>{t('overview.tags.desktop')}</Tag>
-            <Tag style={overviewTagStyle}>{deliveryTag}</Tag>
+    <div className="overview-topbar">
+      <Space size="middle" className="overview-brand">
+        <Avatar size={48} shape="square" icon={<DashboardOutlined />} />
+        <div className="overview-brand-copy" data-overview-animate="true">
+          <Space wrap size={[8, 8]} className="overview-tags">
+            <Tag className="overview-tag">{studioTag}</Tag>
+            <Tag className="overview-tag">{t('overview.tags.desktop')}</Tag>
+            <Tag className="overview-tag">{deliveryTag}</Tag>
           </Space>
-          <Title level={3} style={overviewTitleStyle}>
+          <Title level={3} className="overview-title">
             {title}
           </Title>
-          <Text style={statusBadgeStyle}>{workspaceStatus}</Text>
+          <Text className="status-badge">{workspaceStatus}</Text>
         </div>
       </Space>
 
-      <div data-overview-animate="true" style={overviewControlsStyle}>
-        <Space size="small" wrap style={overviewToolbarStyle}>
+      <div className="overview-controls" data-overview-animate="true">
+        <Space size="small" wrap className="overview-toolbar">
           <ThemeSwitcher size="small" />
           <Tooltip title={isExpanded ? t('overview.actions.collapse') : t('overview.actions.expand')}>
             <Button
@@ -76,13 +55,14 @@ export const OverviewHeader = ({
           </Tooltip>
         </Space>
 
-        <div style={overviewModePanelStyle}>
-          <Text type="secondary" style={overviewModeLabelStyle}>
+        <div className="overview-mode-panel">
+          <Text type="secondary" className="overview-mode-label">
             {t('overview.modeLabel')}
           </Text>
           <Segmented
             block
             size="large"
+            className="overview-mode-switch"
             value={jobMode}
             onChange={(value) => onModeChange(value as JobMode)}
             options={[

@@ -25,17 +25,6 @@ import {
   APP_MODAL_TOP_OFFSET,
   APP_MODAL_WIDTH,
 } from '@renderer/utils/modal-presentation';
-import {
-  composerControlPanelStyle,
-  composerSettingsCopyStyle,
-  composerSettingsSectionStyle,
-  composerSettingsShellStyle,
-  composerSummaryDescriptionsStyle,
-  composerSummaryStyle,
-  modalBodyInsetStyle,
-  modalContentStyle,
-  modalHeaderStyle,
-} from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -74,8 +63,8 @@ export const JobComposerSettingsForm = ({
 
   return (
     <>
-      <div style={composerSummaryStyle}>
-        <div style={composerSettingsCopyStyle}>
+      <div className="composer-settings-summary">
+        <div className="composer-settings-copy">
           <Text strong>{t('composer.modalTitle')}</Text>
           <Text type="secondary">{t('composer.modalSubtitle')}</Text>
         </div>
@@ -83,7 +72,6 @@ export const JobComposerSettingsForm = ({
         <Descriptions
           column={1}
           size="small"
-          style={composerSummaryDescriptionsStyle}
           items={[
             {
               key: 'format',
@@ -122,28 +110,25 @@ export const JobComposerSettingsForm = ({
       </div>
 
       <Modal
+        className="app-flat-modal composer-settings-modal"
         destroyOnHidden
         footer={null}
         onCancel={() => setExportProfileModalOpen(false)}
         open={exportProfileModalOpen}
         style={{ top: APP_MODAL_TOP_OFFSET }}
-        styles={{
-          body: { ...APP_MODAL_BODY_STYLE, ...modalBodyInsetStyle },
-          content: modalContentStyle,
-          header: modalHeaderStyle,
-        }}
+        styles={{ body: APP_MODAL_BODY_STYLE }}
         title={t('composer.modalTitle')}
         width={APP_MODAL_WIDTH}
       >
-        <Form layout="vertical">
-          <div style={composerSettingsShellStyle}>
-            <section style={composerSettingsSectionStyle}>
-              <div style={composerSettingsCopyStyle}>
+        <Form layout="vertical" className="composer-settings-form">
+          <div className="composer-settings-shell">
+            <section className="composer-settings-section">
+              <div className="composer-settings-copy">
                 <Text strong>{t('composer.sections.outputContainer')}</Text>
                 <Text type="secondary">{t('composer.formatSectionHelp')}</Text>
               </div>
 
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+              <div className="composer-options-grid composer-format-grid">
                 {formatOptions.map((option) => (
                   <JobComposerOptionCard
                     key={option.value}
@@ -155,16 +140,16 @@ export const JobComposerSettingsForm = ({
                     onClick={() => setOutputFormat(option.value)}
                   />
                 ))}
-              </Space>
+              </div>
             </section>
 
-            <section style={composerSettingsSectionStyle}>
-              <div style={composerSettingsCopyStyle}>
+            <section className="composer-settings-section">
+              <div className="composer-settings-copy">
                 <Text strong>{t('composer.sections.qualityProfile')}</Text>
                 <Text type="secondary">{t('composer.compressionSectionHelp')}</Text>
               </div>
 
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+              <div className="composer-options-grid composer-compression-grid">
                 {compressionOptions.map((option) => (
                   <JobComposerOptionCard
                     key={option.value}
@@ -176,17 +161,17 @@ export const JobComposerSettingsForm = ({
                     onClick={() => setCompression(option.value)}
                   />
                 ))}
-              </Space>
+              </div>
             </section>
 
-            <section style={composerSettingsSectionStyle}>
-              <div style={composerSettingsCopyStyle}>
+            <section className="composer-settings-section">
+              <div className="composer-settings-copy">
                 <Text strong>{t('composer.sections.processingRules')}</Text>
                 <Text type="secondary">{t('composer.processingSectionHelp')}</Text>
               </div>
 
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <div style={composerControlPanelStyle}>
+              <div className="composer-processing-grid">
+                <div className="composer-control-panel">
                   <Text strong>{t('composer.fields.backend')}</Text>
                   <Segmented
                     block
@@ -203,7 +188,7 @@ export const JobComposerSettingsForm = ({
                   <Text type="secondary">{activeBackendOption?.description}</Text>
                 </div>
 
-                <div style={composerControlPanelStyle}>
+                <div className="composer-control-panel">
                   <Text strong>{t('composer.fields.frameTiming')}</Text>
                   <Segmented
                     block
@@ -218,7 +203,7 @@ export const JobComposerSettingsForm = ({
                   />
                   <Text type="secondary">{activeTimingOption?.description}</Text>
                 </div>
-              </Space>
+              </div>
 
               {settings.videoTimingMode === 'cfr' ? (
                 <Form.Item label={t('composer.fields.targetFrameRate')} style={{ marginBottom: 0 }}>
@@ -234,8 +219,8 @@ export const JobComposerSettingsForm = ({
               ) : null}
             </section>
 
-            <section style={composerSettingsSectionStyle}>
-              <div style={composerSettingsCopyStyle}>
+            <section className="composer-settings-section">
+              <div className="composer-settings-copy">
                 <Text strong>{t('composer.sections.deliveryControls')}</Text>
                 <Text type="secondary">{t('composer.destinationSectionHelp')}</Text>
               </div>

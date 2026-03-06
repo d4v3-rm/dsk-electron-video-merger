@@ -1,14 +1,5 @@
 import { Typography } from 'antd';
 import type { JobComposerOptionCardProps } from '@renderer/components/job-composer/job-composer.types';
-import {
-  optionCardBadgeStyle,
-  optionCardBadgesStyle,
-  optionCardBaseStyle,
-  optionCardDisabledStyle,
-  optionCardHeaderStyle,
-  optionCardMetaStyle,
-  optionCardSelectedStyle,
-} from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -23,23 +14,19 @@ export const JobComposerOptionCard = ({
 }: JobComposerOptionCardProps) => (
   <button
     type="button"
-    style={{
-      ...optionCardBaseStyle,
-      ...(selected ? optionCardSelectedStyle : {}),
-      ...(disabled ? optionCardDisabledStyle : {}),
-    }}
+    className={`composer-option-card ${selected ? 'composer-option-card-selected' : ''}`}
     onClick={onClick}
     disabled={disabled}
   >
-    <span style={optionCardHeaderStyle}>
+    <span className="composer-option-card-header">
       <Text strong>{title}</Text>
       <Text type="secondary">{description}</Text>
     </span>
 
     {badges.length > 0 ? (
-      <span style={optionCardBadgesStyle}>
+      <span className="composer-option-card-badges">
         {badges.map((badge) => (
-          <span key={badge} style={optionCardBadgeStyle}>
+          <span key={badge} className="composer-option-card-badge">
             {badge}
           </span>
         ))}
@@ -47,7 +34,7 @@ export const JobComposerOptionCard = ({
     ) : null}
 
     {meta ? (
-      <Text type="secondary" style={optionCardMetaStyle}>
+      <Text type="secondary" className="composer-option-card-meta">
         {meta}
       </Text>
     ) : null}

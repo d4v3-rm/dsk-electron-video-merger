@@ -1,13 +1,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Avatar, Button, Flex, List, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Flex, List, Space, Tag, Tooltip, Typography } from 'antd';
 import type { MergeSelectionListProps } from '@renderer/components/job-composer/job-composer.types';
 import { formatBytes } from '@renderer/utils/file-utils';
-import {
-  listContainerStyle,
-  listItemStyle,
-  listPathTextStyle,
-  queueIndexStyle,
-} from '@renderer/theme/component-styles';
 
 const { Paragraph, Text } = Typography;
 
@@ -25,7 +19,7 @@ export const MergeSelectionList = ({
   middleRoleLabel,
 }: MergeSelectionListProps) => (
   <List
-    style={listContainerStyle}
+    className="queue-list"
     dataSource={selectedFiles}
     renderItem={(item, index) => {
       const isFirst = index === 0;
@@ -33,7 +27,7 @@ export const MergeSelectionList = ({
 
       return (
         <List.Item
-          style={listItemStyle}
+          className="queue-item"
           actions={[
             <Space key="controls" size="small">
               <Tooltip title={moveUpTooltipLabel}>
@@ -64,11 +58,7 @@ export const MergeSelectionList = ({
           ]}
         >
           <List.Item.Meta
-            avatar={
-              <Avatar shape="square" size={34} style={queueIndexStyle}>
-                {index + 1}
-              </Avatar>
-            }
+            avatar={<div className="queue-index">{index + 1}</div>}
             title={
               <Space wrap>
                 <Text strong>{item.name}</Text>
@@ -78,7 +68,7 @@ export const MergeSelectionList = ({
             }
             description={
               <Flex vertical gap={4}>
-                <Paragraph style={listPathTextStyle} ellipsis={{ tooltip: item.path }}>
+                <Paragraph className="selected-file-path" ellipsis={{ tooltip: item.path }}>
                   {item.path}
                 </Paragraph>
                 <Space size="middle">

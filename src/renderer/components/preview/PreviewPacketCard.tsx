@@ -12,7 +12,6 @@ import {
 } from '@renderer/utils/encoder-presentation';
 import { formatBytes } from '@renderer/utils/file-utils';
 import { getJobModeLabel } from '@renderer/utils/job-presentation';
-import { outputNameStyle, sectionCardStyle, sectionCardStyles } from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -25,12 +24,7 @@ export const PreviewPacketCard = ({ previewModel, selectedFiles }: PreviewPacket
   const { t } = useTranslation();
 
   return (
-    <Card
-      size="small"
-      title={t('preview.sections.packet')}
-      style={sectionCardStyle}
-      styles={sectionCardStyles}
-    >
+    <Card size="small" className="panel-section-card" title={t('preview.sections.packet')}>
       <Descriptions
         column={2}
         size="small"
@@ -39,7 +33,7 @@ export const PreviewPacketCard = ({ previewModel, selectedFiles }: PreviewPacket
             key: 'name',
             label: t('preview.labels.outputName'),
             children: (
-              <Text strong style={outputNameStyle}>
+              <Text strong className="preview-output-name">
                 {previewModel.previewName}
               </Text>
             ),

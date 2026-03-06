@@ -11,15 +11,6 @@ import {
   APP_MODAL_MEDIUM_WIDTH,
   APP_MODAL_TOP_OFFSET,
 } from '@renderer/utils/modal-presentation';
-import {
-  actionBarStyle,
-  actionCopyStyle,
-  modalBodyInsetStyle,
-  modalContentStyle,
-  modalHeaderStyle,
-  sectionCardStyle,
-  sectionCardStyles,
-} from '@renderer/theme/component-styles';
 
 const { Text } = Typography;
 
@@ -45,10 +36,10 @@ export const JobComposerExecutionNotes = ({
 
   return (
     <>
-      <Card size="small" title={title} style={sectionCardStyle} styles={sectionCardStyles}>
+      <Card size="small" className="panel-section-card" title={title}>
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <div style={actionBarStyle}>
-            <div style={actionCopyStyle}>
+          <div className="panel-action-bar">
+            <div className="panel-action-copy">
               <Text type="secondary">{t('composer.executionNotesPreview')}</Text>
             </div>
 
@@ -64,16 +55,13 @@ export const JobComposerExecutionNotes = ({
       </Card>
 
       <Modal
+        className="app-flat-modal"
         destroyOnHidden
         footer={null}
         onCancel={() => setExecutionNotesModalOpen(false)}
         open={executionNotesModalOpen}
         style={{ top: APP_MODAL_TOP_OFFSET }}
-        styles={{
-          body: { ...APP_MODAL_BODY_STYLE, ...modalBodyInsetStyle },
-          content: modalContentStyle,
-          header: modalHeaderStyle,
-        }}
+        styles={{ body: APP_MODAL_BODY_STYLE }}
         title={title}
         width={APP_MODAL_MEDIUM_WIDTH}
       >
