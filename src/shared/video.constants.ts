@@ -1,8 +1,9 @@
 export const OUTPUT_FORMATS = ['mp4', 'mov', 'mkv', 'webm', 'flv', 'avi', 'ogv', 'mpg'] as const;
 
-export const OUTPUT_RESOLUTIONS = ['source', '720p', '1080p', '1440p', '2160p'] as const;
+export const OUTPUT_RESOLUTIONS = ['source', '480p', '720p', '1080p', '1440p', '2160p'] as const;
 
 export const OUTPUT_RESOLUTION_DIMENSIONS = {
+  '480p': { width: 854, height: 480 },
   '720p': { width: 1280, height: 720 },
   '1080p': { width: 1920, height: 1080 },
   '1440p': { width: 2560, height: 1440 },

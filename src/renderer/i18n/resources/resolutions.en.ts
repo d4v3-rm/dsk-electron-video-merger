@@ -7,6 +7,10 @@ const resolutionsEn = {
     badge: 'Source-matched',
     behavior: 'Mode-aware',
   },
+  '480p': {
+    label: '480p',
+    description: 'Normalize the output to an 854 x 480 delivery canvas.',
+  },
   '720p': {
     label: '720p',
     description: 'Normalize the output to a 1280 x 720 canvas.',

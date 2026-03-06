@@ -55,6 +55,7 @@ For H.264, VP9, AVI, and MPG, lower values usually preserve more detail. For The
 | Resolution | Behavior |
 | --- | --- |
 | `Source` | Keeps the native input resolution. In merge mode, the timeline inherits the first clip canvas. |
+| `480p` | Normalizes the output to `854 x 480` |
 | `720p` | Normalizes the output to `1280 x 720` |
 | `1080p` | Normalizes the output to `1920 x 1080` |
 | `1440p` | Normalizes the output to `2560 x 1440` |
